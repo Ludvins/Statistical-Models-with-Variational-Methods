@@ -1,0 +1,29 @@
+
+* El problema.
+
+Tenemos una función de densidad conjunta de variables ocultas z y variables observadas x.
+
+$$
+p(x,z) = p(z)p(x|z)
+$$
+
+Daremos nombre a los elementos de la regla de Bayes.
+
+$$
+p(z|x) =  \frac{p(x,z)}{p(x)} =  \frac{p(x|z) p(z)}{p(x)}
+$$
+Donde p(z) será una estimación "prior" y p(z|x) será "posterior"
+
+En los modelos Bayesianos, las variables ocultas "gobiernan" la distribución de los datos.
+
+Un modelo Bayesiano extrae las variables ocultas a partir del "prior" y luego las relaciona con las variables observadas mediante la probabilidad condicionada p(x|z).
+
+La inferencia en un modelo Bayesiano equivale al condicionamiento de los datos y calcular p(z|x) "posterior". En modelos complejos, este cálculo requiere de inferencia aproximada.
+
+
+La idea principal detrás de la inferencia variacional es la optimización.
+Traramos de encontrar el miembro de una familia de densidades \mathcal{D} que minimiza la divergencia Kullback-Leiber al "posterior" exacto.
+
+$$
+q^*(z) = \oepratorname*{argmin}_{q(z)\in \mathcal{D}} KL(g(z)\|p(z|x))
+$$
