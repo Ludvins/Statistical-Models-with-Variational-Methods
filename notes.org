@@ -59,14 +59,18 @@ $$
 p(x|y) = \frac{p(x,y)}{p(y)}
 $$
 
+<<<<<<< HEAD
 If $p(y) = 0$ then it is not defined.
 #+end_definition
 This formula is also known as *Bayes' rule*. With this definition the conditional
+=======
+If $p(y) = 0$ then it is not defined.This formula is also known as *Bayes' rule*. With this definition the conditional
+>>>>>>> fd1186e60ec5a0321decb248dd3e0b20d697b569
 probability is the probability of one event occurring in the presence of a
 second event. \\
 
 Now suppose we have some observed data $\mathcal{D}$ and we want to learn about
-a set of parameters \theta. Using Baye's rule we got that
+a set of parameters \theta. Using Bayes' rule we got that
 
 $$
 p(\theta|\mathcal{D}) = \frac{p(\mathcal{D}|\theta)p(\theta)}{p(\mathcal{D})} =
@@ -78,8 +82,8 @@ and a /prior/ belief $p(\theta)$, we can infer the /posterior/ distribution
 $p(\theta|\mathcal{D})$. \\
 
 *Example*. Consider a study where the relation of a disease $D$ and an habit $H$
-is beeing investigated. Consider $p(D)=10^{-5}$, $p(H)=0.5$ and $p(H|D) = 0.9$. What is the
-probability that a person with habit $H$ will have desease $D$?
+is being investigated. Consider $p(D)=10^{-5}$, $p(H)=0.5$ and $p(H|D) = 0.9$. What is the
+probability that a person with habit $H$ will have disease $D$?
 
 $$
 p(D|S) = \frac{p(D,H)}{p(D)} = \frac{p(H|D)p(D)}{p(H)} =
