@@ -1,19 +1,25 @@
-#+options: toc:nil
-#+BIND: org-latex-image-default-width 0.5\linewidth
-#+TITLE: Statistical Models with Variational Methods
-#+AUTHOR: Luis Antonio Ortega Andrés
+#+TITLE:  Statistical Models with Variational Methods
+#+SUBTITLE:End-of-degree project
 #+LANGUAGE: en
-#+LATEX_HEADER:\setlength{\parindent}{0in}
-#+LATEX_HEADER: \usepackage[margin=0.8in]{geometry}
-#+LATEX_HEADER: \usepackage[spanish]{babel}
-#+LATEX_HEADER: \usepackage{mathtools}
-#+latex_header: \usepackage{breakurl}
-#+latex_class_options: [11pt]
-#+LaTeX_HEADER: \usepackage{palatino}
+#+AUTHOR: Luis Antonio Ortega Andrés @@latex: \\@@76425628D @@latex: \\@@ ludvins@correo.ugr.es
+#+OPTIONS: toc:t num:2
+
+#+latex_class_options: [oneside,openright,titlepage,numbers=noenddot,openany,headinclude,footinclude=true,cleardoublepage=empty,abstractoff,BCOR=5mm,paper=a4,fontsize=12pt,ngerman,american]
+#+latex_header_extra: \usepackage[T1]{fontenc}
+#+LATEX_HEADER: \usepackage[AUTO]{babel}
+#+latex_header_extra: \usepackage{minted}
+#+latex_header_extra: \usepackage[beramono,eulerchapternumbers,linedheaders,parts,a5paper,dottedtoc,manychapters]{classicthesis}
+
 #+latex_header: \usepackage{tikz}
 #+latex_header: \usetikzlibrary{positioning,shapes,arrows}
 #+latex_header: \usepackage{dcolumn}
 #+latex_header: \usepackage{booktabs}
+
+#+latex_header_extra: \input{setup}
+#+latex_header_extra: \input{classicthesis-config}
+#+latex_header: \input{macros}
+\clearpage
+
 
 * Probability
 
@@ -31,24 +37,31 @@ $$\int_x f(x) = \int_{dom(x)}f(x=s) ds$$
 
 ** Definitions
 
+
 We will define some concepts from a given joint distribution $p(x,y)$, this is,
 the probability of two events.\\
 
-*Definition 1*. A *marginal* $p(x)$ of the joint distribution is the
+#+begin_definition
+A *marginal* $p(x)$ of the joint distribution is the
 distribution of a single variable given by
 $$
 p(x) = \sum_y p(x,y) \hspace{2cm} p(x) = \int_y p(x,y)
 $$
+#+end_definition
 
 We can undestand this as the probability of an event irrespective of the outcome
-of another variable.\\
+of another variable.
 
+
+#+begin_definition
 *Definition 2*. The *conditional probability* of $x$ given $y$ is defined as
 $$
 p(x|y) = \frac{p(x,y)}{p(y)}
 $$
 
-If $p(y) = 0$ then it is not defined.This formula is also known as *Baye's rule*. With this definition the conditional
+If $p(y) = 0$ then it is not defined.
+#+end_definition
+This formula is also known as *Bayes' rule*. With this definition the conditional
 probability is the probability of one event occurring in the presence of a
 second event. \\
 
