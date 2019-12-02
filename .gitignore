@@ -1,3 +1,4 @@
 .auctex-auto
 *.pdf
 *.tex
+*.sty

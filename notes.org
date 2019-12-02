@@ -54,19 +54,15 @@ of another variable.
 
 
 #+begin_definition
-*Definition 2*. The *conditional probability* of $x$ given $y$ is defined as
+The *conditional probability* of $x$ given $y$ is defined as
 $$
 p(x|y) = \frac{p(x,y)}{p(y)}
 $$
 
-<<<<<<< HEAD
 If $p(y) = 0$ then it is not defined.
 #+end_definition
-This formula is also known as *Bayes' rule*. With this definition the conditional
-=======
-If $p(y) = 0$ then it is not defined.This formula is also known as *Bayes' rule*. With this definition the conditional
->>>>>>> fd1186e60ec5a0321decb248dd3e0b20d697b569
-probability is the probability of one event occurring in the presence of a
+This formula is also known as *Bayes' rule*. With this definition the
+conditional probability is the probability of one event occurring in the presence of a
 second event. \\
 
 Now suppose we have some observed data $\mathcal{D}$ and we want to learn about
@@ -81,7 +77,8 @@ This shows how from a /generative model/ $p(\mathcal{D}|\theta)$ of the dataset
 and a /prior/ belief $p(\theta)$, we can infer the /posterior/ distribution
 $p(\theta|\mathcal{D})$. \\
 
-*Example*. Consider a study where the relation of a disease $D$ and an habit $H$
+#+begin_exampleth
+Consider a study where the relation of a disease $D$ and an habit $H$
 is being investigated. Consider $p(D)=10^{-5}$, $p(H)=0.5$ and $p(H|D) = 0.9$. What is the
 probability that a person with habit $H$ will have disease $D$?
 
@@ -96,8 +93,7 @@ If we set the probability of having habit $H$ to a much lower value as $p(H) =
 Intuitively, a smaller number of people have the habit and most of them have the
 desease. This means that the relation between having the desease and the habit
 is stronger.
-
-# *Definition 3*.
+#+end_exampleth
 
 * Graphical Models
 
