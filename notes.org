@@ -37,6 +37,9 @@ $$\int_x f(x) = \int_{dom(x)}f(x=s) ds$$
 
 ** Definitions
 
+#+begin_definition
+A *event* is a set of outcomes of an experiment to which a probability is assigned. The probability of event $a$ is written as $p(a)$.
+#+end_definition
 
 We will define some concepts from a given joint distribution $p(x,y)$, this is,
 the probability of two events.\\
@@ -61,6 +64,7 @@ $$
 
 If $p(y) = 0$ then it is not defined.
 #+end_definition
+
 This formula is also known as *Bayes' rule*. With this definition the
 conditional probability is the probability of one event occurring in the presence of a
 second event. \\
@@ -95,6 +99,12 @@ desease. This means that the relation between having the desease and the habit
 is stronger.
 #+end_exampleth
 
+#+begin_definition
+We say that events $x$ and $y$ are *independent* if knowing one of them doesn't give any extra information about the other. Mathematically, 
+$$ p(x,y) = p(x) p(y)$
+
+From this follows that, if $x$ and $y$ are independent, then $p(x|y) = p(x)$.
+
 * Graphical Models
 
 
@@ -103,48 +113,49 @@ is stronger.
   node distance=1cm and 0cm,
   mynode/.style={draw,ellipse,text width=2cm,align=center}
 ]
+
 \node[mynode] (sp) {Sprinkler};
 \node[mynode,below right=of sp] (gw) {Grass wet};
 \node[mynode,above right=of gw] (ra) {Rain};
 \path (ra) edge[-latex] (sp)
 (sp) edge[-latex] (gw)
 (gw) edge[latex-] (ra);
-\node[left=0.5cm of sp]
-{
-\begin{tabular}{cM{2}M{2}}
-\toprule
-& \multicolumn{2}{c}{Sprinkler} \\
-Rain & \multicolumn{1}{c}{T} & \multicolumn{1}{c}{F} \\
-\cmidrule(r){1-1}\cmidrule(l){2-3}
-F & 0.4 & 0.6 \\
-T & 0.01 & 0.99 \\
-\bottomrule
-\end{tabular}
+
+\node[left=0.5cm of sp] {
+  \begin{tabular}{cM{2}M{2}}
+  \toprule
+  & \multicolumn{2}{c}{Sprinkler} \\
+  Rain & \multicolumn{1}{c}{T} & \multicolumn{1}{c}{F} \\
+  \cmidrule(r){1-1}\cmidrule(l){2-3}
+  F & 0.4 & 0.6 \\
+  T & 0.01 & 0.99 \\
+  \bottomrule
+  \end{tabular}
 };
-\node[right=0.5cm of ra]
-{
-\begin{tabular}{M{1}M{1}}
-\toprule
-\multicolumn{2}{c}{Sprinkler} \\
-\multicolumn{1}{c}{T} & \multicolumn{1}{c}{F} \\
-\cmidrule{1-2}
-0.2 & 0.8 \\
-\bottomrule
-\end{tabular}
+
+\node[right=0.5cm of ra] {
+  \begin{tabular}{M{1}M{1}}
+  \toprule
+  \multicolumn{2}{c}{Sprinkler} \\
+  \multicolumn{1}{c}{T} & \multicolumn{1}{c}{F} \\
+  \cmidrule{1-2}
+  0.2 & 0.8 \\
+  \bottomrule
+  \end{tabular}
 };
-\node[below=0.5cm of gw]
-{
-\begin{tabular}{ccM{2}M{2}}
-\toprule
-& & \multicolumn{2}{c}{Grass wet} \\
-\multicolumn{2}{l}{Sprinkler rain} & \multicolumn{1}{c}{T} & \multicolumn{1}{c}{F} \\
-\cmidrule(r){1-2}\cmidrule(l){3-4}
-F & F & 0.4 & 0.6 \\
-F & T & 0.01 & 0.99 \\
-T & F & 0.01 & 0.99 \\
-T & T & 0.01 & 0.99 \\
-\bottomrule
-\end{tabular}
+
+\node[below=0.5cm of gw] {
+  \begin{tabular}{ccM{2}M{2}}
+  \toprule
+  & & \multicolumn{2}{c}{Grass wet} \\
+  \multicolumn{2}{l}{Sprinkler rain} & \multicolumn{1}{c}{T} & \multicolumn{1}{c}{F} \\
+  \cmidrule(r){1-2}\cmidrule(l){3-4}
+  F & F & 0.4 & 0.6 \\
+  F & T & 0.01 & 0.99 \\
+  T & F & 0.01 & 0.99 \\
+  T & T & 0.01 & 0.99 \\
+  \bottomrule
+  \end{tabular}
 };
 
 \end{tikzpicture}
