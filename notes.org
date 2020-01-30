@@ -1,5 +1,5 @@
 #+TITLE:  Statistical Models with Variational Methods
-#+SUBTITLE:End-of-degree project
+#+SUBTITLE: End-of-degree project
 #+LANGUAGE: en
 #+AUTHOR: Luis Antonio Ortega Andrés @@latex: \\@@76425628D @@latex: \\@@ ludvins@correo.ugr.es
 #+OPTIONS: toc:t num:2
@@ -23,29 +23,47 @@
 
 * Probability
 
-** Notation
+** Definitions
 
+#+begin_definition
+An /event/ is a set of outcomes of an experiment to which a probability is assigned. 
+This definition is made over the assumition that there is a /sample space/ $\Omega$, set of all possible otcomes of the experiment.
+
+This sample space must:
++ Contain the /empty event/ $\empty$ and the /trivial event/ $\Omega$.
++ Be closed under union.
++ Be closed under complementation.
+#+end_definition
+
+Closeness under union and complementation implies closeness under intersection and set difference.
+
+#+begin_definition
+Let $S$ be a set of /meassurable events/ of the sample space $\Omega$, that is, $\forall \alpha \in S$ $\alpha$ is a subset of $\Omega$.
+A /probability distribution/ $p$ over $(\Omega, S)$ is a mapping from $S$ to $\mathbb{R}$, following:
++ $p(\alpha) \geq 0 \ \forall \alpha \in S$.
++ $p(\Omega) = 1$
++ If $\alpha$, $\beta \in S$ and $\alpha \cap \beta = \empty$, then $p(\alpha \cup \beta) = p(\alpha) + p(\beta).
+#+end_definition
+
+The first condition implies non negativity. The second one states that the /trivial evet/ has the maximal possible probability of 1. The last condition states that given two mutually disjoint events, 
+the probability of one of them is equal to the sum of the probabilities of each one.
+
+From these conditions follows that $p(\empty) = 0$ and $p(\alpha \cup \beta) = p(\alpha) + p(\beta) - p(\alpha \cap \beta)$.
+
+From now on, we will denote $p(\alpha \text{ or } \beta) = p(\alpha \cup \beta)$ and $p(\alpha, \beta) = p(\alpha \cap \beta)$. 
 Variables will be denoted with lower case $x$ and a set of variables with a
-calligraphic symbol like $\mathcal{V}$.
-
-The meaning of $p(state)$ will be clear without a reference to the variable.
+calligraphic symbol like $\mathcal{V}$. The meaning of $p(state)$ will be clear without a reference to the variable.
 Otherwise $p(x = state)$ will be used. \\
 
 We will denote $p(x)$ the probability of $x$ taking a specific value, this means
 that
 $$\int_x f(x) = \int_{dom(x)}f(x=s) ds$$
 
-** Definitions
-
-#+begin_definition
-A *event* is a set of outcomes of an experiment to which a probability is assigned. The probability of event $a$ is written as $p(a)$.
-#+end_definition
-
 We will define some concepts from a given joint distribution $p(x,y)$, this is,
 the probability of two events.\\
 
 #+begin_definition
-A *marginal* $p(x)$ of the joint distribution is the
+A /marginal/ $p(x)$ of the joint distribution is the
 distribution of a single variable given by
 $$
 p(x) = \sum_y p(x,y) \hspace{2cm} p(x) = \int_y p(x,y)
@@ -57,7 +75,7 @@ of another variable.
 
 
 #+begin_definition
-The *conditional probability* of $x$ given $y$ is defined as
+The /conditional probability/ of $x$ given $y$ is defined as
 $$
 p(x|y) = \frac{p(x,y)}{p(y)}
 $$
@@ -65,7 +83,7 @@ $$
 If $p(y) = 0$ then it is not defined.
 #+end_definition
 
-This formula is also known as *Bayes' rule*. With this definition the
+This formula is also known as /Bayes' rule/. With this definition the
 conditional probability is the probability of one event occurring in the presence of a
 second event. \\
 
@@ -100,13 +118,32 @@ is stronger.
 #+end_exampleth
 
 #+begin_definition
-We say that events $x$ and $y$ are *independent* if knowing one of them doesn't give any extra information about the other. Mathematically, 
+We say that events $x$ and $y$ are /independent/ if knowing one of them doesn't give any extra information about the other. Mathematically, 
 $$ p(x,y) = p(x) p(y)$
 
 From this follows that, if $x$ and $y$ are independent, then $p(x|y) = p(x)$.
+#+end_definition
 
 * Graphical Models
 
+#+begin_definition
+A /graph/ G is a set of vertices (nodes) and edges (links) between the vertices.
+
+This edges may be directed (have arrow in a single direction) or undirected. If all the edges of a graph are directed, it is called a /directed graph/, if all of them are undirected, is called a *undirected graph*.
+#+end_definition
+
+#+begin_definition
+A /path/ $A \to B$ is a sequence of vertices ${A_0 = A, A_1,\dots,A_{n-1}, A_n = B}$ where $(A_n, A_{n=1})$ an edge of the graph. In a directed graph, if the edges follow the sequence, if is called a *directed path*$.
+
+Let $A,B$ be two vertices, if $A \to B$ and $B \not \to A$, then $A$ is called an /ancestor/ of $B$ and $B$ is called a /descendant/ of $A$.
+#+end_definition
+
+#+begin_definition
+A /directed acyclic graph (DAG)/ is a directed graph such that no directed path from any node to another revisits a vertex.
+#+end_definition
+
+
+** Graphical Model Test with Tikz
 
 #+BEGIN_latex
 \begin{tikzpicture}[
