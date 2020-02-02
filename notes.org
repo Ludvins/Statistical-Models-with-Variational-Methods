@@ -1,8 +1,11 @@
 #+TITLE:  Statistical Models with Variational Methods
 #+SUBTITLE: End-of-degree project
 #+LANGUAGE: en
-#+AUTHOR: Luis Antonio Ortega Andrés @@latex: \\@@76425628D @@latex: \\@@ ludvins@correo.ugr.es
+#+AUTHOR: Luis Antonio Ortega Andrés @@latex: \\@@ 76425628D @@latex: \\@@ ludvins@correo.ugr.es
 #+OPTIONS: toc:t num:2
+
+#+latex_header: \usepackage[eng, exjob]{KTHEEtitlepage}
+#+LATEX_HEADER: \renewcommand\maketitle{\makeititle}
 
 #+latex_class_options: [oneside,titlepage,openany,headinclude,footinclude=true,BCOR=5mm,paper=a4,ngerman,american]
 #+latex_header_extra: \usepackage[T1]{fontenc}
@@ -18,7 +21,6 @@
 #+latex_header_extra: \input{setup}
 #+latex_header_extra: \input{classicthesis-config}
 #+latex_header: \input{macros}
-
 
 \clearpage
 
@@ -166,7 +168,6 @@ This edges may be directed (have arrow in a single direction) or undirected. If 
 (b) edge[latex-] (c);
 
 \draw (d) -- (e) -- (f) -- (d)
-
 
 \end{tikzpicture}
 \end{center}
