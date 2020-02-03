@@ -62,22 +62,37 @@ $p: \mathcal{A} \to \mathbb{R}$, following:
 The first condition implies non negativity. The second one states that the /trivial event/ has the maximal possible probability of 1. The last condition states that given two mutually disjoint events,
 the probability of one of them is equal to the sum of the probabilities of each one.
 
-From these conditions follows that $p(\emptyset) = 0$ and $p(\alpha \cup \beta) = p(\alpha) + p(\beta) - p(\alpha \cap \beta)$.
+From these conditions follows that $p(\emptyset) = 0$ and $p(\alpha \cup \beta)
+= p(\alpha) + p(\beta) - p(\alpha \cap \beta)$.
 
-*************** TODO should I define random variable formally?
-*************** END
+#+begin_definition
+A function $f:(A_1, \mathcal{A}_1) \to (A_2, \mathcal{A}_2)$ between two
+measurable spaces is said to be /measurable/ if for every $\alpha \in
+\mathcal{A}_2$, it satisfies $f^{-1}(\alpha) \in \mathcal{A}_1$.
+#+end_definition
 
+#+begin_definition
+A /random variable/ is a measurable function $X:A \to E$ from a set of possible
+outcomes $A$ and a measurable space $E$.
 
-From now on, we will denote $p(\alpha \text{ or } \beta) = p(\alpha \cup \beta)$ and $p(\alpha, \beta) = p(\alpha \cap \beta)$.
-Variables symbolizing events will be denoted with lower case $x$ and a set of variables with a
+The probability of $X$ taking a value on a measurable set $S \subset E$ is
+written as
+$$
+p(X \in S) = p(\{\alpha \in \Omega \ | \ X(\alpha) \in S \})
+$$
+#+end_definition
+
+We will adopt the following notation from now on, random variables will be denoted with lower case $x$ and a set of variables with a
 calligraphic symbol like $\mathcal{V}$. The meaning of $p(state)$ will be clear without a reference to the variable.
 Otherwise $p(x = state)$ will be used.
 We will denote $p(x)$ the probability of $x$ taking a specific value, this means
 that
 $$\int_x f(x) = \int_{dom(x)}f(x=s) ds$$
 
+Also $p(x \text{ or } y) = p(x \cup y)$ and $p(x,y) = p(x \cap y)$.
+
 We will define some concepts from a given joint distribution $p(x,y)$, this is,
-the probability of two events.
+the probability of both random variables.
 
 #+begin_definition
 A /marginal distribution/ $p(x)$ of the joint distribution is the
@@ -144,7 +159,8 @@ From this follows that, if $x$ and $y$ are independent, then $p(x|y) = p(x)$.
 ** Graphical models
 
 #+begin_definition
-A /graph/ G is a set of vertices (nodes) and edges (links) between the vertices.
+A /graph/ $G = (V,E)$ is a set of vertices or nodes $V$ and edges $E\subset
+V\times V$ between the vertices.
 This edges may be directed (have arrow in a single direction) or undirected. If all the edges of a graph are directed, it is called a /directed graph/, if all of them are undirected, is called a /undirected graph/.
 #+end_definition
 
@@ -255,13 +271,27 @@ of its children.
 \label{fig:relations}
 #+end_latex
 
-We can use figure \ref{fig:relations} to reflect this definitions. The parents
-of $B$ are $\{A,C\}$ and it's children are $\{E,D\}$.
+
 
 #+begin_definition
-In a undirected graph, the /neighbours/ of a node are those directly connected
+In a graph, the /neighbors/ of a node are those directly connected
 to it.
 #+end_definition
+
+We can use figure \ref{fig:relations} to reflect this definitions. The parents
+of $B$ are $\{A,C\}$ and it's children are $\{E,D\}$. With this, it's neighbors
+are $ne(B) = \{A,C,E,D\}$ and it's Markov blanket is $\{A,B,C,D,E,F\}$.
+
+#+begin_definition
+A /graphical model/ is a probabilistic model for which a graph express the
+conditional dependence structure between random variables.
+#+end_definition
+
+Commonly, they use a graph-based representation for encoding a multi-dimensional
+distribution representing a set of independences that hold in the specific
+distribution. The most commonly used are /Bayesian networks/ and /Markov random
+fields/ that differ in the set of independences they can encode and the
+factorization of the distribution that they include.
 
 * Graphical Model Test with Tikz
 
