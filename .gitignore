@@ -1,6 +1,11 @@
-.auctex-auto
-*.pdf
+.auctex-auto/
 *.tex
 *.sty
 *.bbl
 *.png
+*.aux
+*.blg
+*.log
+*.out
+*.toc
+*.pdf
