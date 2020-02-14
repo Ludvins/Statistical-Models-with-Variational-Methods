@@ -2,25 +2,26 @@
 #+SUBTITLE: End-of-degree project
 #+LANGUAGE: en
 #+AUTHOR: Luis Antonio Ortega Andrés @@latex: \\@@ 76425628D @@latex: \\@@ ludvins@correo.ugr.es
-#+OPTIONS: toc:t num:2
+#+OPTIONS: toc:t num:3
 
 #+latex_header: \usepackage[eng, exjob]{KTHEEtitlepage}
 #+LATEX_HEADER: \renewcommand\maketitle{\makeititle}
 
-#+latex_class_options: [oneside,titlepage,openany,headinclude,footinclude=true,BCOR=5mm,paper=a4,ngerman,american]
+#+latex_class: scrreprt
+#+latex_class_options: [oneside,openright,titlepage,numbers=noenddot,openany,headinclude,footinclude=true,cleardoublepage=empty,abstractoff,BCOR=5mm,paper=a4,fontsize=12pt,ngerman,american]
+
 #+latex_header_extra: \usepackage[T1]{fontenc}
-#+latex_header_extra: \usepackage{minted}
 #+latex_header_extra: \usepackage[beramono,eulerchapternumbers,linedheaders,parts,a5paper,dottedtoc,manychapters]{classicthesis}
+#+latex_header_extra: \input{setup}
+#+latex_header_extra: \input{classicthesis-config}
+#+latex_header: \input{macros}
+
 
 #+latex_header: \usepackage{tikz}
 #+latex_header: \usetikzlibrary{positioning,shapes,arrows}
 #+latex_header: \usepackage{dcolumn}
 #+latex_header: \usepackage{booktabs}
-
-
-#+latex_header_extra: \input{setup}
-#+latex_header_extra: \input{classicthesis-config}
-#+latex_header: \input{macros}
+#+latex_header: \usepackage{bm}
 
 \clearpage
 
@@ -34,63 +35,81 @@ Some introduction about how important Variational methods are nowadays and what 
 ** Probability
 
 
-#+begin_definition
-An /event/ is a set of outcomes of an experiment to which a probability is assigned.
-This definition is made under the assumption that there is a /sample space/ $A$, the set of all possible outcomes of the experiment.
-#+end_definition
-
+All our theory will be made under the assumption that there is a /referential
+set/ $\Omega$, set of all possible outcomes of an experiment. Any subset of
+$\Omega$ will be called /event/.
 
 #+begin_definition
-Let $\mathcal{P}(A)$ be the power set of $A$. Then, $\mathcal{A} \subset \mathcal{P}(A)$ is called a
+Let $\mathcal{P}(\Omega)$ be the power set of $\Omega$. Then, $\mathcal{F} \subset \mathcal{P}(\Omega)$ is called a
 /\sigma-algebra/ if it satisfies:
-+ $A \in \mathcal{A}$.
-+ $\mathcal{A}$ is closed under complementation.
-+ $\mathcal{A}$ is closed under countable unions.
-From these properties it follows that $\emptyset \in \mathcal{A}$ and that $\mathcal{A}$
++ $\Omega \in \mathcal{F}$.
++ $\mathcal{F}$ is closed under complementation.
++ $\mathcal{F}$ is closed under countable unions.
+From these properties it follows that $\emptyset \in \mathcal{F}$ and that $\mathcal{F}$
 is closed under countable intersections.
 
-The tuple $(A, \mathcal{A})$ is called a /measurable space/.
+The tuple $(\Omega, \mathcal{F})$ is called a /measurable space/.
 #+end_definition
 
 #+begin_definition
-A /probability distribution/ $p$ over $(A, \mathcal{A})$ is a mapping
-$p: \mathcal{A} \to \mathbb{R}$ which satisfies
-+ $p(\alpha) \geq 0 \ \ \forall \alpha \in \mathcal{A}$.
-+ $p(A) = 1$.
-+ If $\alpha$, $\beta \in A$ and $\alpha \cap \beta = \emptyset$, then $p(\alpha \cup \beta) = p(\alpha) + p(\beta)$.
-#+end_definition
-The first condition guarantees non negativity. The second one states that the /trivial event/ has the maximal possible probability of 1. The last condition implies that given two mutually disjoint events,
-the probability of either one of them occurring is equal to the sum of the probabilities of each one.
-
-From these conditions it follows that $p(\emptyset) = 0$ and $p(\alpha \cup \beta)
-= p(\alpha) + p(\beta) - p(\alpha \cap \beta)$.
-
-#+begin_definition
-A function $f:(A_1, \mathcal{A}_1) \to (A_2, \mathcal{A}_2)$ between two
-measurable spaces is said to be /measurable/ if $f^{-1}(\alpha) \in \mathcal{A}_1$ for every $\alpha \in \mathcal{A}_2$.
+A /probability/ $P$ over $(\Omega, \mathcal{F})$ is a mapping
+$P: \mathcal{F} \to \mathbb{R}$ which satisfies
++ $P(\alpha) \geq 0 \ \ \forall \alpha \in \mathcal{F}$.
++ $P(\Omega) = 1$.
++ If $\alpha$, $\beta \in \mathcal{F}$ and $\alpha \cap \beta = \emptyset$, then
+  $P(\alpha \cup \beta) = P(\alpha) + P(\beta)$.
 #+end_definition
 
+
+The first condition guarantees non negativity. The second one states that the
+/trivial event/ has the maximal possible probability of 1. The third condition implies that given two mutually disjoint events,
+the probability of either one of them occurring is equal to the sum of the
+probabilities of each one.
+
+From these conditions it follows that $P(\emptyset) = 0$ and $P(\alpha \cup \beta)
+= P(\alpha) + P(\beta) - P(\alpha \cap \beta)$.
+
+#+begin_proposition
+For any sequence $\{\alpha_n\}_{n \in \mathbb{N}}$ such that $\alpha_i \subset
+  \alpha_{i+1} \ \forall i \in \mathbb{N}$ and $\alpha_n
+  \xrightarrow{n \to \infty} \Omega$, then $P(\alpha_n)
+  \xrightarrow{n \to \infty} P(\Omega) = 1$.
+#+end_proposition
+
+*************** Note. Proof this or smth.
+
+The triple $(\Omega, \mathcal{F}, P)$ is called a /probability space/.
+
 #+begin_definition
-A /random variable/ is a measurable function $X:A \to E$ from a set of possible
-outcomes $A$ to a measurable space $E$.
+A function $f:\Omega_1 \to \Omega_2$ between two
+measurable spaces is said to be /measurable/ if $f^{-1}(\alpha) \in \mathcal{F}_1$ for every $\alpha \in \mathcal{F}_2$.
+#+end_definition
+
+#+begin_definition
+A /random variable/ is a measurable function $X:\Omega \to E$ from a probability
+space $(\Omega, \mathcal{F}, P)$ to a measurable space $E$.
 
 The probability of $X$ taking a value on a measurable set $S \subset E$ is
 written as
 $$
-p(X \in S) = p(\{\alpha \in A \ | \ X(\alpha) \in S \}).
+P(X \in S) = P(\{a \in \Omega \ | \ X(a) \in S \}).
 $$
 #+end_definition
 
-We will adopt the following notation from now on: random variables will be denoted with lower case letter like $x$ and a set of variables with a
-calligraphic symbol like $\mathcal{V}$. The meaning of $p(state)$ will be clear without a reference to the variable.
-Otherwise $p(x = state)$ will be used.
-We will denote by $p(x)$ the probability of $x$ taking a specific value, which means
+We will adopt the following notation from now on: random variables will be
+denoted with an upper case letter like $X$ and a set of variables with a
+bold symbol like $\bm{X}$ The meaning of $P(state)$ will be clear without a reference to the variable.
+Otherwise $P(X = state)$ will be used.
+We will denote by $P(x)$ the probability of $X$ taking a specific value, which means
 that
-$$\int_x f(x) = \int_{dom(x)}f(x=s) \, ds$$
+$$\int_x f(x) = \int_{dom(X)}f(X=s) \, ds$$
 
-Also $p(x \text{ or } y) = p(x \cup y)$ and $p(x,y) = p(x \cap y)$.
+Also $P(x \text{ or } y) = P(x \cup y)$ and $P(x,y) = P(x \cap y)$.
 
-We will define some concepts regarding a joint distribution $p(x,y)$, that is to say, the probability of both random variables $x$ and $y$.
+We will define some concepts regarding a joint distribution $P(x,y)$, that is to say, the probability of both random variables $x$ and $y$.
+
+**************** introduce el concepto de variable continua y discreta. usa p para la función de distribución de una discreta y f para la densidad de una continua
+
 
 #+begin_definition
 A /marginal distribution/ $p(x)$ of the joint distribution is the
@@ -102,7 +121,6 @@ $$
 
 We can understand this as the probability of an event irrespective of the outcome
 of the other variable.
-
 
 #+begin_definition
 The /conditional probability/ of $x$ given $y$ is defined as
@@ -116,6 +134,11 @@ If $p(y) = 0$ then it is not defined.
 This formula is also known as /Bayes' rule/. With this definition the
 conditional probability is the probability of one event occurring in the presence of a
 second event. \\
+
+#+begin_theorem
+*(Bayes' rule)*.
+
+#+end_theorem
 
 Now suppose we have some observed data $\mathcal{D}$ and we want to learn about
 a set of parameters \theta. Using Bayes' rule we got that
@@ -275,7 +298,7 @@ to it.
 #+end_definition
 
 We can use figure \ref{fig:relations} to reflect on these definitions. The parents
-of $B$ are $\{A,C\}$ and its children are $\{E,D\}$. Taking this into account, its neighbors
+of $B$ are $pa(B) = \{A,C\}$ and its children are $ch(B) = \{E,D\}$. Taking this into account, its neighbors
 are $ne(B) = \{A,C,E,D\}$ and its Markov blanket is $\{A,B,C,D,E,F\}$.
 
 #+begin_definition
@@ -289,13 +312,49 @@ distribution. The most commonly used are /Bayesian networks/ and /Markov random
 fields/, which differ in the set of independences they can encode and the
 factorization of the distribution that they include.
 
+* Belief networks
+
+Consider we have $N$ variables with the corresponding distribution
+$p(x_1,\dots,x_N)$. Let $\mathcal{E}$ be a set of indexes such as ~evidence~
+$=\{x_e = \times _e \ | \ e \in \mathcal{E}\}$. Inference could be made by brute
+force:
+
+$$
+p(x_i = \times _i \ | \ \texttt{evidence}) = \frac{ \int_{ j \not \in
+\mathcal{E}, j \neq i } p(\texttt{evidence}, x_j, x_i = \times_i)}{ \int_{ j
+\not \in \mathcal{E} } p(\texttt{evidence}, x_j)}
+$$
+
+The notation when using discrete variables is analogous replacing integration
+with summations.
+
+Lets suppose all these variables are binary, this calculation will require
+$O(2^{N-\#\mathcal{E}})$ operations. Also, all entries of a table $p(x_1,\dots,
+x_N)$ take $O(2^N)$ space.
+
+This is unpractical when taking into account millions of variables. The
+underlying idea of belief networks is to specify which variables are independent
+of others, factoring the joint probability distribution.
+
+#+begin_definition
+A /belief network/ is a distribution of the form
+$$
+p(x_1,\dots,x_N) = \prod_{i=1}^{N}p(x_i | pa(x_i))
+$$
+#+end_definition
+
+We can write it as a DAG where the $i^{th}$ node corresponds to the factor
+$p(x_i|pa(x_i))$.
+
+*************** TODO Example
+
 * Graphical Model Test with Tikz
 
 This is a test of making a graphical model in latex using Tikz package.
 
 \begin{tikzpicture}[
   node distance=1cm and 0cm,
-  mynode/.style={draw,ellipse,text width=2cm,align=center}
+  mynode/.style={draw,ellipse,text width=1.5cm,align=center}
 ]
 
 \node[mynode] (sp) {Sprinkler};
