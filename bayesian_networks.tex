@@ -1,0 +1,54 @@
+Consider we have \(N\) variables with the corresponding distribution
+\(P(x_1,\dots,x_N)\). Let \(\mathcal{E}\) be a set of indexes such as \texttt{evidence}
+\(=\{X_e = x_e \ | \ e \in \mathcal{E}\}\). Inference could be made by brute
+force:
+
+\[
+P(X_i = x_i \ | \ \texttt{evidence}) = \frac{ \int_{ j \not \in
+\mathcal{E}, j \neq i } P(\texttt{evidence}, x_j, X_i = x_i)}{ \int_{ j
+\not \in \mathcal{E} } P(\texttt{evidence}, x_j)}
+\]
+
+The notation when using discrete variables is analogous replacing integration
+with summations.
+
+Lets suppose all these variables are binary, this calculation will require
+\(O(2^{N-\#\mathcal{E}})\) operations. Also, all entries of a table \(P(x_1,\dots,
+x_N)\) take \(O(2^N)\) space.
+
+This is unpractical when taking into account millions of variables. The
+underlying idea of belief networks is to specify which variables are independent
+of others, factoring the joint probability distribution.
+
+\begin{definition}
+A \emph{belief network or Bayesian network} is a probabilistic graphical model
+that represents conditional dependencies of a set of variables \(X_1,\dots, X_n\) via a directed
+acyclic graph following
+
+\[
+P(x_1,\dots,x_N) = \prod_{i=1}^{N}P(x_i | pa(x_i))
+\]
+\end{definition}
+
+\begin{figure}
+  \centering
+\
+\begin{tikzpicture}[
+  node distance=1.5cm and 1.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (1) {\(x_1\)};
+\node[mynode,right=of 1] (2) {\(x_2\)};
+\node[mynode,right=of 2] (3) {\(x_3\)};
+\node[mynode,right=of 3] (4) {\(x_4\)};
+
+\path (4) edge[-latex][bend right] (1)
+(3) edge[-latex] (2)
+(4) edge[-latex][bend right] (2)
+;
+
+\end{tikzpicture}
+\captionof{figure}{\(P(x_1, x_2, x_3, x_4) = P(x_1 | x_4)P(x_2| x_3, x_4)P(x_3)P(x_4)\)}
+\label{fig:relations}
+\end{figure}

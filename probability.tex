@@ -1,0 +1,183 @@
+
+All our theory will be made under the assumption that there is a
+\emph{referential set} \(\Omega\), set of all possible outcomes of an experiment. Any subset of
+\(\Omega\) will be called \emph{event}.
+
+\begin{definition}
+Let \(\mathcal{P}(\Omega)\) be the power set of \(\Omega\). Then, \(\mathcal{F} \subset \mathcal{P}(\Omega)\) is called a
+\emph{\(\sigma\)-algebra} if it satisfies:
+\begin{itemize}
+\item \(\Omega \in \mathcal{F}\).
+\item \(\mathcal{F}\) is closed under complementation.
+\item \(\mathcal{F}\) is closed under countable unions.
+\end{itemize}
+From these properties it follows that \(\emptyset \in \mathcal{F}\) and that \(\mathcal{F}\)
+is closed under countable intersections.
+
+The tuple \((\Omega, \mathcal{F})\) is called a \emph{measurable space}.
+\end{definition}
+
+\begin{definition}
+A \emph{probability} \(P\) over \((\Omega, \mathcal{F})\) is a mapping
+\(P: \mathcal{F} \to [0,1]\) which satisfies
+\begin{itemize}
+\item \(P(\alpha) \geq 0 \ \ \forall \alpha \in \mathcal{F}\).
+\item \(P(\Omega) = 1\).
+\item \(P\) is countably additive, that is, if \(\{\alpha_i\}_{i \in \mathbb{N}}
+  \subset \mathcal{F}\), is a countable collection of pairwise disjoint sets,
+  then
+  \[
+  P\big(\bigcup_{i\in \mathbb{N}}\alpha_i\big) = \sum_{i\in \mathbb{N}}P(\alpha_i).
+  \]
+\item For any sequence {\(\{\alpha_n\}_{n \in \mathbb{N}}\)} such that \(\alpha_i \subset
+  \alpha_{i+1} \ \forall i \in \mathbb{N}\) and \(\alpha_n
+  \xrightarrow{n \to \infty} \Omega\), then
+  \[P(\alpha_n)
+  \xrightarrow{n \to \infty} P(\Omega) = 1.\]
+\end{itemize}
+\end{definition}
+
+The first condition guarantees non negativity. The second one states that the
+\emph{trivial event} has the maximal possible probability of 1. The third condition implies that given two mutually disjoint events,
+the probability of either one of them occurring is equal to the sum of the
+probabilities of each one. The last condition sets an upper semi-continuity.
+
+From these conditions it follows that \(P(\emptyset) = 0\) and \(P(\alpha \cup \beta)
+= P(\alpha) + P(\beta) - P(\alpha \cap \beta)\).
+
+The triple \((\Omega, \mathcal{F}, P)\) is called a \emph{probability space}.
+
+\begin{definition}
+A function \(f:\Omega_1 \to \Omega_2\) between two
+measurable spaces is said to be \emph{measurable} if \(f^{-1}(\alpha) \in \mathcal{F}_1\) for every \(\alpha \in \mathcal{F}_2\).
+\end{definition}
+
+\begin{definition}
+A \emph{random variable} is a measurable function \(X:\Omega \to E\) from a probability
+space \((\Omega, \mathcal{F}, P)\) to a measurable space \(E\).
+
+The probability of \(X\) taking a value on a measurable set \(S \subset E\) is
+written as
+\[
+P(X \in S) = P(\{a \in \Omega \ | \ X(a) \in S \}).
+\]
+\end{definition}
+
+We will adopt the following notation from now on: random variables will be
+denoted with an upper case letter like \(X\) and a set of variables with a
+bold symbol like \(\bm{X}\) The meaning of \(P(state)\) will be clear without a reference to the variable.
+Otherwise \(P(X = state)\) will be used.
+We will denote by \(P(x)\) the probability of \(X\) taking a specific value.
+
+Also \(P(x \text{ or } y) = P(x \cup y)\) and \(P(x,y) = P(x \cap y)\).
+
+We will define some concepts regarding a joint distribution \(P(x,y)\), that is
+to say, the probability of both random variables \(x\) and \(y\).
+
+\begin{definition}
+The \emph{cumulative distribution function} of a random variable \(X\) is the
+function given by:
+\[
+F_X (x) = P(X \leq x)
+\]
+where the right-hand side represents the probability of the random variable
+taking value below of equal to \(x\).
+\end{definition}
+
+\begin{definition}
+When the image of a random variable \(X\) is countable, the random variable is called
+\emph{discrete random variable}, its \emph{probability mass function} \(p\) gives the
+probability of it being equal to some value.
+\[
+p(x) = P(X = x)
+\]
+If the image is uncountable then \(X\) is called a \emph{continuous random
+  variable} and its \emph{probability density function} \(f\) is a non-negative
+Lebesgue-integrable such that
+\[
+F_X(x) = P(X \leq x) = \int_{-\infty}^x f(u) du
+\]
+\end{definition}
+
+\begin{definition}
+A \emph{marginal distribution} \(P(x)\) of the joint distribution is the
+distribution of a single variable given by
+\[
+P(x) = \sum_y P(x,y) \hspace{2cm} P(x) = \int_y P(x,y)
+\]
+\end{definition}
+
+We can understand this as the probability of an event irrespective of the outcome
+of the other variable.
+
+\begin{definition}
+The \emph{conditional probability} of \(X\) given \(Y\) is defined as
+
+\[
+P(x|y) = \frac{P(x,y)}{P(y)}
+\]
+
+If \(P(y) = 0\) then it is not defined.
+\end{definition}
+
+With this definition the
+conditional probability is the probability of one event occurring in the presence of a
+second event. \\
+
+\begin{theorem}
+  \textbf{(Bayes' theorem)}. Given two random variables \(X,Y\), then
+  \[
+  P(x|y)= \frac{P(y|x)P(x)}{P(y)}
+  \]
+\end{theorem}
+
+\begin{exampleth}
+Consider a study where the relation of a disease \(d\) and an habit \(h\)
+is being investigated. Suppose that \(P(d)=10^{-5}\), \(P(h)=0.5\) and \(P(h|d) = 0.9\). What is the
+probability that a person with habit \(h\) will have the disease \(d\)?
+
+\[
+P(d|h) = \frac{P(d,h)}{P(h)} = \frac{P(h|d)P(d)}{P(h)} =
+\frac{ 0.9 \times 10^{-5}}{ 0.5 } = 1.8 \times 10^{-5}
+\]
+
+If we set the probability of having habit \(h\) to a much lower value as \(P(h) =
+0.001\), then the above calculation gives approximately \(1/100\). Intuitively, a smaller number of people have the habit and most of them have the
+desease. This means that the relation between having the desease and the habit
+is stronger now compared with the case where more people had the habit.
+\end{exampleth}
+
+Now suppose we have some observed data \(\mathcal{D}\) and we want to learn about
+a set of parameters \(\theta\). Using Bayes' rule we got that
+
+\[
+P(\theta|\mathcal{D}) = \frac{P(\mathcal{D}|\theta)P(\theta)}{P(\mathcal{D})} =
+\frac{P(\mathcal{D}|\theta)P(\theta)}{ \int_{\theta} P(\mathcal{D}|\theta)P(\theta)}
+\]
+
+This shows how from a \emph{generative model} \(P(\mathcal{D}|\theta)\) of the dataset
+and a \emph{prior} belief \(P(\theta)\), we can infer the \emph{posterior} distribution
+\(P(\theta|\mathcal{D})\). \\
+
+\begin{definition}
+We say that two random variables \(X\) and \(Y\) are \emph{independent} if knowing one of them doesn't give any extra information about the other. Mathematically,
+\[
+P(x,y) = P(x)P(y)
+\]
+From this it follows that if \(X\) and \(Y\) are independent, then \(P(x|y) = P(x)\).
+\end{definition}
+
+
+\begin{definition}
+Let \(X,Y\) and \(Z\) be three random variables, then \(X\) and \(Y\) are
+\emph{conditionally independent} given \(Z\) if and only if
+\[
+P(x,y | z) = P(x|z)P(y|z)
+\]
+in that case we will denote \(X \bigCI Y \mid Z\). If \(X\) and \(Y\) aren't
+conditionally independent, they are \emph{conditionally dependent} \(X \bigCD Y \mid Z\)
+
+\end{definition}
+
+Both independence definitions can be made over sets of variables \(\mathcal{X},
+\mathcal{Y}\) and \(\mathcal{Z}\).

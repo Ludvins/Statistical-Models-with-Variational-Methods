@@ -1,0 +1,128 @@
+
+\begin{definition}
+A \emph{graph} \(G = (V,E)\) is a set of vertices or nodes \(V\) and edges \(E\subset
+V\times V\) between them.
+If \(V\) is a set of ordered pairs then the graph is called a \emph{directed
+  graph}, otherwise if \(V\) is a set of unordered pairs it is called an \emph{undirected graph}.
+\end{definition}
+
+\begin{figure*}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 0.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (a) {A};
+\node[mynode,below right=of a] (b) {B};
+\node[mynode,above right=of b] (c) {C};
+
+\node[mynode, right=of c] (d) {A};
+\node[mynode,below right=of d] (e) {B};
+\node[mynode,above right=of e] (f) {C};
+
+\path (c) edge[-latex] (a)
+(a) edge[-latex] (b)
+(b) edge[latex-] (c);
+
+\draw (d) -- (e) -- (f) -- (d);
+
+\end{tikzpicture}
+\caption{Example of directed and undirected graph, respectively.}
+\label{fig:graphs}
+\end{figure*}
+
+\begin{definition}
+In a directed graph \(G = (V, E)\), a \emph{directed path} \(A \to B\) is a sequence of vertices \({A = A_0,
+  A_1,\dots,A_{n-1}, A_n = B}\) where \((A_i, A_{i-1}) \in E \ \forall i \in
+0,\dots ,n\).
+
+If \(G\) is a undirected graph, \(A \to B\) is an \emph{undirected path} if \(\forall i \in
+0,\dots, n, \ (A_i, A_{i-1}) \in E\) or  \((A_{i-1}, A_{i}) \in E\)
+\end{definition}
+
+\begin{definition}
+Let \(A,B\) be two vertices of a directed graph \(G\). If \(A \to B\) is a
+directed path and \(B \not \to A\) (meaning there isn't a directed path from
+\(B\) to \(A\)), then \(A\) is called an \emph{ancestor} of \(B\) and \(B\) is called a \emph{descendant} of \(A\).
+\end{definition}
+
+For example, in the figure \ref{fig:graphs}, \(C\) is an ancestor of \(B\).
+
+\begin{definition}
+A \emph{directed acyclic graph (DAG)} is a directed graph such that no directed path between any two nodes revisits a vertex.
+\end{definition}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 0.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (a) {A};
+\node[mynode,below right=of a] (b) {B};
+\node[mynode,above right=of b] (c) {C};
+
+\path (c) edge[-latex] (a)
+(a) edge[-latex] (b)
+(b) edge[-latex] (c);
+
+\end{tikzpicture}
+\captionof{figure}{Example of graph which isn't a DAG.}
+\label{fig:not_dag}
+\end{figure}
+
+As we can see in the figure \ref{fig:not_dag}, \(A \to B \to C \to A \to B\) is a
+path from \(A\) to \(B\) that revisits \(A\).
+
+Now where are going to define some relations between nodes in a DAG.
+
+\begin{definition}
+The \emph{parents} of a node \(A\) is the set of nodes \(B\) such that there is a
+directed edge from \(B\) to \(A\). The same applies for the \emph{children} of a node.
+
+The \emph{Markov blanket} of a node is composed by the node itself, its children, its parents and the parents
+of its children.
+\end{definition}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 0.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (a) {A};
+\node[mynode,below right=of a] (b) {B};
+\node[mynode,above right=of b] (c) {C};
+\node[mynode,below right=of b] (d) {D};
+\node[mynode,below left=of b] (e) {E};
+\node[mynode,above right=of d] (f) {F};
+\node[mynode, above right=of f] (h) {H};
+
+\path (c) edge[-latex] (a)
+(a) edge[-latex] (b)
+(b) edge[latex-] (c)
+(b) edge[-latex] (e)
+(c) edge[-latex] (f)
+(b) edge[-latex] (d)
+(f) edge[-latex] (d)
+(h) edge[-latex] (f)
+;
+
+\end{tikzpicture}
+\captionof{figure}{Directed acyclic graph}
+\label{fig:relations}
+\end{figure}
+
+\begin{definition}
+In a graph, the \emph{neighbors} of a node are those directly connected
+to it.
+\end{definition}
+
+We can use figure \ref{fig:relations} to reflect on these definitions. The parents
+of \(B\) are \(pa(B) = \{A,C\}\) and its children are \(ch(B) = \{E,D\}\). Taking this into account, its neighbors
+are \(ne(B) = \{A,C,E,D\}\) and its Markov blanket is \(\{A,B,C,D,E,F\}\).
