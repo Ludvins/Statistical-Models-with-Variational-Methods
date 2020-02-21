@@ -49,7 +49,7 @@ The triple \((\Omega, \mathcal{F}, P)\) is called a \emph{probability space}.
 
 \begin{definition}
 A function \(f:\Omega_1 \to \Omega_2\) between two
-measurable spaces is said to be \emph{measurable} if \(f^{-1}(\alpha) \in \mathcal{F}_1\) for every \(\alpha \in \mathcal{F}_2\).
+measurable spaces \((\Omega_1, \mathcal{F}_1)\) and \((\Omega_2, \mathcal{F}_2)\) is said to be \emph{measurable} if \(f^{-1}(\alpha) \in \mathcal{F}_1\) for every \(\alpha \in \mathcal{F}_2\).
 \end{definition}
 
 \begin{definition}
@@ -59,8 +59,11 @@ space \((\Omega, \mathcal{F}, P)\) to a measurable space \(E\).
 The probability of \(X\) taking a value on a measurable set \(S \subset E\) is
 written as
 \[
-P(X \in S) = P(\{a \in \Omega \ | \ X(a) \in S \}).
+P_X(S) = P(X \in S) = P(\{a \in \Omega \ | \ X(a) \in S \}).
 \]
+
+Where \(P_X\) is called the \emph{probability distribution} of the random
+variable \(X\).
 \end{definition}
 
 We will adopt the following notation from now on: random variables will be
@@ -71,8 +74,6 @@ We will denote by \(P(x)\) the probability of \(X\) taking a specific value.
 
 Also \(P(x \text{ or } y) = P(x \cup y)\) and \(P(x,y) = P(x \cap y)\).
 
-We will define some concepts regarding a joint distribution \(P(x,y)\), that is
-to say, the probability of both random variables \(x\) and \(y\).
 
 \begin{definition}
 The \emph{cumulative distribution function} of a random variable \(X\) is the
@@ -81,23 +82,27 @@ function given by:
 F_X (x) = P(X \leq x)
 \]
 where the right-hand side represents the probability of the random variable
-taking value below of equal to \(x\).
+taking value below or equal to \(x\).
 \end{definition}
 
 \begin{definition}
-When the image of a random variable \(X\) is countable, the random variable is called
+When the image of a random variable \(X\) is countable, the random variable it
+is called a
 \emph{discrete random variable}, its \emph{probability mass function} \(p\) gives the
 probability of it being equal to some value.
 \[
 p(x) = P(X = x)
 \]
 If the image is uncountable then \(X\) is called a \emph{continuous random
-  variable} and its \emph{probability density function} \(f\) is a non-negative
+  variable} and it's \emph{probability density function} \(f\) is a non-negative
 Lebesgue-integrable such that
 \[
 F_X(x) = P(X \leq x) = \int_{-\infty}^x f(u) du
 \]
 \end{definition}
+
+We will define some concepts regarding a joint probability \(P(x,y)\), that is
+to say, the probability of both random variables \(X\) and \(Y\).
 
 \begin{definition}
 A \emph{marginal distribution} \(P(x)\) of the joint distribution is the
@@ -179,5 +184,5 @@ conditionally independent, they are \emph{conditionally dependent} \(X \bigCD Y 
 
 \end{definition}
 
-Both independence definitions can be made over sets of variables \(\mathcal{X},
-\mathcal{Y}\) and \(\mathcal{Z}\).
+Both independence definitions can be made over sets of variables \(\bm{X},
+\bm{Y}\) and \(\bm{Z}\) in a straight forward way.

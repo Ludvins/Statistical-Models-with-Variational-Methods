@@ -34,11 +34,11 @@ If \(V\) is a set of ordered pairs then the graph is called a \emph{directed
 
 \begin{definition}
 In a directed graph \(G = (V, E)\), a \emph{directed path} \(A \to B\) is a sequence of vertices \({A = A_0,
-  A_1,\dots,A_{n-1}, A_n = B}\) where \((A_i, A_{i-1}) \in E \ \forall i \in
-0,\dots ,n\).
+  A_1,\dots,A_{n-1}, A_n = B}\) where \((A_i, A_{i+1}) \in E \ \forall i \in
+0,\dots ,n-1\).
 
-If \(G\) is a undirected graph, \(A \to B\) is an \emph{undirected path} if \(\forall i \in
-0,\dots, n, \ (A_i, A_{i-1}) \in E\) or  \((A_{i-1}, A_{i}) \in E\)
+If \(G\) is a undirected graph, \(A \to B\) is an \emph{undirected path} if \(\{A_i, A_{i+1}\} \in E \ \forall i \in
+0,\dots, n-1\)
 \end{definition}
 
 \begin{definition}
@@ -126,3 +126,4 @@ to it.
 We can use figure \ref{fig:relations} to reflect on these definitions. The parents
 of \(B\) are \(pa(B) = \{A,C\}\) and its children are \(ch(B) = \{E,D\}\). Taking this into account, its neighbors
 are \(ne(B) = \{A,C,E,D\}\) and its Markov blanket is \(\{A,B,C,D,E,F\}\).
+
