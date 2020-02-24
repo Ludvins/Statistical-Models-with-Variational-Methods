@@ -127,3 +127,12 @@ We can use figure \ref{fig:relations} to reflect on these definitions. The paren
 of \(B\) are \(pa(B) = \{A,C\}\) and its children are \(ch(B) = \{E,D\}\). Taking this into account, its neighbors
 are \(ne(B) = \{A,C,E,D\}\) and its Markov blanket is \(\{A,B,C,D,E,F\}\).
 
+\begin{definition}
+Let \(G\) be an undirected graph, a \emph{clique} is a maximally connected
+subset of vertices. That is, all the members of the clique are connected to each
+others and there is no bigger clique that constains another.
+
+Formally, \(S \subset V\) is a \emph{clique} if and only if \(\forall A,B \in S,
+\ \{A,B\} \in E\) and \(\nexists C \in V\backslash S\) such that \(\forall A \in
+S, \ \{A, C\} \in E \).
+\end{definition}

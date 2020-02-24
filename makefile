@@ -1,4 +1,4 @@
-main.pdf: main.tex titlepage.tex
+main.pdf: *.tex
 	pdflatex --shell-escape main.tex
 	bibtex main
 	pdflatex --shell-escape main.tex
