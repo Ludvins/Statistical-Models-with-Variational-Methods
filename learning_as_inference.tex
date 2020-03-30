@@ -1,0 +1,287 @@
+
+
+In Machine Learning and related fields, the distributions are not fully specified
+and need to be learned from the data.
+
+From now on, \(\mathcal{V}\) will denote the known data and \(\theta\) the set
+of parameters of the data distributions. The main task is to determine this set
+of parameters using the information given by the data.
+
+\begin{definition}
+\emph{Priors} and \emph{posteriors} typically refer to the parameter
+distribution before and after seeing the data, respectively. Using Bayes' rule
+\[
+  P(\theta \mid  \mathcal{V}) = \frac{P(\mathcal{V}  \mid  \theta)P(\theta)}{P(\mathcal{V})}
+\]
+The factor \(P(\mathcal{V} \mid \theta)\) is called the \emph{likelihood}.
+\end{definition}
+
+Let us see an example of our goal, in it we will try to learn the bias of a coin,
+given a set of tossing results.
+
+\begin{exampleth}
+  Let \(\{v_n\}_{n \in 0,\dots,N}\) be the results of tossing a coin \(N \in
+  \mathbb{N}\) times, let \(1\) symbolize \emph{heads} and \(0\) \emph{tails}.
+
+  Our objective is to estimate the probability \(\theta\) that the coin will be
+  head \(P(v_n = 1  \mid  \theta)\), for this we have the random variables \(v_1,\dots,v_n\)
+  and \(\theta\), and we require a model \(P(v_1,\dots,v_n,\theta)\). We are
+  considering the variables \(v_i\) to be independent to each others, we have a
+  Belief Network depicted in figure \ref{fig:learning_coin}
+  \[
+    P(v_1,\dots,v_n,\theta) = P(\theta)\prod_{n=1}^N P(v_n \mid \theta)
+  \]
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 0.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (a) {\(\theta\)};
+\node[mynode, below=of a] (b) {\(v_i\)};
+\plate{} {(b)} {\(N\)}; %
+\path (a) edge[-latex] (b)
+;
+
+\end{tikzpicture}
+\caption{Belief network for coin tossing}
+\label{fig:learning_coin}
+\end{figure}
+
+We want to calculate
+\[
+  P(\theta \mid v_1,\dots,v_n) = \frac{P(v_1,\dots,v_n \mid \theta)P(\theta)}{P(v_1,\dots,v_n)}
+\]
+to do so, we need to specify the prior \(P(\theta)\), we are using a discrete
+model where
+\[
+  P(\theta = 0.2) = 0.1 \hspace{2cm} P(\theta = 0.5) = 0.7 \hspace{2cm} P(\theta =
+  0.8) = 0.2
+\]
+This means that we have a \(70\%\) belief that the coin is fair, a \(10\%\)
+belied that is biased to tails and \(20\%\) that is biased to heads.
+Notice that \(P(v_n \mid \theta) = \theta\) if \(v_n = 1\) and \(P(v_n \mid \theta) = 1 - \theta\) if \(v_n = 0\).
+
+Let \(n_h\) be the number of heads in our observed data and \(n_t\)
+the number of tails
+
+\[
+  P(\theta  \mid  v_1,\dots,v_n) = \frac{P(\theta)}{P(\mathcal{V})} \theta^{n_h}(1-\theta)^{n_t}
+\]
+
+Suppose now that \(n_h = 2\) and \(n_t = 0.8\), then
+\begin{gather*}
+  P(\theta = 0.2  \mid  \mathcal{V}) = \frac{1}{P(\mathcal{V})}\times 0.1 \times 0.2^{2}
+  \times 0.8^{8} = \frac{1}{P(\mathcal{V})} \times 6.71\times10^{-4} \\
+   P(\theta = 0.5  \mid  \mathcal{V}) = \frac{1}{P(\mathcal{V})}\times 0.7 \times 0.5^{2}
+   \times 0.5^{8} = \frac{1}{P(\mathcal{V})} \times 6.83\times10^{-4}\\
+    P(\theta = 0.8  \mid  \mathcal{V}) = \frac{1}{P(\mathcal{V})}\times 0.2 \times 0.2^{2}
+  \times 0.8^{8} = \frac{1}{P(\mathcal{V})} \times 3.27\times10^{-7}
+\end{gather*}
+
+Now, we can compute
+\[
+   \frac{1}{P(\mathcal{V})} =  6.71\times10^{-4} +   6.83\times10^{-4} +
+   3.27\times10^{-7} = 0.00135
+ \]
+ So,
+\begin{gather*}
+  P(\theta = 0.2  \mid  \mathcal{V}) = 0.4979\\
+  P(\theta = 0.5  \mid  \mathcal{V}) = 0.5059\\
+  P(\theta = 0.8  \mid  \mathcal{V}) = 0.00024
+\end{gather*}
+
+These are the posterior parameter beliefs of our experiment. Given this, it we
+were to choose a single value for the posterior it would be \(\theta = 0.5\).
+This result is intuitive since, we had a strong belief of the coin being fair
+and even though the number of tails was quite bigger than heads, it
+was not enough to make the difference. Obviously the posterior of the coin being
+biased to tails is now bigger than the prior.
+
+Let us use an uniform prior distribution so that \(P(\theta) = k \implies \int_0^1 P(\theta) d\theta
+= k = 1\) due to normalization.
+
+Using the previous calculations we have
+\[
+  P(\theta \mid  \mathcal{V}) = \frac{1}{P(\mathcal{V})} \theta^{n_h}(1-\theta)^{n_t}
+\]
+where
+\[
+  P(\mathcal{V}) = \int_0^1 \theta^{n_h}(1-\theta)^{n_t} d\theta
+\]
+this implies that
+\[
+  P(\theta \mid \mathcal{V}) = \frac{\theta^{n_h}(1-\theta)^{n_t} }{ \int_0^1 u^{n_h}(1-u)^{n_t}
+    du}\equiv Beta(n_h + 1, n_t + 1)
+\]
+\end{exampleth}
+
+\begin{definition}
+If the posterior distribution is in the same probability distribution family as
+the prior distribution, they are then called \emph{conjugate distributions}, and
+the prior is called a \emph{conjugate prior} of the likelihood distribution.
+\end{definition}
+
+Let's use a Beta distribution as the prior in the last example
+
+\[
+  P(\theta) = \frac{1}{B(\alpha, \beta)}\theta^{\alpha - 1}(1 - \theta)^{\beta -
+    1} \equiv Beta(\alpha, \beta)
+\]
+then, repeating the same as before we get that
+\[
+  P(\theta, \mathcal{V}) = \frac{1}{B(\alpha + n_h, \beta + n_t)}\theta^{\alpha
+    + n_h - 1}(1 - \theta)^{\beta + n_t - 1} \equiv Beta(\alpha + n_h, \beta + n_t)
+\]
+
+So both the prior and posterior are Beta distributions, then the Beta
+distribution is called ``conjugate'' of the Binomial distribution.
+
+
+\section{Utility}
+
+The Bayesian posterior says nothing about how to summarize the beliefs it
+represents, in order to do this we need to specify the utility of each decision.
+
+With this idea we define an utility function over the parameters
+
+\[
+  U(\theta, \theta_{true}) = \alpha \mathbb{I}[\theta = \theta_{true}] - \beta
+  \mathbb{I}[\theta \neq \theta_{true}]
+\]
+where \(\theta_{true}\) symbolizes the true value of the parameter, and \(\alpha, \beta \in
+\R\).
+
+Then the expected utility of a parameter \(\theta_0\) is calculated as
+\[
+  U(\theta = \theta_0) = \sum_{\theta_{true}}U(\theta = \theta_0,
+  \theta_{true})P(\theta = \theta_{true}  \mid  \mathcal{V})
+\]
+
+Using the last example, we may define out utility function as
+\[
+  U(\theta, \theta_{true}) = 10 \mathbb{I}[\theta = \theta_{true}] - 20
+  \mathbb{I}[\theta \neq \theta_{true}]
+\]
+
+so the expected utility of the decision that the parameter is \(\theta = 0.2\)
+is
+\[
+  \begin{aligned}
+  U(\theta = 0.2) &= U(\theta = 0.2, \theta_{true} = 0.2)P(\theta_{true} = 0.2  \mid
+  \mathcal{V})\\
+  &+ U(\theta = 0.2, \theta_{true} = 0.5)P(\theta_{true} = 0.5  \mid
+  \mathcal{V}) \\
+  & +  U(\theta = 0.2, \theta_{true} = 0.8)P(\theta_{true} = 0.8  \mid  \mathcal{V})
+\end{aligned}
+\]
+
+
+\section{Maximum A Posteriori and Maximum Likelihood}
+
+The posterior reflects our beliefs about the full range of probabilities, but we
+may want to summarize all this information, even though, we may lose loads of it.
+
+\begin{definition}
+  Maximum Likelihood is calculated as
+  \[
+    \theta^{ML} = \argmax_\theta p(\mathcal{V} \mid \theta)
+  \]
+   it refers to the value of the parameter
+\(\theta\) for which the observed data better fits the model.
+\end{definition}
+
+\begin{definition}
+  Maximum A Posteriori is calculated as
+  \[
+    \theta^{MAP} = \argmax_\theta p(\mathcal{V} \mid \theta)P(\theta)
+  \]
+\end{definition}
+
+The decision of taking the Maximum A Posteriori can be motivated using an
+utility that equals zero for all but the correct parameter
+\[
+  U(\theta, \theta_{true}) = \mathbb{I}[\theta = \theta_{true}]
+\]
+
+using this, the expected utility of a parameter \(\theta = \theta_0\) is
+
+\[
+  U(\theta = \theta_0) = \sum_{\theta_{true}}\mathbb{I}[\theta_{true} = \theta_0]P(\theta = \theta_{true}  \mid  \mathcal{V}) = P(\theta_0  \mid  \mathcal{V})
+\]
+
+This means that the maximum utility decision is to take the value \(\theta_0\)
+with the highest posterior value.
+
+
+It is worth mentioning that when using a flat prior \(\theta^{ML}
+= \theta ^{MAP}\).
+
+
+Let \(\{x_1, \dots, x_m\}\) be a set of discrete variables, we can define the
+empirical distribution as a distribution of the variables whose mass probability
+function is
+\[
+  Q(x) = \frac{1}{m}\sum_{i = 1}^m \mathbb{I}[x = x_i]
+\]
+
+Now, we are going to show the relation between the Maximum Likelihood and the
+Kullback-Leibler divergence of the empirical distribution and our model. We may calculate this Kullback-Leibler divergence and study their functional independence.
+
+\[
+  KL(Q \mid P) = \E[\log(Q(x))]_{Q} - \E[\log(P(x))]_Q
+\]
+
+Notice the term \(\E[\log(Q(x))]_{Q} \) is a constant and assume the data is i.i.d, so that
+\[
+   \E[\log(P(x))]_Q = \frac{1}{m}\sum_{i = 1}^mlogP(x_i)
+ \]
+ where the right side is the log likelihood under \(P(x)\). As the logarithm is
+ a strictly increasing function, maximizing the log likelihood equals to
+ maximize the likelihood itself, and we can see here how it is equivalent to
+ minimize the Kullback-Leibler divergence between the empirical distribution and
+ our distribution.
+
+ In case \(P(x)\) is unconstrained, the optimal choice is \(P(x) = Q(x)\), that
+ is, the maximum likelihood distribution corresponds to the empirical distribution.
+
+ For a Belief Network \(P(x)\) presents the following constraint
+ \[
+   P(x) = \prod_{i = 1}^K P(x_i  \mid  pa(x_i))
+ \]
+ We now want to minimize the Kullback-Leibler divergence between the empirical
+ distribution \(Q(x)\) and \(P(x)\) in order to get the Maximum Likelihood.
+
+ \[
+   \begin{aligned}
+   KL(Q \mid P) &= - \E\big[\sum_{i = 1}^K\log{P(x_i \mid pa(x_i))}\big]_Q +
+   \E\big[\sum_{i = 1}^K\log{P(x_i \mid pa(x_i))}\big]_P
+   \\ &= - \sum_{i =
+     1}^K \E\big[\log{P(x_i \mid pa(x_i))}\big]_Q + \sum_{i =
+     1}^K \E\big[\log{P(x_i \mid pa(x_i))}\big]_P
+   \end{aligned}
+ \]
+ We can now use that \(\log{P(x_i \mid pa(x_i))}\) only depends on
+ \(Q(x_i  \mid  pa(x_i))\) to rewrite it as
+
+ \[
+   \begin{aligned}
+     KL(Q \mid P) &= \sum_{i = 1}^K \E\Big[ \log{Q(x_i \mid pa(x_i))}\Big]_{Q(x_i,pa(x_i))} - \E\Big[
+     \log{P(x_i \mid pa(x_i))}\Big]_{Q(x_i,pa(x_i))} \\
+     &= \sum_{i = 1}^K \E \Big[ KL\Big(Q(x_i \mid pa(x_i)) \mid P(x_i \mid pa(x_i))\Big) \Big]_{Q(x_i,pa(x_i))}
+   \end{aligned}
+ \]
+
+ The minimal setting is then
+ \[
+   P(x_i \mid pa(x_i)) = Q(x_i \mid pa(x_i))
+ \]
+ in terms of the initial data it is to set \(P(x_i \mid pa(x_i))\) to the number of
+ times the state appears in it.
+
+ \section{Bayesian Belief Network Training}
+
+A Bayesian approach where we set a distribution over the parameters is an
+alternative to ML training of a Bayesian Network.

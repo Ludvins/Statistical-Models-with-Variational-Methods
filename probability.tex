@@ -29,21 +29,20 @@ A \emph{probability} \(P\) over \((\Omega, \mathcal{F})\) is a mapping
   \[
   P\big(\bigcup_{i\in \mathbb{N}}\alpha_i\big) = \sum_{i\in \mathbb{N}}P(\alpha_i).
   \]
-\item For any sequence {\(\{\alpha_n\}_{n \in \mathbb{N}}\)} such that \(\alpha_i \subset
-  \alpha_{i+1} \ \forall i \in \mathbb{N}\) and \(\alpha_n
-  \xrightarrow{n \to \infty} \Omega\), then
-  \[P(\alpha_n)
-  \xrightarrow{n \to \infty} P(\Omega) = 1.\]
 \end{itemize}
 \end{definition}
 
 The first condition guarantees non negativity. The second one states that the
-\emph{trivial event} has the maximal possible probability of 1. The third condition implies that given two mutually disjoint events,
+\emph{trivial event} has the maximal possible probability of 1.
+The third condition implies that given a set of pairwise disjoint events,
 the probability of either one of them occurring is equal to the sum of the
-probabilities of each one. The last condition sets an upper semi-continuity.
+probabilities of each one.
 
-From these conditions it follows that \(P(\emptyset) = 0\) and \(P(\alpha \cup \beta)
-= P(\alpha) + P(\beta) - P(\alpha \cap \beta)\).
+From these conditions it follows that
+\begin{itemize}
+\item \(P(\emptyset) = 0\)
+\item \(P(\alpha \cup \beta) = P(\alpha) + P(\beta) - P(\alpha \cap \beta)\)
+\end{itemize}
 
 The triple \((\Omega, \mathcal{F}, P)\) is called a \emph{probability space}.
 
@@ -61,19 +60,31 @@ written as
 \[
 P_X(S) = P(X \in S) = P(\{a \in \Omega \ | \ X(a) \in S \}).
 \]
-
-Where \(P_X\) is called the \emph{probability distribution} of the random
-variable \(X\).
 \end{definition}
 
-We will adopt the following notation from now on: random variables will be
+We could make a question like ``How likely is that the value of \(X\) equals
+\(a\)?''. This is the same as asking for the probability of the set \(\{\omega
+\in \Omega \ | \ X(w) = a\}\).
+
+We define the \emph{probability distribution} of
+an experiment as a function that provides the probability
+of occurrence of the different events in \(\Omega\). With this, if  \(X\) is used to denote the outcome of the experiment, the probability
+distribution of \(X\) would be a function that gives the probability of every
+state of \(X\). With this approach, we use the random variable \(X\) to
+``push-forward'' the probability \(P\) on \(\Omega\) to a probability \(P_X\) in
+the measurable space \(E\). Typically, this
+measurable space is the set of real numbers \(\mathbb{R}\) along with Borel's
+\(\sigma\)-algebra \(\mathcal{B}\).
+
+The probability distribution of a random variable is typically described by the \emph{probability
+  mass function} or the \emph{probability density function}, depending on
+whether \(X\) is discrete or not. We will define this concepts after setting the
+notation that is going to be used, that is: random variables will be
 denoted with an upper case letter like \(X\) and a set of variables with a
-bold symbol like \(\bm{X}\) The meaning of \(P(state)\) will be clear without a reference to the variable.
+bold symbol like \(\bm{X}\). The meaning of \(P(state)\) will be clear without a reference to the variable.
 Otherwise \(P(X = state)\) will be used.
-We will denote by \(P(x)\) the probability of \(X\) taking a specific value.
-
-Also \(P(x \text{ or } y) = P(x \cup y)\) and \(P(x,y) = P(x \cap y)\).
-
+Using a lower case letter like \(P(x)\) will denote the probability of the
+corresponding upper case variable \(X\) taking a specific value.
 
 \begin{definition}
 The \emph{cumulative distribution function} of a random variable \(X\) is the
@@ -94,47 +105,106 @@ probability of it being equal to some value.
 p(x) = P(X = x)
 \]
 If the image is uncountable then \(X\) is called a \emph{continuous random
-  variable} and it's \emph{probability density function} \(f\) is a non-negative
+  variable} and its \emph{probability density function} \(f\) is a non-negative
 Lebesgue-integrable such that
 \[
 F_X(x) = P(X \leq x) = \int_{-\infty}^x f(u) du
 \]
 \end{definition}
 
-We will define some concepts regarding a joint probability \(P(x,y)\), that is
-to say, the probability of both random variables \(X\) and \(Y\).
 
 \begin{definition}
-A \emph{marginal distribution} \(P(x)\) of the joint distribution is the
-distribution of a single variable given by
+  A \emph{multivariate random variable} or \emph{random vector} is a column vector \(\bm{X} =
+  (X_1,\dots,X_n)^T\) whose components are real-valued random variables on the
+  same probability space.
+
+  Note that we use the same symbol \(\bm{X}\) for random vectors and sets of
+  variables, but the meaning will be clear within the context.
+\end{definition}
+
+Now we are going to define some concepts over events \(\alpha, \beta \in \mathcal{F}\), then we will set those
+over random variables and their distributions.
+
+\begin{itemize}
+\item The \emph{joint probability} \(P(\alpha, \beta)\) the probability of both
+  events occurring.
+\item The \emph{marginal probability} \(P(\alpha)\) is the probability of occurring
+\(\alpha\) irrespective of the other event.
+\item The \emph{conditional
+  probability} \(P(\alpha | \beta)\) is the probability of occurring \(\alpha\)
+given \(\beta\).
+\end{itemize}
+
+Let's illustrate this with a simple example.
+
+\begin{exampleth}
+  Suppose \(\Omega\) is the set of outcomes of rolling a dice, that is \(\Omega
+  = \{1, 2, 3, 4, 5, 6\}\). We define \(\alpha = \{2, 4, 6\}\) and
+  \(\beta = \{4, 5\}\). Then the joint probability is \(P(\{4\}) =
+  1/6\), the marginal probability \(P(\alpha) = 3/6\) is easy to calculate as we
+  can do it straight-forward, but if we couldn't, we should use the joint
+  probability.
+  We said that the marginal \(P(\alpha)\) is the probability of \(\alpha\)
+  irrespective of \(\beta\). Then, we can calculate it as the probability of
+  occurring both \(P(\alpha, \beta)\) plus the probability of occurring
+  \(\alpha\) and not \(\beta\) \(P(\alpha, \{1,2,3,6\})\).
+
+  The conditional probability \(P(\alpha | \beta)\) forces the outcome to be
+  either \(4\) or \(5\), and the only option for it to be in
+  \(\alpha\) is that it is \(4\), then \(P(\alpha | \beta) = 0.5\).
+\end{exampleth}
+
+\begin{definition}
+  Let \(\bm{X} = \{X_1, X_2,\dots,X_n\}\) be a set of random variables, the
+  \emph{joint probability distribution} for \(\bm{X}\) is function that gives the probability of each random variable \(X_i\)
+  falling in a particular range or discrete set of values for that variable. It is
+  called a \emph{multivariate distribution}.
+
+  When using only two random variables, then is called a \emph{bivariate
+    distribution}.
+
+  This distribution can be expressed in terms of a joint cumulative distribution
+  function
+  \[
+F_{\bm{X}}(\bm{x}) = F_{X_1,\dots,X_n}(x_1,\dots,x_n) = P(X_1 \leq x_1, \dots,
+X_n \leq x_n) \footnote{Where \(\bm{x} = (x_1,\dots,x_n)\)}
+\]
+or using a probability density function (all variables must be continuous) or a
+probability mass function (all variables must be discrete).
+\end{definition}
+
+\begin{definition}
+  The \emph{marginal distribution} of a subset of random variables is the
+  probability distribution of the variables contained in that subset.
+\end{definition}
+
+Let \(X, Y\) be two random variables, it follows that\footnote{Using both
+  continuous and discrete notation}
 \[
 P(x) = \sum_y P(x,y) \hspace{2cm} P(x) = \int_y P(x,y)
 \]
-\end{definition}
-
-We can understand this as the probability of an event irrespective of the outcome
-of the other variable.
 
 \begin{definition}
-The \emph{conditional probability} of \(X\) given \(Y\) is defined as
-
-\[
-P(x|y) = \frac{P(x,y)}{P(y)}
-\]
-
-If \(P(y) = 0\) then it is not defined.
+The \emph{conditional probability} of a subset of random variables is the
+probability distribution of them when the rest of the variables are known to be
+a particular value.
 \end{definition}
 
-With this definition the
-conditional probability is the probability of one event occurring in the presence of a
-second event. \\
 
 \begin{theorem}
-  \textbf{(Bayes' theorem)}. Given two random variables \(X,Y\), then
+  \textbf{(Bayes' theorem)}. Let \(\alpha, \beta\) be two events of an
+  experiment, given that \(P(\beta) \neq 0\). Then
+  \[
+  P(\alpha|\beta)= \frac{P(\beta|\alpha)P(\alpha)}{P(\beta)}
+\]
+
+We can extend this theorem to a pair of random variables \(X, Y\) as
   \[
   P(x|y)= \frac{P(y|x)P(x)}{P(y)}
-  \]
+\]
 \end{theorem}
+
+
 
 \begin{exampleth}
 Consider a study where the relation of a disease \(d\) and an habit \(h\)
@@ -152,18 +222,6 @@ desease. This means that the relation between having the desease and the habit
 is stronger now compared with the case where more people had the habit.
 \end{exampleth}
 
-Now suppose we have some observed data \(\mathcal{D}\) and we want to learn about
-a set of parameters \(\theta\). Using Bayes' rule we got that
-
-\[
-P(\theta|\mathcal{D}) = \frac{P(\mathcal{D}|\theta)P(\theta)}{P(\mathcal{D})} =
-\frac{P(\mathcal{D}|\theta)P(\theta)}{ \int_{\theta} P(\mathcal{D}|\theta)P(\theta)}
-\]
-
-This shows how from a \emph{generative model} \(P(\mathcal{D}|\theta)\) of the dataset
-and a \emph{prior} belief \(P(\theta)\), we can infer the \emph{posterior} distribution
-\(P(\theta|\mathcal{D})\). \\
-
 \begin{definition}
 We say that two random variables \(X\) and \(Y\) are \emph{independent} if knowing one of them doesn't give any extra information about the other. Mathematically,
 \[
@@ -179,10 +237,29 @@ Let \(X,Y\) and \(Z\) be three random variables, then \(X\) and \(Y\) are
 \[
 P(x,y | z) = P(x|z)P(y|z)
 \]
-in that case we will denote \(X \bigCI Y \mid Z\). If \(X\) and \(Y\) aren't
+in that case we will denote \(X \bigCI Y \mid Z\). If \(X\) and \(Y\) are not
 conditionally independent, they are \emph{conditionally dependent} \(X \bigCD Y \mid Z\)
 
 \end{definition}
 
 Both independence definitions can be made over sets of variables \(\bm{X},
 \bm{Y}\) and \(\bm{Z}\) in a straight forward way.
+
+
+\begin{definition}
+  We say that a set of \(n\) random variables \(\{X_1,\dots,X_n\}\) defined to
+  assume values in \(I \subset \R\) are
+  \emph{independent and identically distributed (i.i.d)}
+  if and only if they are independent
+  \[
+    F_{X_1,\dots,X_n}(x_1,\dots,x_n) = F_{X_1}(x_1)\dots F_{X_n}(x_n) \ \forall
+    x_1,\dots,x_n \in I
+  \]
+  and are identically distributed
+  \[
+    F_{X_1}(x_1) = F_{X_k}(x_k) \ \forall k \in \{2,\dots,n\} \text{ and } \forall x
+    \in I
+  \]
+
+
+\end{definition}

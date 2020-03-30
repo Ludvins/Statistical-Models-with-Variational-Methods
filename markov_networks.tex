@@ -1,0 +1,75 @@
+
+
+\begin{definition}
+A \emph{potential} \(\phi\) is a non-negative function. It is worth to mention
+that a probability distribution is a special case of a potential.
+\end{definition}
+
+\begin{definition}
+Let \(\bm{X}\) be a set of random variables, \(G\) an undirected graph,
+\(\bm{X}_c, c \in \{1,\dots,C\}\) be the maximal cliques of \(G\) and \(P\) a
+probability distribution over \(\bm{X}\). The pair \((G,
+P)\) is said to be a \emph{Markov network or Markov random field} if, and only if
+\[
+P(x_1,\dots,x_n) = \frac{1}{Z}\prod_{ c = 1 }^{C}\phi_c(\bm{X}_c)
+\]
+where \(Z\) is a constant that ensures normalization.
+\end{definition}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 1.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (1) {\(X_1\)};
+\node[mynode,right=of 1] (2) {\(X_2\)};
+\node[mynode,below=of 1] (3) {\(X_3\)};
+\node[mynode,right=of 3] (4) {\(X_4\)};
+\path (1) edge (2)
+(1) edge (3)
+(2) edge (3)
+(2) edge (4)
+(1) edge (4)
+;
+\end{tikzpicture}
+\captionof{figure}{Markov Network \(P(x_1, x_2, x_3, x_4) = \phi(x_1, x_2,
+  x_3)\phi(x_2, x_3, x_4)/Z\)}
+\label{fig:mn_example}
+\end{figure}
+
+
+In figure \ref{fig:mn_example} we can see an example of the factorization, without
+  giving any reference of the potentials.
+
+  Let \((G,P)\) be a Markov network, then it satisfies the following properties
+  known as Markov properties:
+  \begin{itemize}
+  \item Pairwise Markov property. Any two non-adjacent variables are
+    conditionally independent given all other variables.
+  \item Local Markov property. A variable is conditionally independent over all
+    other variables given it's neighbors. That is,
+        \[
+      P(x_i | x_{\backslash i}) = p(x_i | ne(x_i)) \footnote{\(X_{\backslash i} =
+        \{X_j \ | \ j \neq i\} \subset \bm{X} \) }
+    \]
+  \item Global Markov property. Any two subsets of variables are conditionally
+    independent given a separating subset (any path from one set to the other
+    passes trough this one).
+  \end{itemize}
+
+  \begin{remark}
+    A Markov network can also be defined as a pair \((G, P)\) such as all Markov
+    properties are satisfied. The clique factorization definition is a special
+    case of these properties.
+  \end{remark}
+
+
+  \begin{definition}
+    Let \(G\) be an undirected graph and \(P\) a probability distribution over a
+    set of random variables \(\bm{X}\). The pair \((G, P)\) is called a Markov
+    Random Field if and only if it follows the local Markov Property.
+
+
+  \end{definition}

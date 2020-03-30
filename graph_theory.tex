@@ -127,6 +127,19 @@ We can use figure \ref{fig:relations} to reflect on these definitions. The paren
 of \(B\) are \(pa(B) = \{A,C\}\) and its children are \(ch(B) = \{E,D\}\). Taking this into account, its neighbors
 are \(ne(B) = \{A,C,E,D\}\) and its Markov blanket is \(\{A,B,C,D,E,F\}\).
 
+\begin{definition} Let \(G\) be a DAG, \(U\) be a path between two vertex and \(A \in U\)
+  \begin{itemize}
+  \item \( A \) is called a \emph{collider} if \(\forall B \in ne(A)\cap U, (B,A)\in
+    E\).
+  \item \( A \) is called a \emph{fork} if \(\forall B \in ne(A) \cap U, (A,B)\in
+    E\).
+  \end{itemize}
+  Notice, a vertex can be a collider for a path but not for others.
+
+  For example in figure \ref{fig:relations}, \(D\) is a collider and \( C \) is
+  a fork.
+\end{definition}
+
 \begin{definition}
 Let \(G\) be an undirected graph, a \emph{clique} is a maximally connected
 subset of vertices. That is, all the members of the clique are connected to each

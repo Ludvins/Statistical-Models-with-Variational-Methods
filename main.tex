@@ -49,6 +49,10 @@
 \usepackage{todonotes}
 \usepackage{centernot}
 \usetikzlibrary{positioning}
+\usetikzlibrary{bayesnet}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 % Plantilla classicthesis
 \usepackage[beramono,eulerchapternumbers,linedheaders,parts,a5paper,dottedtoc,
 manychapters,pdfspacing]{classicthesis}
@@ -63,6 +67,9 @@ manychapters,pdfspacing]{classicthesis}
 \setlength{\parindent}{0pt}
 \usepackage{parskip}
 
+% Todo notes
+\usepackage{todonotes}
+\let\marginpar\oldmarginpar
 % Profundidad de la tabla de contenidos.
 \setcounter{secnumdepth}{3}
 
@@ -116,9 +123,14 @@ Some introduction about how important Variational methods are nowadays and what 
 
 \input{probability}
 
+\chapter{Distributions}
+
+\input{distributions}
+
 \chapter{Graph Theory}
 
 \input{graph_theory}
+
 
 \ctparttext{
   \color{black}
@@ -139,9 +151,22 @@ factorization of the distribution that they include.  \end{center}
 
 \input{bayesian_networks}
 
-\chapter{Markov Networks}
+\chapter{Markov Random Fields}
 
 \input{markov_networks}
+
+
+\ctparttext{
+  \color{black}
+  \begin{center}
+
+  \end{center}
+}
+\part{Name this part}
+
+\chapter{Learning as Inference}
+
+\input{learning_as_inference}
 
 \clearpage
 Cites so the references appear (testing) \cite{koller_friedman,barber,wainwright}

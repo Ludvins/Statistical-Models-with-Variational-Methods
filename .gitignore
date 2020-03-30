@@ -1,5 +1,4 @@
 .auctex-auto/
-*.tex
 *.sty
 *.bbl
 *.png
@@ -9,3 +8,5 @@
 *.out
 *.toc
 *.pdf
+macros.tex
+classicthesis-config.tex

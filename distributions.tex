@@ -1,0 +1,259 @@
+
+
+In this section we will summarize some concepts concerning probability
+distributions among with some of the most used ones.
+
+From now on, let \(X\) be a random variable and \(P\) its probability distribution.
+
+\begin{definition}
+  The \emph{mode} \(X_*\) of the probability distribution \(P\) is the state
+  of \(X\) where the distribution takes it's highest value
+  \[
+X_* = \argmax_x P(x)
+\]
+A distribution could have more than one mode, in this case we say it is \emph{multi-modal}.
+\end{definition}
+
+\begin{definition}
+  The notation \(\mathbb{E}[X]\) is used to denote the \emph{average} or
+  \emph{expectation} of the values the variable takes respect to its
+  distribution.
+  If \(X\) is non-negative, it is defined as
+  \[
+    \mathbb{E}[X] = \int_{\Omega} X(\omega)dP(\omega) \footnote{\(P\) is a
+      measure over \(\Omega\)}
+  \]
+  For a general variable X it is defined as \(\mathbb{E}[X] = \mathbb{E}[X^+] -
+  \mathbb{E}[X^-]\)
+
+  Suppose now that \(X\) is a real-valued random variable, in case it is also
+  continuous
+\[
+\mathbb{E}[X] =  \int_{-\infty}^{+\infty} x f(x) dx
+\]
+and if it is discrete, let \(x_i\) be the values \(X\) can take
+\[
+\mathbb{E}[X] =  \sum_{i = 1}^{+\infty} x_i p(x_i) dx
+\]
+
+
+Let \(g:\mathbb{R} \to \mathbb{R}\) be a measurable function, then \(g \circ X\)
+is another random variable and we can talk about \(\mathbb{E}[g(X)]\), so in
+case \(X\) is continuous, we have that
+\[
+\mathbb{E}[g(X)] =  \int_{-\infty}^{+\infty} g(x) f(x) dx
+\]
+\end{definition}
+
+
+\begin{definition}
+  We define the \(k^{th}\) moment of a distribution as the average of \(X^k\)
+  over the distribution
+  \[
+    \mu_k = \mathbb{E}[X^k]
+  \]
+  For \(k = 1\) it is typically denoted as \(\mu\).
+\end{definition}
+
+
+\begin{definition}
+  The \emph{variance} of a distribution is defined as
+  \[
+    Var(X) = \sigma^2 = \mathbb{E}[(X - \mathbb{E}[X])^2] = \mathbb{E}[X]^2 - \mathbb{E}[X^2]
+  \]
+
+  The square root of the variance \(\sigma\) is called the \emph{standard deviation}.
+\end{definition}
+
+When using a multivariate distribution \(\bm{X} = (X_1,\dots,X_n)^T\) we can talk about the \emph{covariance
+  matrix} \(\bSigma \) whose elements are
+
+\[
+\begin{aligned}
+\bSigma_{ij} &= \mathbb{E}[ (X_i - \mathbb{E}[X_i])
+(X_j - \mathbb{E}[X_j]) ] = \mathbb{E}[(X_i - \mu_i)(X_j - \mu_j)]\\
+&=\mathbb{E}[X_iX_j]-\mathbb{E}[X_i]\mathbb{E}[X_j]
+\end{aligned}
+\]
+
+The following result will be helpful later on
+
+\begin{proposition}
+  Let \(\{X_1,\dots,X_n\}\) be a set of random variables and \(P\) their joint
+  probability distribution.
+  It follows that the expectation of a function \(f\) on a subset of the
+  variables \(\mathcal{X}_0 \subset \mathcal{X} = \{X_1,\dots,X_n\}\), verifies
+    \[
+      \E[f(\mathcal{X}_0)]_{P(\mathcal{X})} = \E[f(\mathcal{X}_0)]_{P(\mathcal{X}_0)}
+    \]
+
+    that is, we only need to know the marginal distribution of the subset in
+    order to carry out the average.
+\end{proposition}
+
+
+We are going to discuss now some examples of probability distributions that are
+going to be used from now on.
+
+\section{Discrete Distributions}
+
+\subsection{Bernoulli distribution}
+
+The Bernoulli distribution describes a discrete binary variable \(X\) that takes
+the value 1 with probability \(p\) and the value 0 with probability \(1-p\).
+\[
+  p(x) =
+\left\{
+  \begin{array}{ll}
+    p  & \mbox{if } x = 1 \\
+    1-p & \mbox{if } x = 0
+  \end{array}
+\right.
+\]
+
+
+\subsection{Binomial distribution}
+
+The binomial distribution describes the number of successes in a sequence of
+independent Bernoulli Trials. A discrete binary random variable \(X\) follows a
+\emph{binomial distribution} of parameters \(n \in \mathbb{N}\) and \(p \in
+[0,1]\), denoted as \(X \sim B(n, p)\) if and only if
+\[
+  P(x = k) = \binom{n}{k}p^k(1-p)^{n-k}
+\]
+
+
+\section{Continuous Distributions}
+
+\subsection{Univariate Normal distribution}
+
+The \emph{normal} or \emph{Gaussian distribution} is a type of continuous
+probability distribution for real-valued random variables.
+
+\begin{definition}
+  We say the real valued random variable \(X\) follows a \emph{normal distribution} of
+  parameters \(\mu, \sigma \in \mathbb{R}\), denoted as \(X \sim N(\mu,
+  \sigma)\) if and only if, its probability density function exists and is
+  \[
+    f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{1}{2}\big(\frac{x-\mu}{\sigma} \big)^2}
+  \]
+
+  The parameter \(\mu\) is the mean or expectation of the distribution and
+  \(\sigma\) is its standard deviation.
+
+\end{definition}
+
+The simplest case of a normal distribution is known as \emph{standard normal
+  distribution}, denoted as \(Z\). It is a special case where \(\mu = 0\) and \(\sigma = 1\), then
+its density function is
+\[
+  f(x) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}x^2}
+\]
+
+One of the properties of the normal distribution is that if \(X \sim N(\mu, \sigma)\), \(a,b \in \mathbb{R}\) and \(f:\mathbb{R} \to \mathbb{R}\) be defined
+as \(f(x) = ax + b\), then \(f(X) \sim N(\mu + b, a^2 \sigma)\)
+
+\subsection{Multivariate Normal Distribution}
+
+This distribution plays a fundamental role in this project so we will discuss
+its properties in more detail.
+
+This distribution is an extension of the uni-variate one when having a
+multivariate random variable.
+
+\begin{definition}
+We say that a random vector \(\bm{X} = (X_1,\dots,X_p)\) follows a \emph{multivariate normal
+  distribution} of parameters \(\bm{\mu} \in \mathbb{R}^p\) and \(\bm{\Sigma}
+\in \mathbb{M}_n(\mathbb{R})\), denoted as \(\bm{X} \sim N(\bm{\mu},
+\bm{\Sigma})\) if and only if its probability density function is
+
+\[
+  f(\bm{x}) = \frac{1}{\sqrt{det(2\pi \bm{\Sigma})}}e^{-\frac{1}{2}(\bm{x} - \bm{\mu})^T\bm{\Sigma}^{-1}(\bm{x}-\bm{\mu})}
+\]
+
+Where \(\bm{\mu}\) is the mean vector of the distribution, and \(\bm{\Sigma}\)
+the covariance matrix. The inverse matrix \(\bm{\sigma}^{-1}\) is called \emph{precision}.
+It also satisfies that
+\[
+\bm{\mu} = \mathbb{E}[\bm{X}] \hspace{2cm} \bSigma = \E[(\bx - \bmu)(\bx - \bmu)^T]
+\]
+
+As \(\bSigma\) is a real symmetric matrix, it can be eigendecomposed
+\[
+  \bSigma = \bm{E}\bm{\Delta}\bm{E}^T
+\]
+where \(\bm{E}^T\bm{E} = \bm{I}\) and \(\bm{\Delta} =
+diag(\lambda_1,\dots,\lambda_n)\).
+
+Using the transformation
+\[
+  \bm{y} = \bm{\Delta}^{\frac{1}{2}}\bm{E}^T(\bx - \bmu)
+\]
+we get that
+
+\[
+  (\bx - \bmu)^T\bSigma(\bx - \bmu) = \bm{y}^T\bm{y}
+\]
+
+Using this, the multivariate Normal Distribution reduces to a product of \(n\)
+univariate standard normal distributions.
+
+\todo[inline]{TODO: Add more properties as they are needed}
+
+\end{definition}
+
+\subsection{Beta Distrbution}
+
+Another continuous distribution that we are going to use is the \emph{Beta
+  distribution}.
+
+\begin{definition}
+We say that a continuous random variable \(X\) defined on the
+interval \([0,1]\) follows a \emph{Beta distribution} of parameters \(\alpha,
+\beta > 0\), denoted as \(X \sim Beta(\alpha, \beta)\) if and only if its
+density function is
+
+\[
+  f(x) = \frac{1}{B(\alpha, \beta)}x^{\alpha - 1}(1-x)^{\beta -1}
+\]
+where \(B(\alpha, \beta)\) is the \emph{beta function} defined as
+\[
+  B(\alpha, \beta) = \int_0^1 x^{\alpha - 1}(1-x)^{\beta -1} dx
+\]
+
+\end{definition}
+
+\section{Kullback-Leibler Divergence}
+
+\begin{definition}
+  Let \(P\) and \(Q\) be two probability distributions over the same set of
+  random variables \(\bm{X}\), the \emph{Kullback-Leibler divergence}
+  \(KL(Q|P)\) measures the `difference' between both distributions as
+  \[
+    KL(Q|P) = \mathbb{E}[\log Q(x) - \log P(x)]_Q
+  \]
+\end{definition}
+
+\begin{proposition}
+The Kullback-Leibler divergence is always non-negative.
+\end{proposition}
+\begin{proof}
+  As the logarithm is bounded by \(x - 1\), we can bound \(\log{\frac{P(x)}{Q(x)}}\)
+  \[
+    \log{x} \leq x - 1 \implies \frac{P(x)}{Q(x)} - 1 \geq \log{\frac{P(x)}{Q(x)}}
+  \]
+
+  Since probabilities are non-negative, we can multiply by \(Q(x)\)
+  \[
+    P(x) - Q(x) \geq Q(x) \log{P(x)} - Q(x) \log{Q(x)}
+  \]
+  Now we integrate (sum in case of discrete variables) both sides
+
+  \[
+    0 \geq \mathbb{E}[\log{P(x)} - \log{Q(x)}]_Q \implies \mathbb{E}[\log{Q(x)}
+    - \log{P(x)}]_Q \geq 0
+  \]
+\end{proof}
+As a result, the Kullback-Leibler divergence is \(0\) if and only if the two
+distributions are equal almost everywhere.
+
