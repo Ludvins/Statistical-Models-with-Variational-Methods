@@ -47,39 +47,87 @@ From these conditions it follows that
 The triple \((\Omega, \mathcal{F}, P)\) is called a \emph{probability space}.
 
 \begin{definition}
+  Given two events \(\alpha, \beta \in \mathcal{F}\), with \(P(\beta) \neq 0\),
+  the conditional probability of \(\alpha\) given \(\beta\) is defined as the
+  quotient of the probability of the joint events and the probability of
+  \(\beta\):
+  \[
+    P(\alpha \mid \beta) = \frac{P(\alpha \cap \beta)}{P(\beta)}
+  \]
+\end{definition}
+
+
+
+\begin{theorem}
+  \textbf{(Bayes' theorem)}. Let \(\alpha, \beta\) be two events of an
+  experiment, given that \(P(\beta) \neq 0\). Then
+  \[
+  P(\alpha \mid \beta)= \frac{P(\beta \mid \alpha)P(\alpha)}{P(\beta)}
+\]
+\end{theorem}
+
+
+
+\begin{exampleth}
+Consider a study where the relation of a disease \(d\) and an habit \(h\)
+is being investigated. Suppose that \(P(d)=10^{-5}\), \(P(h)=0.5\) and \(P(h\mid d) = 0.9\). What is the
+probability that a person with habit \(h\) will have the disease \(d\)?
+
+\[
+P(d \mid h) = \frac{P(d \cap h)}{P(h)} = \frac{P(h \mid d)P(d)}{P(h)} =
+\frac{ 0.9 \times 10^{-5}}{ 0.5 } = 1.8 \times 10^{-5}
+\]
+
+If we set the probability of having habit \(h\) to a much lower value as \(P(h) =
+0.001\), then the above calculation gives approximately \(1/100\). Intuitively, a smaller number of people have the habit and most of them have the
+desease. This means that the relation between having the desease and the habit
+is stronger now compared with the case where more people had the habit.
+\end{exampleth}
+
+\begin{definition}
+  We say that two events \(\alpha, \beta \in \mathcal{F}\) are
+  \emph{independent} if knowing one of them does not give any extra information
+  about the other. Mathematically,
+
+  \[
+    P(\alpha \cap \beta) = P(\alpha)P(\beta) \hspace{2cm} P(\alpha \mid \beta) = P(\alpha)
+  \]
+
+  Let \(\gamma \in \mathcal{F}\), we say that \(\alpha\) and \(\beta\) are
+  \emph{conditionally independent} on \(\gamma\), \(\alpha \bigCI \beta \mid \gamma\)
+  if and only if
+  \[
+    P(\alpha \cup \beta \mid \gamma) = P(\alpha \mid \gamma)P(\beta \mid \gamma)
+  \]
+  Otherwise, they are said to be \emph{conditionally dependent} on \(\gamma\),  \(\alpha \bigCD \beta \mid \gamma\).
+
+\end{definition}
+
+Now we are going to introduce the concept of \emph{random variable} and some
+properties as we have done with events.
+
+\begin{definition}
 A function \(f:\Omega_1 \to \Omega_2\) between two
 measurable spaces \((\Omega_1, \mathcal{F}_1)\) and \((\Omega_2, \mathcal{F}_2)\) is said to be \emph{measurable} if \(f^{-1}(\alpha) \in \mathcal{F}_1\) for every \(\alpha \in \mathcal{F}_2\).
 \end{definition}
 
 \begin{definition}
-A \emph{random variable} is a measurable function \(X:\Omega \to E\) from a probability
-space \((\Omega, \mathcal{F}, P)\) to a measurable space \(E\).
+  A \emph{random variable} is a measurable function \(X:\Omega \to E\) from a probability
+  space \((\Omega, \mathcal{F}, P)\) to a measurable space \((E,
+  \mathcal{F}')\) verifying \(X(\omega)\in \mathcal{F}' \ \forall \omega \in \Omega\).
 
-The probability of \(X\) taking a value on a measurable set \(S \subset E\) is
+The probability of \(X\) taking a value on a measurable set \(S \in E\) is
 written as
 \[
-P_X(S) = P(X \in S) = P(\{a \in \Omega \ | \ X(a) \in S \}).
+P_X(S) = P(X \in S) = P(\{a \in \Omega \ \mid  \ X(a) \in S \}).
 \]
 \end{definition}
 
 We could make a question like ``How likely is that the value of \(X\) equals
 \(a\)?''. This is the same as asking for the probability of the set \(\{\omega
-\in \Omega \ | \ X(w) = a\}\).
+\in \Omega \ \mid  \ X(w) = a\}\).
 
-We define the \emph{probability distribution} of
-an experiment as a function that provides the probability
-of occurrence of the different events in \(\Omega\). With this, if  \(X\) is used to denote the outcome of the experiment, the probability
-distribution of \(X\) would be a function that gives the probability of every
-state of \(X\). With this approach, we use the random variable \(X\) to
-``push-forward'' the probability \(P\) on \(\Omega\) to a probability \(P_X\) in
-the measurable space \(E\). Typically, this
-measurable space is the set of real numbers \(\mathbb{R}\) along with Borel's
-\(\sigma\)-algebra \(\mathcal{B}\).
-
-The probability distribution of a random variable is typically described by the \emph{probability
-  mass function} or the \emph{probability density function}, depending on
-whether \(X\) is discrete or not. We will define this concepts after setting the
-notation that is going to be used, that is: random variables will be
+We will set the following notation that is going to be used, that is: random variables will be
 denoted with an upper case letter like \(X\) and a set of variables with a
 bold symbol like \(\bm{X}\). The meaning of \(P(state)\) will be clear without a reference to the variable.
 Otherwise \(P(X = state)\) will be used.
@@ -87,7 +135,7 @@ Using a lower case letter like \(P(x)\) will denote the probability of the
 corresponding upper case variable \(X\) taking a specific value.
 
 \begin{definition}
-The \emph{cumulative distribution function} of a random variable \(X\) is the
+The \emph{cumulative distribution function} of a real-valued random variable \(X\) is the
 function given by:
 \[
 F_X (x) = P(X \leq x)
@@ -104,55 +152,51 @@ probability of it being equal to some value.
 \[
 p(x) = P(X = x)
 \]
-If the image is uncountable then \(X\) is called a \emph{continuous random
-  variable} and its \emph{probability density function} \(f\) is a non-negative
-Lebesgue-integrable such that
+If the image is uncountable and real, then \(X\) is called a \emph{continuous random
+  variable} if there exists is a non-negative
+Lebesgue-integrable \(f\), called its \emph{probability density function} such that
 \[
 F_X(x) = P(X \leq x) = \int_{-\infty}^x f(u) du
 \]
+
+A \emph{mixed random variable} is a random variable who is neither discrete nor
+continuous, it can be realized as the sum of a discrete and continuous random
+variables. An example of a random variable of mixed type would be based on an
+experiment where a coin is flipped and a random positive number is chose only if
+the result of the coin toss is heads, $-1$ otherwise.
 \end{definition}
+
+From now on, \(P(x)\) will denote \(f_X(x)\) when \(X\) is a continuous random
+variable. We will define the \emph{probability distribution} \(P_X\) of a random
+variable \(X\) over the probability space \((\Omega, \mathcal{F}, P)\)
+as the pushforward measure of it, that is, \(P_X = PX^{-1}\).
+
+\begin{definition}
+  As we did for events, we can define the \emph{conditional probability} over
+  random variables, let \(X, Y\) be random variables,
+  \[
+    P(x \mid y) = \frac{P(x,y)}{P(y)}
+  \]
+  It is  required that \(P(y) \neq 0\) for the conditional probability to be defined.
+\end{definition}
+
+We can also enunciate the \emph{Bayes' theorem}.
+
+\[
+  P(x,y) = \frac{P(y\mid x)P(x)}{P(y)}
+\]
 
 
 \begin{definition}
-  A \emph{multivariate random variable} or \emph{random vector} is a column vector \(\bm{X} =
-  (X_1,\dots,X_n)^T\) whose components are real-valued random variables on the
-  same probability space.
-
-  Note that we use the same symbol \(\bm{X}\) for random vectors and sets of
-  variables, but the meaning will be clear within the context.
+  The \emph{marginal distribution} of a subset of random variables is the
+  probability distribution of the variables contained in that subset.
 \end{definition}
 
-Now we are going to define some concepts over events \(\alpha, \beta \in \mathcal{F}\), then we will set those
-over random variables and their distributions.
+Let \(X, Y\) be two random variables, it follows that
+\[
+  P(x) = \sum_y P(x,y) \hspace{2cm} f_X(x) = \int_y f_{X,Y}(x,y)
+\]
 
-\begin{itemize}
-\item The \emph{joint probability} \(P(\alpha, \beta)\) the probability of both
-  events occurring.
-\item The \emph{marginal probability} \(P(\alpha)\) is the probability of occurring
-\(\alpha\) irrespective of the other event.
-\item The \emph{conditional
-  probability} \(P(\alpha | \beta)\) is the probability of occurring \(\alpha\)
-given \(\beta\).
-\end{itemize}
-
-Let's illustrate this with a simple example.
-
-\begin{exampleth}
-  Suppose \(\Omega\) is the set of outcomes of rolling a dice, that is \(\Omega
-  = \{1, 2, 3, 4, 5, 6\}\). We define \(\alpha = \{2, 4, 6\}\) and
-  \(\beta = \{4, 5\}\). Then the joint probability is \(P(\{4\}) =
-  1/6\), the marginal probability \(P(\alpha) = 3/6\) is easy to calculate as we
-  can do it straight-forward, but if we couldn't, we should use the joint
-  probability.
-  We said that the marginal \(P(\alpha)\) is the probability of \(\alpha\)
-  irrespective of \(\beta\). Then, we can calculate it as the probability of
-  occurring both \(P(\alpha, \beta)\) plus the probability of occurring
-  \(\alpha\) and not \(\beta\) \(P(\alpha, \{1,2,3,6\})\).
-
-  The conditional probability \(P(\alpha | \beta)\) forces the outcome to be
-  either \(4\) or \(5\), and the only option for it to be in
-  \(\alpha\) is that it is \(4\), then \(P(\alpha | \beta) = 0.5\).
-\end{exampleth}
 
 \begin{definition}
   Let \(\bm{X} = \{X_1, X_2,\dots,X_n\}\) be a set of random variables, the
@@ -174,60 +218,11 @@ probability mass function (all variables must be discrete).
 \end{definition}
 
 \begin{definition}
-  The \emph{marginal distribution} of a subset of random variables is the
-  probability distribution of the variables contained in that subset.
-\end{definition}
-
-Let \(X, Y\) be two random variables, it follows that\footnote{Using both
-  continuous and discrete notation}
-\[
-P(x) = \sum_y P(x,y) \hspace{2cm} P(x) = \int_y P(x,y)
-\]
-
-\begin{definition}
-The \emph{conditional probability} of a subset of random variables is the
-probability distribution of them when the rest of the variables are known to be
-a particular value.
-\end{definition}
-
-
-\begin{theorem}
-  \textbf{(Bayes' theorem)}. Let \(\alpha, \beta\) be two events of an
-  experiment, given that \(P(\beta) \neq 0\). Then
-  \[
-  P(\alpha|\beta)= \frac{P(\beta|\alpha)P(\alpha)}{P(\beta)}
-\]
-
-We can extend this theorem to a pair of random variables \(X, Y\) as
-  \[
-  P(x|y)= \frac{P(y|x)P(x)}{P(y)}
-\]
-\end{theorem}
-
-
-
-\begin{exampleth}
-Consider a study where the relation of a disease \(d\) and an habit \(h\)
-is being investigated. Suppose that \(P(d)=10^{-5}\), \(P(h)=0.5\) and \(P(h|d) = 0.9\). What is the
-probability that a person with habit \(h\) will have the disease \(d\)?
-
-\[
-P(d|h) = \frac{P(d,h)}{P(h)} = \frac{P(h|d)P(d)}{P(h)} =
-\frac{ 0.9 \times 10^{-5}}{ 0.5 } = 1.8 \times 10^{-5}
-\]
-
-If we set the probability of having habit \(h\) to a much lower value as \(P(h) =
-0.001\), then the above calculation gives approximately \(1/100\). Intuitively, a smaller number of people have the habit and most of them have the
-desease. This means that the relation between having the desease and the habit
-is stronger now compared with the case where more people had the habit.
-\end{exampleth}
-
-\begin{definition}
 We say that two random variables \(X\) and \(Y\) are \emph{independent} if knowing one of them doesn't give any extra information about the other. Mathematically,
 \[
 P(x,y) = P(x)P(y)
 \]
-From this it follows that if \(X\) and \(Y\) are independent, then \(P(x|y) = P(x)\).
+From this it follows that if \(X\) and \(Y\) are independent, then \(P(x\mid y) = P(x)\).
 \end{definition}
 
 
@@ -235,7 +230,7 @@ From this it follows that if \(X\) and \(Y\) are independent, then \(P(x|y) = P(
 Let \(X,Y\) and \(Z\) be three random variables, then \(X\) and \(Y\) are
 \emph{conditionally independent} given \(Z\) if and only if
 \[
-P(x,y | z) = P(x|z)P(y|z)
+P(x,y \mid  z) = P(x\mid z)P(y\mid z)
 \]
 in that case we will denote \(X \bigCI Y \mid Z\). If \(X\) and \(Y\) are not
 conditionally independent, they are \emph{conditionally dependent} \(X \bigCD Y \mid Z\)
@@ -262,4 +257,14 @@ Both independence definitions can be made over sets of variables \(\bm{X},
   \]
 
 
+\end{definition}
+
+
+\begin{definition}
+  A \emph{multivariate random variable} or \emph{random vector} is a column vector \(\bm{X} =
+  (X_1,\dots,X_n)^T\) whose components are random variables that can be defined
+  over different probability spaces.
+
+  Note that we use the same symbol \(\bm{X}\) for random vectors and sets of
+  variables, but the meaning will be clear within the context.
 \end{definition}

@@ -284,4 +284,180 @@ Notice the term \(\E[\log(Q(x))]_{Q} \) is a constant and assume the data is i.i
  \section{Bayesian Belief Network Training}
 
 A Bayesian approach where we set a distribution over the parameters is an
-alternative to ML training of a Bayesian Network.
+alternative to Maximum Likelihood training of a Bayesian Network.
+
+To illustrate this, we are using the following scenario, consider a disease
+\(D\) and two habits \(A\) and \(B\), following the Bayesian Network
+
+\begin{figure}[!ht]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1cm and 0.5cm,
+    mynode/.style={draw,circle,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (d) {D};
+    \node[mynode, left=of d] (a) {A};
+    \node[mynode, right=of d] (b) {B};
+
+    \path (a) edge[-latex] (d)
+    (b) edge[-latex] (d)
+    ;
+
+  \end{tikzpicture}
+  \qquad
+  \begin{tabular}{|l|l|l|}
+    \hline
+    A & B & D \\ \hline
+    1 & 1 & 1 \\ \hline
+    1 & 0 & 0 \\ \hline
+    0 & 1 & 1 \\ \hline
+    0 & 1 & 0 \\ \hline
+    1 & 1 & 1 \\ \hline
+    0 & 0 & 0 \\ \hline
+    1 & 0 & 1 \\ \hline
+  \end{tabular}
+  \caption{Model for the relationship between \(D,A\) and \(B\), and
+    observations}
+ \label{fig:bayesian_example}
+\end{figure}
+
+
+
+\[
+P(a,b,d) = P(d|a,b)P(a)P(b)
+\]
+
+Consider a set of observations
+\(\mathcal{V} = \{(a_{n}, b_{n}, d_{n}), n = 1,\dots , N\}\)
+
+We need a notation for the parameters, as all the variables are binary we are
+going to use
+\[
+  P(A = 1 \mid \theta_{a}) = \theta_{a}, \hspace{1cm} P(B = 1 \mid \theta_{b} = \theta_{b}), \hspace{1cm} P(D = 1 \mid A = 0, B = 1, \theta_{d}) = \theta_{1}
+\]
+\[\theta_{d} = (\theta_{0}, \theta_{1}, \theta_{2}, \theta_{3})\]
+Using the binary number \(A\) and \(B\) create \((01)\) and its correspondent
+decimal form in the sub-index of \(\theta\).
+
+We need to specify a prior and since dealing with multi-dimensional continuous
+distributions is computationally problematic it is normal to use uni-variate
+distributions.
+
+A convenient assumption is that the prior factorizes, this is usually called
+\emph{global parameter independence}. We assume then
+\[
+  P(\theta_{a}, \theta_{b}, \theta_{d}) = P(\theta_{a})P(\theta_{b})P(\theta_{d})
+\]
+Assuming our data is i.i.d, we have
+\[
+  P(\theta_{a}, \theta_{b}, \theta_{d}, \mathcal{V}) = P(\theta_{a})P(\theta_{b})P(\theta_{d})\prod_{n}P(a_{n}\mid \theta_{a})P(b_{n} \mid \theta_{b})P(d_{n}\mid a_{n}, b_{n}, \theta_{d})
+\]
+
+Learning then corresponds to inference
+
+\[
+  \begin{aligned}
+    P(\theta_{a}, \theta_{b}, \theta_{d}\mid \mathcal{V}) &= \frac{P(\mathcal{V} \mid \theta_{a}, \theta_{b}, \theta_{d})P(\theta_{a}, \theta_{b}, \theta_{d})}{P(\mathcal{V})} =\frac{P(\mathcal{V} \mid \theta_{a}, \theta_{b}, \theta_{d})P(\theta_{a}) P(\theta_{b})P( \theta_{d})}{P(\mathcal{V})}\\
+    &= \frac{1}{P(\mathcal{V})}P(\theta_{a})\prod_{n}P(a_{n}\mid \theta_{a})P(\theta_{b})\prod_{n}P(b_{n}\mid \theta_{b})P(\theta_{d})\prod_{n}P(d_{n}\mid a_{n}, b_{n},\theta_{d})\\
+    &= P(\theta_{a} \mid \V_{a} )P(\theta_{b}\mid \V_{b})P(\theta_{d} \mid \V)
+  \end{aligned}
+\]
+
+Where \(V_{i}\) is the subset of the data restricted to the variable \(i\). If
+we further assume that \(P(\theta_{d})\) factorizes as
+\(P(\theta_{d}) = P(\theta_{0})P(\theta_{1})P(\theta_{2})P(\theta_{3})\),
+this is called \emph{local parameter independence}, then it follows that
+\[
+  P(\theta_{d}\mid \V) = P(\theta_{0} \mid \V )P(\theta_{1} \mid \V )P(\theta_{2} \mid \V )P(\theta_{3} \mid \V )
+\]
+
+The simplest cases to continue are \(P(a\mid \theta_{a})\) and
+\(P(b \mid \theta_{b})\) since they require only a univariate prior distribution
+\(P(\theta_{a})\) or \(P(\theta_{b})\). Lets illustrate it using
+\(P(\theta_{a})\):
+
+The posterior is
+\[
+  P(\theta_{a} \mid \V_{a}) = \frac{1}{P(\V_{a})}P(\theta_{a})\theta_{a}^{\#(a=1)}(1-\theta_{a})^{\#(a=0)}
+\]
+
+The most convenient choice for the prior is a Beta distribution as conjugacy
+will hold.
+
+\[
+  P(\theta_{a}) = B(\theta_{a} \mid \alpha_{a}, \beta_{a}) = \frac{1}{B(\alpha_{a}, \beta_{a})}\theta_{a}^{\alpha_{a}-1}(1-\theta_{a})^{\beta_{a} - 1}
+\]
+\[
+  P(\theta_{a} \mid \V_{a}) = B(\theta_{a} \mid \alpha_{a} + \#(a=1), \beta_{a} + \#(a = 0))
+\]
+
+The marginal is then
+\[
+  \begin{aligned}
+    P(a = 1 \mid \V_{a})
+    &= \frac{P(a = 1, \V_{a})}{P(\V_{a})} = \int_{\theta_{a}}  \frac{P(a = 1, \V_{a}, \theta_{a})}{P(\V_{a})} =  \int_{\theta_{a}}  \frac{P(a = 1 \mid \V_{a}, \theta_{a}) P(\V_{a}, \theta_{a})}{P(\V_{a})} \\
+    &=  \int_{\theta_{a}}  \frac{P(a = 1 \mid \V_{a}, \theta_{a}) P(\theta_{a} \mid \V_{a})P(\V_{a})}{P(\V_{a})} = \int_{\theta_{a}}P(\theta_{a}\mid \V_{a})\theta_{a} = \E[\theta_{a} \mid \V_{a}] \\
+    &= \frac{\alpha_{a} + \#(a= 1)}{\alpha_{a} + \#(a=1) + \beta_{a} + \#(a=0)}
+  \end{aligned}
+\]
+
+For \(P(d \mid a ,b)\) the situation is more complex, the most convenient way is
+to specify a Beta prior for each one of the four components of \(\theta_{d}\).
+Lets focus on \(P(d = 1 \mid a = 1, b = 0)\), notice the parameters \(\alpha\)
+and \(\beta\) we used before now depend on \(a\) and \(b\), for this reason we
+are using \(\alpha_{d}(a,b)\) and \(\beta_{d}(a,b)\) as prior parameters, these
+are called \emph{hyperparameters}.
+\[
+  P(\theta_{2}) = B(\theta_{2} \mid \alpha_{d}(1,0) + \#(d = 1, a = 1, b = 0), \beta_{d}(1,0) + \#(d = 0, a = 1, b = 0))
+\]
+
+As before we got that
+
+\[
+  P(d = 1 \mid a = 1, b = 0, \V) = \frac{\alpha_{d}(1,0) + \#(d = 1, a = 1, b = 0)}{\alpha_{d}(1,0) + \beta_{d}(1,0) + \#(a=1, b = 0)}
+\]
+
+In case we had no preference, we could set all hyperparameters to the same
+value, and, a complete ignorance prior would correspond to set them to 1.
+
+Let now consider two limit possibilities, the one where we have no data at all,
+and the one where we have infinite data.
+
+In case we have no data, the marginal probability corresponds to the prior which
+in the last case is
+\[
+   P(d = 1 \mid a = 1, b = 0, \V) = \frac{\alpha_{d}(1,0)}{\alpha_{d}(1,0) + \beta_{d}(1,0)}
+ \]
+ Note that equal hyperparameters would give a result of \(0.5\).
+
+ When infinite data is available, the marginal is generally dominated by it,
+ this corresponds to the Maximum Likelihood solution.
+ \[
+   P(d = 1 \mid a = 1, b = 0, \V) = \frac{\#(d = 1, a = 1 , b = 0)}{\#(a = 1, b = 0)}
+ \]
+ This happens unless the prior has a pathologically strong effect.
+
+ Consider the data given in the table in figure \ref{fig:bayesian_example}, and
+ equal parameters and hyperparameters \(1\). Then we can compute the differences
+ between this and using the Maximum Likelihood technique.
+ \[
+   P(a = 1 \mid \V) = \frac{1 + \#(a = 1)}{2 + N} = \frac{5}{9} \approx 0.556
+ \]
+ By comparison, the Maximum Likelihood result is \(4/7 = 0.571\), the Bayesian
+ result is more prudent than this one, which fits in with our belief that any
+ setting is equally probable i.e \(0.5\).
+
+
+ The natural generalization to more than two states is using a Dirichlet
+ distribution as prior, assuming i.i.d data and local and global prior independence.
+
+ Consider a variable \(X\) with \(Dom(X) = \mathcal{I}\), then
+ \[
+   P(x \mid \theta) = \prod_{i \in \mathcal{I}}\theta_{i}^{\mathbb{I}[x = i]} \text{
+   with  } \sum_{i \in \mathcal{I}}\theta_{i} = 1
+\]
+So that the posterior (considering \(N\) observations of the variable) is
+\[
+  P(\theta) \prod_{n = 1}^{N}\prod_{i \in \mathcal{I}}\theta_{i}^{\mathbb{I}[x_{n} = i]} = P(\theta) \prod_{i \in \mathcal{I}} \theta_{i}^{\sum_{n} \mathbb{I}[x_{n}=i]}
+\]

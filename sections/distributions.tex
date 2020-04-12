@@ -16,7 +16,7 @@ A distribution could have more than one mode, in this case we say it is \emph{mu
 
 \begin{definition}
   The notation \(\mathbb{E}[X]\) is used to denote the \emph{average} or
-  \emph{expectation} of the values the variable takes respect to its
+  \emph{expectation} of the values a real-valued variable takes respect to its
   distribution.
   If \(X\) is non-negative, it is defined as
   \[
@@ -24,7 +24,10 @@ A distribution could have more than one mode, in this case we say it is \emph{mu
       measure over \(\Omega\)}
   \]
   For a general variable X it is defined as \(\mathbb{E}[X] = \mathbb{E}[X^+] -
-  \mathbb{E}[X^-]\)
+  \mathbb{E}[X^-]\). Where
+  \[
+    X^+(\omega) = \max(X(\omega), 0) \hspace{2cm} X^-(\omega) = \min(X(\omega), 0)
+  \]
 
   Suppose now that \(X\) is a real-valued random variable, in case it is also
   continuous
@@ -220,8 +223,36 @@ where \(B(\alpha, \beta)\) is the \emph{beta function} defined as
 \[
   B(\alpha, \beta) = \int_0^1 x^{\alpha - 1}(1-x)^{\beta -1} dx
 \]
-
 \end{definition}
+
+The mean is given by \(\E[X] = \frac{\alpha}{\alpha + \beta}\)
+
+\subsection{Dirichlet Distribution}
+
+The Dirichlet distribution is a family of continuous multivariate probability
+distributions parameterized by a vector \(\bm{\alpha}\) of positive reals. It is
+a multivariate generalization of the Beta Distribution.
+
+\begin{definition}
+  We say that a continuous random multivariate variable \(\bX\) with order
+  \(K \geq 2\), follows a \emph{Dirichlet
+    Distribution} with parameters \(\bm{\alpha} = (\alpha_{1}, \dots, \alpha_{K})\), if and
+  only if its density function is defined as
+  \[
+    f(\bx) = \frac{1}{B(\bm{\alpha})}\prod_{k = 1}^{K}x_{k}^{\alpha_{k}-1}
+  \]
+  and it satisfies that
+  \[
+    \sum_{k=1}^{K} x_{k} = 1 \text{ and } x_{k} > 0 \ \forall k=1,\dots,K
+  \]
+\end{definition}
+
+Where the normalization constant is the beta function
+\[
+  B(\bm{\alpha}) = \frac{\prod_{k} \Gamma (\alpha_{k})}{\Gamma \big( \sum_{k}\alpha_{k} \big)}
+\]
+
+
 
 \section{Kullback-Leibler Divergence}
 
