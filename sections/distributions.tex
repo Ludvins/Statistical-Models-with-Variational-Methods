@@ -82,18 +82,28 @@ When using a multivariate distribution \(\bm{X} = (X_1,\dots,X_n)^T\) we can tal
 The following result will be helpful later on
 
 \begin{proposition}
-  Let \(\{X_1,\dots,X_n\}\) be a set of random variables and \(P\) their joint
-  probability distribution.
-  It follows that the expectation of a function \(f\) on a subset of the
-  variables \(\mathcal{X}_0 \subset \mathcal{X} = \{X_1,\dots,X_n\}\), verifies
+  Let \(\mathcal{X} = \{X_1,\dots,X_n\}\) be a set of random variables,
+  \(\mathcal{X}_{0} \subset \mathcal{X}\) and \(P(\mathcal{X}), P(\mathcal{X}_{0})\)
+  their probability distributions.
+  It follows that the expectation of a function \(g\) over \(\mathcal{X}_0\), verifies
     \[
-      \E[f(\mathcal{X}_0)]_{P(\mathcal{X})} = \E[f(\mathcal{X}_0)]_{P(\mathcal{X}_0)}
+      \E[g(\mathcal{X}_0)]_{P(\mathcal{X})} = \E[g(\mathcal{X}_0)]_{P(\mathcal{X}_0)}
     \]
-
     that is, we only need to know the marginal distribution of the subset in
     order to carry out the average.
 \end{proposition}
 
+\begin{proof}
+  Let \(\I = (i_{1}, \dots, i_{k})\) be the indexes corresponding to \(\mathcal{X}_{0}\), then
+  \[
+    \begin{aligned}
+      \E[g(\mathcal{X}_{0})]_{P(\mathcal{X})} &= \int_{x_{1}}\dots\int_{x_{n}}g(x_{i_{1}},\dots,x_{i_{k}})f(x_{1},\dots,x_{n}) \\
+      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1},\dots,x_{i_{k}}}) \int \dots \int f(x_{1},\dots,x_{n}) d_{x_{1}},\dots,d_{x_{n}}\\
+      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1},\dots,x_{i_{k}}}) f(x_{i_{1}},\dots,x_{i_{k}}) =  \E[g(\mathcal{X}_{0})]_{P(\mathcal{X}_{0})} \\
+      \end{aligned}
+  \]
+Where in the second-last equality we used marginalization.
+\end{proof}
 
 We are going to discuss now some examples of probability distributions that are
 going to be used from now on.

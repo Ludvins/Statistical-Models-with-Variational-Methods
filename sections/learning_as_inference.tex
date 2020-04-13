@@ -452,12 +452,32 @@ in the last case is
  The natural generalization to more than two states is using a Dirichlet
  distribution as prior, assuming i.i.d data and local and global prior independence.
 
- Consider a variable \(X\) with \(Dom(X) = \mathcal{I}\), then
+ Consider a variable \(X\) with \(Dom(X) = \{1, \dots, I\}\), then
  \[
-   P(x \mid \theta) = \prod_{i \in \mathcal{I}}\theta_{i}^{\mathbb{I}[x = i]} \text{
-   with  } \sum_{i \in \mathcal{I}}\theta_{i} = 1
+   P(x \mid \theta) = \prod_{i = 1}^{I}\theta_{i}^{\mathbb{I}[x = i]} \text{
+   with  } \sum_{i=1}^{I}\theta_{i} = 1
 \]
-So that the posterior (considering \(N\) observations of the variable) is
+So that the posterior (considering \(N\) observations of the variable
+\((x_{1}, \dots, x_{N}) = \V\)) is
 \[
-  P(\theta) \prod_{n = 1}^{N}\prod_{i \in \mathcal{I}}\theta_{i}^{\mathbb{I}[x_{n} = i]} = P(\theta) \prod_{i \in \mathcal{I}} \theta_{i}^{\sum_{n} \mathbb{I}[x_{n}=i]}
+  P(\theta \mid x_{1},\dots,x_{N}) = \frac{1}{P(\V)} P(\theta) \prod_{n = 1}^{N}\prod_{i =1 }^{I}\theta_{i}^{\mathbb{I}[x_{n} = i]} =  \frac{1}{P(\V)} P(\theta) \prod_{i = 1}^{I} \theta_{i}^{\sum_{n} \mathbb{I}[x_{n}=i]}
 \]
+Then assuming a Dirichlet prior with hyperparameters \(\bm{u} = (u_{1}, \dots, u_{N})\)
+\[
+  P(\theta) = \frac{1}{B(\bm{u})}\prod_{i =1}^{I}\theta_{i}^{u_{i}-1} \implies P(\theta \mid \V) = \frac{1}{B(\bm{u})P(\V)}\prod_{i=1}^{I}\theta_{i}^{u_{i}-1 + \sum_{n}\mathbb{I}[x_{n} = i]}
+\]
+
+Which means that, defining \(\bm{c} = ( \sum_{n=1}^{N}\mathbb{I}[x_{n} = i])_{i \in \I}\)
+\[
+  P(\theta \mid \V) = \text{Dirichlet}(\theta \mid \bm{u} + \bm{c})
+\]
+
+The marginal is then given by
+\[
+  \begin{aligned}
+    P(x=i \mid \V) &= \int_{\theta}P(x=i \mid \theta)P(\theta \mid \V) =  \int_{\theta}\theta_{i}P(\theta \mid \V)\\
+    &=  \int_{\theta_{i}}\theta_{i}P(\theta_{i} \mid \V)
+\end{aligned}
+\]
+Where we used that
+\[\int_{\theta_{j \neq i}}\theta_{i} P(\theta \mid \V) = \theta_{i}\prod_{k\neq j}P(\theta_{k} \mid V) \int_{\theta_{j}}P(\theta_{j}\mid \V) = \theta_{i} \prod_{k \neq j}P(\theta_{k} \mid \V)\]
