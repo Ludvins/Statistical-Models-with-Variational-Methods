@@ -481,3 +481,10 @@ The marginal is then given by
 \]
 Where we used that
 \[\int_{\theta_{j \neq i}}\theta_{i} P(\theta \mid \V) = \theta_{i}\prod_{k\neq j}P(\theta_{k} \mid V) \int_{\theta_{j}}P(\theta_{j}\mid \V) = \theta_{i} \prod_{k \neq j}P(\theta_{k} \mid \V)\]
+
+
+As we already know, the univariate marginal of a Dirichlet distribution is a
+Beta Distribution, then
+\[
+  P(x = i \mid \V) = \text{Beta}(u_{i} + c_{i}, \sum_{j\neq i} u_{j} + c_{j})
+\]

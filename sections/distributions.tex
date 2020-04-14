@@ -98,8 +98,8 @@ The following result will be helpful later on
   \[
     \begin{aligned}
       \E[g(\mathcal{X}_{0})]_{P(\mathcal{X})} &= \int_{x_{1}}\dots\int_{x_{n}}g(x_{i_{1}},\dots,x_{i_{k}})f(x_{1},\dots,x_{n}) \\
-      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1},\dots,x_{i_{k}}}) \int \dots \int f(x_{1},\dots,x_{n}) d_{x_{1}},\dots,d_{x_{n}}\\
-      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1},\dots,x_{i_{k}}}) f(x_{i_{1}},\dots,x_{i_{k}}) =  \E[g(\mathcal{X}_{0})]_{P(\mathcal{X}_{0})} \\
+      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) \int \dots \int f(x_{1},\dots,x_{n}) d_{x_{1}},\dots,d_{x_{n}}\\
+      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) f(x_{i_{1}},\dots,x_{i_{k}}) =  \E[g(\mathcal{X}_{0})]_{P(\mathcal{X}_{0})} \\
       \end{aligned}
   \]
 Where in the second-last equality we used marginalization.
@@ -211,8 +211,6 @@ we get that
 Using this, the multivariate Normal Distribution reduces to a product of \(n\)
 univariate standard normal distributions.
 
-\todo[inline]{TODO: Add more properties as they are needed}
-
 \end{definition}
 
 \subsection{Beta Distrbution}
@@ -257,10 +255,40 @@ a multivariate generalization of the Beta Distribution.
   \]
 \end{definition}
 
-Where the normalization constant is the beta function
+Where the normalization constant is the multivariate beta function
 \[
   B(\bm{\alpha}) = \frac{\prod_{k} \Gamma (\alpha_{k})}{\Gamma \big( \sum_{k}\alpha_{k} \big)}
 \]
+
+
+\begin{proposition} \label{dirichlet_marginal}
+  Let
+  \((X_{0},\dots, X_{n}) \sim \text{Dirichlet}(\alpha_{0}, \dots, \alpha_{n})\),
+  then \(X_{0} \sim \text{Beta}(\alpha_{0}, \alpha_{1}+\dots,\alpha_{n})\)
+\end{proposition}
+\begin{proof}
+  We can write the joint probability as
+  \[
+    f(x_{1},\dots,x_{n}) = f_{1}(x_{1})f_{2}(x_{2}\mid x_{1})\dots f_{n-1}(x_{n-1}\mid x_{1},\dots, x_{n-2})
+  \]
+  We do not need the last term because it is fixed given the others. In fact, let \(A = \sum_{i} \alpha_{i}\), we can write it as
+  \[
+   \Bigg( \frac{\Gamma(A)}{\Gamma(\alpha_{1}) \Gamma(A - \alpha_{1})}x_{1}^{\alpha_{1}-1}(1 - x_{1})^{A - \alpha_{1} -1}\Bigg)\Bigg( \frac{\Gamma(A - \alpha_{1})}{\Gamma(\alpha_{2}) \Gamma(A - \alpha_{1} - \alpha_{2})}\frac{ x_{2}^{\alpha_{2}-1}(1-x_{1}- x_{2})^{A - \alpha_{2}- \alpha_{1} - 1} }{(1-\alpha_{1})^{A - \alpha_{1} - 1} }\Bigg )
+ \]
+ \[
+   \dots \Big(\frac{\Gamma(A - \alpha_{1} - \dots - \alpha_{n-2})}{\Gamma(\alpha_{n-1}) \Gamma(A - \alpha_{1}- \dots - \alpha_{n-1})}  \frac{ x_{n-1}^{\alpha_{n}-1} x_{n}^{\alpha_{n}-1}}{(1-x_{1}- \dots - x_{n-2})^{\alpha_{n-1}+\alpha_{n}-1}}\Big)
+ \]
+
+ From this, we get that
+ \[
+   f_{1}(x_{1}) =  \frac{\Gamma(A)}{\Gamma(\alpha_{1}) \Gamma(A - \alpha_{1})}x_{1}^{\alpha_{1}-1}(1 - x_{1})^{A - \alpha_{1} -1} \implies X_{1} \sim \text{Beta}(\alpha_{1}, A- \alpha_{1})
+ \]
+
+ Making the decomposition over any other \(X_{j}\), results on
+ \(X_{j} \sim \text{Beta}(\alpha_{j}, A - \alpha_{j})\).
+
+
+\end{proof}
 
 
 

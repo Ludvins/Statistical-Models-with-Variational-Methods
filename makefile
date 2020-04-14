@@ -3,6 +3,6 @@ main.pdf: main.tex sections/*.tex
 	bibtex main
 	pdflatex --shell-escape main.tex
 	pdflatex --shell-escape main.tex
-	rm *.aux *.blg *.log *.bbl *.toc *.out *.bcf
+	rm *.aux *.blg *.log *.bbl *.toc *.out
 clean:
 	rm main.pdf *.aux *.blg *.log *.bbl *.toc *.out
