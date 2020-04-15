@@ -20,16 +20,15 @@ Let us see an example of our goal, in it we will try to learn the bias of a coin
 given a set of tossing results.
 
 \begin{exampleth}
-  Let \(\{v_n\}_{n \in 0,\dots,N}\) be the results of tossing a coin \(N \in
+  Let \(\V = \{v_n\}_{n \in 0,\dots,N}\) be the results of tossing a coin \(N \in
   \mathbb{N}\) times, let \(1\) symbolize \emph{heads} and \(0\) \emph{tails}.
 
   Our objective is to estimate the probability \(\theta\) that the coin will be
-  head \(P(v_n = 1  \mid  \theta)\), for this we have the random variables \(v_1,\dots,v_n\)
-  and \(\theta\), and we require a model \(P(v_1,\dots,v_n,\theta)\). We are
-  considering the variables \(v_i\) to be independent to each others, we have a
-  Belief Network depicted in figure \ref{fig:learning_coin}
+  head \(P(v_n = 1  \mid  \theta)\), for this we have the i.i.d random variables \(v_1,\dots,v_n\)
+  and \(\theta\), and we require a model \(P(v_1,\dots,v_n,\theta)\). We have a
+  Belief Network shown in figure \ref{fig:learning_coin}
   \[
-    P(v_1,\dots,v_n,\theta) = P(\theta)\prod_{n=1}^N P(v_n \mid \theta)
+    P(\V,\theta) = P(\theta)\prod_{n=1}^N P(v_n \mid \theta)
   \]
 
 \begin{figure}[H]
@@ -52,7 +51,7 @@ given a set of tossing results.
 
 We want to calculate
 \[
-  P(\theta \mid v_1,\dots,v_n) = \frac{P(v_1,\dots,v_n \mid \theta)P(\theta)}{P(v_1,\dots,v_n)}
+  P(\theta \mid \V) = \frac{P(\V \mid \theta)P(\theta)}{P(\V)}
 \]
 to do so, we need to specify the prior \(P(\theta)\), we are using a discrete
 model where
@@ -62,16 +61,21 @@ model where
 \]
 This means that we have a \(70\%\) belief that the coin is fair, a \(10\%\)
 belied that is biased to tails and \(20\%\) that is biased to heads.
-Notice that \(P(v_n \mid \theta) = \theta\) if \(v_n = 1\) and \(P(v_n \mid \theta) = 1 - \theta\) if \(v_n = 0\).
+Notice that \(P(v_n = 1 \mid \theta) = \theta\) and \(P(v_n = 0 \mid \theta) = 1 - \theta\).
 
 Let \(n_h\) be the number of heads in our observed data and \(n_t\)
 the number of tails
-
 \[
-  P(\theta  \mid  v_1,\dots,v_n) = \frac{P(\theta)}{P(\mathcal{V})} \theta^{n_h}(1-\theta)^{n_t}
+  n_{h} = \#\{v= 1\} \hspace{2cm} n_{t} = \#\{v = 0\}
 \]
 
-Suppose now that \(n_h = 2\) and \(n_t = 0.8\), then
+then the posterior has the form
+
+\[
+  P(\theta  \mid \V) = \frac{P(\theta)}{P(\mathcal{V})} \theta^{n_h}(1-\theta)^{n_t}
+\]
+
+Suppose now that \(n_h = 2\) and \(n_t = 8\), then
 \begin{gather*}
   P(\theta = 0.2  \mid  \mathcal{V}) = \frac{1}{P(\mathcal{V})}\times 0.1 \times 0.2^{2}
   \times 0.8^{8} = \frac{1}{P(\mathcal{V})} \times 6.71\times10^{-4} \\
@@ -95,12 +99,12 @@ Now, we can compute
 
 These are the posterior parameter beliefs of our experiment. Given this, it we
 were to choose a single value for the posterior it would be \(\theta = 0.5\).
-This result is intuitive since, we had a strong belief of the coin being fair
+This result is intuitive, we had a strong belief of the coin being fair
 and even though the number of tails was quite bigger than heads, it
 was not enough to make the difference. Obviously the posterior of the coin being
 biased to tails is now bigger than the prior.
 
-Let us use an uniform prior distribution so that \(P(\theta) = k \implies \int_0^1 P(\theta) d\theta
+Suppose an uniform prior distribution so that \(P(\theta) = k \implies \int_0^1 P(\theta) d\theta
 = k = 1\) due to normalization.
 
 Using the previous calculations we have
@@ -114,7 +118,7 @@ where
 this implies that
 \[
   P(\theta \mid \mathcal{V}) = \frac{\theta^{n_h}(1-\theta)^{n_t} }{ \int_0^1 u^{n_h}(1-u)^{n_t}
-    du}\equiv Beta(n_h + 1, n_t + 1)
+    du} \implies \theta \mid \V \sim Beta(n_h + 1, n_t + 1)
 \]
 \end{exampleth}
 
@@ -127,13 +131,13 @@ the prior is called a \emph{conjugate prior} of the likelihood distribution.
 Let's use a Beta distribution as the prior in the last example
 
 \[
-  P(\theta) = \frac{1}{B(\alpha, \beta)}\theta^{\alpha - 1}(1 - \theta)^{\beta -
-    1} \equiv Beta(\alpha, \beta)
+  \theta \sim \text{Beta}(\alpha, \beta) \implies P(\theta) = \frac{1}{B(\alpha, \beta)}\theta^{\alpha - 1}(1 - \theta)^{\beta -
+    1}
 \]
 then, repeating the same as before we get that
 \[
   P(\theta, \mathcal{V}) = \frac{1}{B(\alpha + n_h, \beta + n_t)}\theta^{\alpha
-    + n_h - 1}(1 - \theta)^{\beta + n_t - 1} \equiv Beta(\alpha + n_h, \beta + n_t)
+    + n_h - 1}(1 - \theta)^{\beta + n_t - 1} \implies (\theta, \V) \sim Beta(\alpha + n_h, \beta + n_t)
 \]
 
 So both the prior and posterior are Beta distributions, then the Beta
@@ -151,10 +155,10 @@ With this idea we define an utility function over the parameters
   U(\theta, \theta_{true}) = \alpha \mathbb{I}[\theta = \theta_{true}] - \beta
   \mathbb{I}[\theta \neq \theta_{true}]
 \]
-where \(\theta_{true}\) symbolizes the true value of the parameter, and \(\alpha, \beta \in
-\R\).
-
-Then the expected utility of a parameter \(\theta_0\) is calculated as
+where \(\alpha, \beta \in \R\). This symbolizes the gains or looses of choosing
+the parameter \(\theta\), when the true value of the parameter is supposed to be
+\(\theta_{true}\). Then the expected utility of a parameter \(\theta_0\) is
+calculated as
 \[
   U(\theta = \theta_0) = \sum_{\theta_{true}}U(\theta = \theta_0,
   \theta_{true})P(\theta = \theta_{true}  \mid  \mathcal{V})
@@ -162,24 +166,35 @@ Then the expected utility of a parameter \(\theta_0\) is calculated as
 
 Using the last example, we may define out utility function as
 \[
-  U(\theta, \theta_{true}) = 10 \mathbb{I}[\theta = \theta_{true}] - 20
+  U(\theta, \theta_{true}) = 10\mathbb{I}[\theta = \theta_{true}] - 20
   \mathbb{I}[\theta \neq \theta_{true}]
 \]
+Where we interpret that the loss of choosing the wrong parameter is twice as
+important as the gains from doing it right.
 
-so the expected utility of the decision that the parameter is \(\theta = 0.2\)
-is
+The expected utility of the decision that the parameter is \(\theta = 0.2\)
+in our discrete example would be
 \[
   \begin{aligned}
   U(\theta = 0.2) &= U(\theta = 0.2, \theta_{true} = 0.2)P(\theta_{true} = 0.2  \mid
   \mathcal{V})\\
   &+ U(\theta = 0.2, \theta_{true} = 0.5)P(\theta_{true} = 0.5  \mid
   \mathcal{V}) \\
-  & +  U(\theta = 0.2, \theta_{true} = 0.8)P(\theta_{true} = 0.8  \mid  \mathcal{V})
+  & +  U(\theta = 0.2, \theta_{true} = 0.8)P(\theta_{true} = 0.8  \mid  \mathcal{V})\\
+  &= 10 \times 0.4979 - 20\times 0.5059 -20 \times 0.00024 \\
+  &= -5.1438\\
+  U(\theta = 0.5) &= -4.9038 \\
+  U(\theta = 0.8) &= -20.0736
 \end{aligned}
 \]
+ 
 
+This illustrate how an utility function can affect the results of the inference.
+The most probable value for \(\theta\) was \(0.2\), but, using this utility
+function, \(0.5\) is the one with which we expect to lose less.
 
-\section{Maximum A Posteriori and Maximum Likelihood}
+\section{Directed Models}
+\subsection{Maximum A Posteriori and Maximum Likelihood}
 
 The posterior reflects our beliefs about the full range of probabilities, but we
 may want to summarize all this information, even though, we may lose loads of it.
@@ -281,7 +296,7 @@ Notice the term \(\E[\log(Q(x))]_{Q} \) is a constant and assume the data is i.i
  in terms of the initial data it is to set \(P(x_i \mid pa(x_i))\) to the number of
  times the state appears in it.
 
- \section{Bayesian Belief Network Training}
+ \subsection{Bayesian Belief Network Training}
 
 A Bayesian approach where we set a distribution over the parameters is an
 alternative to Maximum Likelihood training of a Bayesian Network.
@@ -450,7 +465,11 @@ in the last case is
 
 
  The natural generalization to more than two states is using a Dirichlet
- distribution as prior, assuming i.i.d data and local and global prior independence.
+ distribution as prior, assuming i.i.d data and local and global prior
+ independence. We are considering two different scenarios, firstly one where the
+ variable has no parents, as the case for \(A\) and \(B\) in the previous
+ example. Secondly, we will consider a variable with a non void set of parents,
+ as in the case with the disease \(D\).
 
  Consider a variable \(X\) with \(Dom(X) = \{1, \dots, I\}\), then
  \[
@@ -469,13 +488,13 @@ Then assuming a Dirichlet prior with hyperparameters \(\bm{u} = (u_{1}, \dots, u
 
 Which means that, defining \(\bm{c} = ( \sum_{n=1}^{N}\mathbb{I}[x_{n} = i])_{i \in \I}\)
 \[
-  P(\theta \mid \V) = \text{Dirichlet}(\theta \mid \bm{u} + \bm{c})
+  P(\theta \mid \V) \sim \text{Dirichlet}(\bm{u} + \bm{c})
 \]
 
 The marginal is then given by
 \[
   \begin{aligned}
-    P(x=i \mid \V) &= \int_{\theta}P(x=i \mid \theta)P(\theta \mid \V) =  \int_{\theta}\theta_{i}P(\theta \mid \V)\\
+    P(X=i \mid \V) &= \int_{\theta}P(X=i \mid \theta)P(\theta \mid \V) =  \int_{\theta}\theta_{i}P(\theta \mid \V)\\
     &=  \int_{\theta_{i}}\theta_{i}P(\theta_{i} \mid \V)
 \end{aligned}
 \]
@@ -483,8 +502,49 @@ Where we used that
 \[\int_{\theta_{j \neq i}}\theta_{i} P(\theta \mid \V) = \theta_{i}\prod_{k\neq j}P(\theta_{k} \mid V) \int_{\theta_{j}}P(\theta_{j}\mid \V) = \theta_{i} \prod_{k \neq j}P(\theta_{k} \mid \V)\]
 
 
-As we already know, the univariate marginal of a Dirichlet distribution is a
+As we already know from Proposition \ref{prop:dirichlet_marginal}, the univariate marginal of a Dirichlet distribution is a
 Beta Distribution, then
 \[
-  P(x = i \mid \V) = \text{Beta}(u_{i} + c_{i}, \sum_{j\neq i} u_{j} + c_{j})
+  P(X = i \mid \V) \sim \text{Beta}(u_{i} + c_{i}, \sum_{j\neq i} u_{j} + c_{j})
 \]
+
+Consider now that \(X\) has a set of parent variables \(pa(X)\), in this case,
+we want to compute the marginal given a state of its parents and the data
+\[
+  P(X = i \mid pa(X) = \bm{j}, \V)
+\]
+Let set the following notation for the parameters
+\[
+  P(X = i \mid pa(X) = \bm{j}, \theta) = \theta_{i,\bm{j}} \hspace{2cm} \bm{\theta_{j}} = (\theta_{i,\bm{j}})_{i}
+\]
+Local independence means that
+\[
+  P(\bm{\theta}) = \prod_{j}P(\bm{\theta_{j}})
+\]
+
+As we did before, we consider a Dirichlet prior
+\[
+  P(\bm{\theta_{j}})\sim Dirichlet(\bm{u}_{j})
+\]
+the posterior is then proportional to
+\[
+  \begin{aligned}
+    P(\bm{\theta} \mid \V) &= P(\bm{\theta})P(\V \mid \bm{\theta}) = \Big(\prod_{\bm{j}}P(\bm{\theta_{j}}) \Big)P(\V \mid \bm{\theta}) = \Big(\prod_{\bm{j}}\frac{1}{B(\bm{u_{j}})}\prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1}\Big) P(\V \mid \bm{\theta})\\
+    &= \Big(\prod_{\bm{j}}\frac{1}{B(\bm{u_{j}})}\prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1}\Big) \Big(\prod_{n}\prod_{j}\prod_{i} \theta_{i,\bm{j}}^{\mathbb{I}[x_{n} = i, pa(x_{n}) = \bm{j}]}\Big)\\
+    &= \prod_{\bm{j}}\frac{1}{B(\bm{u_{j}})}\prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1 + \#(X = i,pa(X)=\bm{j})}
+  \end{aligned}
+\]
+Naming \(\bm{v_{j}} = \bm{u_{j}} + \#(X = i, pa(X) = \bm{j})\), the posterior
+is
+\[
+  P(\bm{\theta} \mid \V) = \prod_{j}\text{Dirichlet}(\bm{v_{j}})
+\]
+
+Noting \(v_{i,j}\) the components of \(\bm{v_{j}}\), the marginal is then
+\[
+  P(X=i, pa(X) = \bm{j}, \V) = \frac{v_{i,j}}{\sum_{i}v_{i,j}}
+\]
+
+\subsection{Structure Learning}
+
+\section{Undirected Models}

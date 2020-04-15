@@ -261,13 +261,13 @@ Where the normalization constant is the multivariate beta function
 \]
 
 
-\begin{proposition} \label{dirichlet_marginal}
+\begin{proposition}\label{prop:dirichlet_marginal}
   Let
   \((X_{0},\dots, X_{n}) \sim \text{Dirichlet}(\alpha_{0}, \dots, \alpha_{n})\),
-  then \(X_{0} \sim \text{Beta}(\alpha_{0}, \alpha_{1}+\dots,\alpha_{n})\)
+  then \(X_{0} \sim \text{Beta}(\alpha_{0}, \alpha_{1}+\dots+\alpha_{n})\)
 \end{proposition}
 \begin{proof}
-  We can write the joint probability as
+  Following [\cite{farrow}], we can write the joint probability as
   \[
     f(x_{1},\dots,x_{n}) = f_{1}(x_{1})f_{2}(x_{2}\mid x_{1})\dots f_{n-1}(x_{n-1}\mid x_{1},\dots, x_{n-2})
   \]
