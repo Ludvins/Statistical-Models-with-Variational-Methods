@@ -146,7 +146,7 @@ distribution is called ``conjugate'' of the Binomial distribution.
 
 \section{Utility}
 
-The Bayesian posterior says nothing about how to summarize the beliefs it
+The Bayesian posterior says nothing about how to benefit from the beliefs it
 represents, in order to do this we need to specify the utility of each decision.
 
 With this idea we define an utility function over the parameters
@@ -191,13 +191,14 @@ in our discrete example would be
 
 This illustrate how an utility function can affect the results of the inference.
 The most probable value for \(\theta\) was \(0.2\), but, using this utility
-function, \(0.5\) is the one with which we expect to lose less.
+function, \(0.5\) is the one with which we expect minor losses.
 
 \section{Directed Models}
-\subsection{Maximum A Posteriori and Maximum Likelihood}
+\subsection{Maximum Likelihood training}
 
-The posterior reflects our beliefs about the full range of probabilities, but we
-may want to summarize all this information, even though, we may lose loads of it.
+In this section we will introduce two concepts, Maximum Likelihood and Maximum a
+Posteriori, showing that \emph{training} a model's parameter to maximize the
+Maximum Likelihood equals to take the empirical distribution as it.
 
 \begin{definition}
   Maximum Likelihood is calculated as
@@ -209,7 +210,7 @@ may want to summarize all this information, even though, we may lose loads of it
 \end{definition}
 
 \begin{definition}
-  Maximum A Posteriori is calculated as
+  Maximum A Posteriori refers to
   \[
     \theta^{MAP} = \argmax_\theta p(\mathcal{V} \mid \theta)P(\theta)
   \]
@@ -230,30 +231,35 @@ using this, the expected utility of a parameter \(\theta = \theta_0\) is
 This means that the maximum utility decision is to take the value \(\theta_0\)
 with the highest posterior value.
 
+\begin{remark}
+When using a flat prior \(\theta^{ML}= \theta ^{MAP}\).
+\end{remark}
 
-It is worth mentioning that when using a flat prior \(\theta^{ML}
-= \theta ^{MAP}\).
 
 
-Let \(\{x_1, \dots, x_m\}\) be a set of discrete variables, we can define the
-empirical distribution as a distribution of the variables whose mass probability
-function is
+Now, we are going to show the relation between the Maximum Likelihood and the
+Kullback-Leibler divergence of the empirical distribution and our model.
+Firstly, we define the empirical distribution of a set
+
+Let \(\{X_1, \dots, X_m\}\) be a set of real i.i.d random variables and
+\(\{x_{1}, \dots, x_{m}\}\) a set of observations of those variables, we can define the
+empirical distribution as a distribution whose probability mass function
+\(Q\) is
 \[
   Q(x) = \frac{1}{m}\sum_{i = 1}^m \mathbb{I}[x = x_i]
 \]
 
-Now, we are going to show the relation between the Maximum Likelihood and the
-Kullback-Leibler divergence of the empirical distribution and our model. We may calculate this Kullback-Leibler divergence and study their functional independence.
-
+ We may calculate this Kullback-Leibler divergence and study their functional independence.
 \[
   KL(Q \mid P) = \E[\log(Q(x))]_{Q} - \E[\log(P(x))]_Q
 \]
 
-Notice the term \(\E[\log(Q(x))]_{Q} \) is a constant and assume the data is i.i.d, so that
+Notice the term \(\E[\log(Q(x))]_{Q} \) is a constant as the variables are
+i.i.d it follows that
 \[
    \E[\log(P(x))]_Q = \frac{1}{m}\sum_{i = 1}^mlogP(x_i)
  \]
- where the right side is the log likelihood under \(P(x)\). As the logarithm is
+ where the right side is the log likelihood under \(Q\). As the logarithm is
  a strictly increasing function, maximizing the log likelihood equals to
  maximize the likelihood itself, and we can see here how it is equivalent to
  minimize the Kullback-Leibler divergence between the empirical distribution and
@@ -262,24 +268,24 @@ Notice the term \(\E[\log(Q(x))]_{Q} \) is a constant and assume the data is i.i
  In case \(P(x)\) is unconstrained, the optimal choice is \(P(x) = Q(x)\), that
  is, the maximum likelihood distribution corresponds to the empirical distribution.
 
- For a Belief Network \(P(x)\) presents the following constraint
+ For a Belief Network we know there is the following constraint
  \[
-   P(x) = \prod_{i = 1}^K P(x_i  \mid  pa(x_i))
+   P(x_{1}, \dots, x_{m}) = \prod_{i = 1}^K P(x_i  \mid  pa(x_i))
  \]
  We now want to minimize the Kullback-Leibler divergence between the empirical
  distribution \(Q(x)\) and \(P(x)\) in order to get the Maximum Likelihood.
 
  \[
    \begin{aligned}
-   KL(Q \mid P) &= - \E\big[\sum_{i = 1}^K\log{P(x_i \mid pa(x_i))}\big]_Q +
-   \E\big[\sum_{i = 1}^K\log{P(x_i \mid pa(x_i))}\big]_P
+   KL(Q \mid P) &= - \E\big[\sum_{i = 1}^K\log{P(x_i \mid pa(X_i))}\big]_Q +
+   \E\big[\sum_{i = 1}^K\log{P(x_i \mid pa(X_i))}\big]_P
    \\ &= - \sum_{i =
-     1}^K \E\big[\log{P(x_i \mid pa(x_i))}\big]_Q + \sum_{i =
-     1}^K \E\big[\log{P(x_i \mid pa(x_i))}\big]_P
+     1}^K \E\big[\log{P(x_i \mid pa(X_i))}\big]_Q + \sum_{i =
+     1}^K \E\big[\log{P(x_i \mid pa(X_i))}\big]_P
    \end{aligned}
  \]
- We can now use that \(\log{P(x_i \mid pa(x_i))}\) only depends on
- \(Q(x_i  \mid  pa(x_i))\) to rewrite it as
+
+ We can not use Proposition \ref{prop:expectation_over_marginal} on \(\log{P(x_i \mid pa(x_i))}\).
 
  \[
    \begin{aligned}
@@ -299,10 +305,10 @@ Notice the term \(\E[\log(Q(x))]_{Q} \) is a constant and assume the data is i.i
  \subsection{Bayesian Belief Network Training}
 
 A Bayesian approach where we set a distribution over the parameters is an
-alternative to Maximum Likelihood training of a Bayesian Network.
-
-To illustrate this, we are using the following scenario, consider a disease
-\(D\) and two habits \(A\) and \(B\), following the Bayesian Network
+alternative to Maximum Likelihood training of a Bayesian Network, as we did in
+the coin tossing example. We go deep into it using the following scenario, consider a disease
+\(D\) and two habits \(A\) and \(B\), following the Bayesian Network shown in
+figure \ref{fig:bayesian_example}.
 
 \begin{figure}[!ht]
   \centering
@@ -311,12 +317,18 @@ To illustrate this, we are using the following scenario, consider a disease
     mynode/.style={draw,circle,text width=0.5cm,align=center}
     ]
 
-    \node[mynode] (d) {D};
-    \node[mynode, left=of d] (a) {A};
-    \node[mynode, right=of d] (b) {B};
-
+    \node[mynode] (d) {\(d_{n}\)};
+    \node[mynode, above left=of d] (a) {\(a_{n}\)};
+    \node[mynode, above right=of d] (b) {\(b_{n}\)};
+    \node[mynode, above=of a] (ta) {\(\theta_{A}\)};
+    \node[mynode, above=of b] (tb) {\(\theta_{B}\)};
+    \node[mynode, below=of d] (td) {\(\theta_{D}\)};
+    \plate{} {(d)(a)(b)} {\(1\dots N\)}; %
     \path (a) edge[-latex] (d)
     (b) edge[-latex] (d)
+    (ta) edge[-latex] (a)
+    (tb) edge[-latex] (b)
+    (td) edge[-latex] (d)
     ;
 
   \end{tikzpicture}
@@ -343,16 +355,16 @@ To illustrate this, we are using the following scenario, consider a disease
 P(a,b,d) = P(d|a,b)P(a)P(b)
 \]
 
-Consider a set of observations
+Consider the set of observations
 \(\mathcal{V} = \{(a_{n}, b_{n}, d_{n}), n = 1,\dots , N\}\)
 
 We need a notation for the parameters, as all the variables are binary we are
 going to use
 \[
-  P(A = 1 \mid \theta_{a}) = \theta_{a}, \hspace{1cm} P(B = 1 \mid \theta_{b} = \theta_{b}), \hspace{1cm} P(D = 1 \mid A = 0, B = 1, \theta_{d}) = \theta_{1}
+  P(A = 1 \mid \theta_{A}) = \theta_{A}, \hspace{1cm} P(B = 1 \mid \theta_{B} = \theta_{B}), \hspace{1cm} P(D = 1 \mid A = 0, B = 1, \theta_{D}) = \theta_{1}
 \]
-\[\theta_{d} = (\theta_{0}, \theta_{1}, \theta_{2}, \theta_{3})\]
-Using the binary number \(A\) and \(B\) create \((01)\) and its correspondent
+\[\theta_{D} = (\theta_{0}, \theta_{1}, \theta_{2}, \theta_{3})\]
+Using the states of \(A\) and \(B\) to create \((01)\) and its correspondent
 decimal form in the sub-index of \(\theta\).
 
 We need to specify a prior and since dealing with multi-dimensional continuous
@@ -362,75 +374,76 @@ distributions.
 A convenient assumption is that the prior factorizes, this is usually called
 \emph{global parameter independence}. We assume then
 \[
-  P(\theta_{a}, \theta_{b}, \theta_{d}) = P(\theta_{a})P(\theta_{b})P(\theta_{d})
+  P(\theta_{A}, \theta_{B}, \theta_{D}) = P(\theta_{A})P(\theta_{B})P(\theta_{D})
 \]
 Assuming our data is i.i.d, we have
 \[
-  P(\theta_{a}, \theta_{b}, \theta_{d}, \mathcal{V}) = P(\theta_{a})P(\theta_{b})P(\theta_{d})\prod_{n}P(a_{n}\mid \theta_{a})P(b_{n} \mid \theta_{b})P(d_{n}\mid a_{n}, b_{n}, \theta_{d})
+  P(\theta_{A}, \theta_{B}, \theta_{D}, \mathcal{V}) = P(\theta_{A})P(\theta_{B})P(\theta_{D})\prod_{n}P(a_{n}\mid \theta_{A})P(b_{n} \mid \theta_{B})P(d_{n}\mid a_{n}, b_{n}, \theta_{D})
 \]
 
 Learning then corresponds to inference
 
 \[
   \begin{aligned}
-    P(\theta_{a}, \theta_{b}, \theta_{d}\mid \mathcal{V}) &= \frac{P(\mathcal{V} \mid \theta_{a}, \theta_{b}, \theta_{d})P(\theta_{a}, \theta_{b}, \theta_{d})}{P(\mathcal{V})} =\frac{P(\mathcal{V} \mid \theta_{a}, \theta_{b}, \theta_{d})P(\theta_{a}) P(\theta_{b})P( \theta_{d})}{P(\mathcal{V})}\\
-    &= \frac{1}{P(\mathcal{V})}P(\theta_{a})\prod_{n}P(a_{n}\mid \theta_{a})P(\theta_{b})\prod_{n}P(b_{n}\mid \theta_{b})P(\theta_{d})\prod_{n}P(d_{n}\mid a_{n}, b_{n},\theta_{d})\\
-    &= P(\theta_{a} \mid \V_{a} )P(\theta_{b}\mid \V_{b})P(\theta_{d} \mid \V)
+    P(\theta_{A}, \theta_{B}, \theta_{D}\mid \mathcal{V}) &= \frac{P(\mathcal{V} \mid \theta_{a}, \theta_{B}, \theta_{D})P(\theta_{A}, \theta_{B}, \theta_{D})}{P(\mathcal{V})} =\frac{P(\mathcal{V} \mid \theta_{A}, \theta_{B}, \theta_{D})P(\theta_{A}) P(\theta_{B})P( \theta_{D})}{P(\mathcal{V})}\\
+    &= \frac{1}{P(\mathcal{V})}P(\theta_{A})\prod_{n}P(a_{n}\mid \theta_{A})P(\theta_{B})\prod_{n}P(b_{n}\mid \theta_{B})P(\theta_{D})\prod_{n}P(d_{n}\mid a_{n}, b_{n},\theta_{D})\\
+    &= P(\theta_{A} \mid \V_{A} )P(\theta_{B}\mid \V_{B})P(\theta_{D} \mid \V)
   \end{aligned}
 \]
 
 Where \(V_{i}\) is the subset of the data restricted to the variable \(i\). If
-we further assume that \(P(\theta_{d})\) factorizes as
-\(P(\theta_{d}) = P(\theta_{0})P(\theta_{1})P(\theta_{2})P(\theta_{3})\),
+we further assume that \(P(\theta_{D})\) factorizes as
+\(P(\theta_{D}) = P(\theta_{0})P(\theta_{1})P(\theta_{2})P(\theta_{3})\),
 this is called \emph{local parameter independence}, then it follows that
 \[
-  P(\theta_{d}\mid \V) = P(\theta_{0} \mid \V )P(\theta_{1} \mid \V )P(\theta_{2} \mid \V )P(\theta_{3} \mid \V )
+  P(\theta_{D}\mid \V) = P(\theta_{0} \mid \V )P(\theta_{1} \mid \V )P(\theta_{2} \mid \V )P(\theta_{3} \mid \V )
 \]
 
-The simplest cases to continue are \(P(a\mid \theta_{a})\) and
-\(P(b \mid \theta_{b})\) since they require only a univariate prior distribution
-\(P(\theta_{a})\) or \(P(\theta_{b})\). Lets illustrate it using
-\(P(\theta_{a})\):
+The simplest cases to continue are \(P(a\mid \theta_{A})\) and
+\(P(b \mid \theta_{b})\) since they require only a uni-variate prior distribution
+\(P(\theta_{A})\) or \(P(\theta_{b})\). We use \(P(\theta_{A})\) as the other
+case is analogous.
 
 The posterior is
 \[
-  P(\theta_{a} \mid \V_{a}) = \frac{1}{P(\V_{a})}P(\theta_{a})\theta_{a}^{\#(a=1)}(1-\theta_{a})^{\#(a=0)}
+  P(\theta_{A} \mid \V_{A}) = \frac{1}{P(\V_{A})}P(\theta_{A})\theta_{A}^{\#(a=1)}(1-\theta_{A})^{\#(a=0)}
 \]
 
 The most convenient choice for the prior is a Beta distribution as conjugacy
 will hold.
 
 \[
-  P(\theta_{a}) = B(\theta_{a} \mid \alpha_{a}, \beta_{a}) = \frac{1}{B(\alpha_{a}, \beta_{a})}\theta_{a}^{\alpha_{a}-1}(1-\theta_{a})^{\beta_{a} - 1}
+  \theta_{A} \sim \text{Beta}(\alpha_{A}, \beta_{A}) \implies P(\theta_{A})  = \frac{1}{B(\alpha_{A}, \beta_{A})}\theta_{A}^{\alpha_{A}-1}(1-\theta_{A})^{\beta_{A} - 1}
 \]
+So it follows that
 \[
-  P(\theta_{a} \mid \V_{a}) = B(\theta_{a} \mid \alpha_{a} + \#(a=1), \beta_{a} + \#(a = 0))
+  (\theta_{A} \mid \V_{A}) \sim \text{Beta}(\theta_{A} \mid \alpha_{A} + \#(a=1), \beta_{A} + \#(a = 0))
 \]
 
 The marginal is then
 \[
   \begin{aligned}
-    P(a = 1 \mid \V_{a})
-    &= \frac{P(a = 1, \V_{a})}{P(\V_{a})} = \int_{\theta_{a}}  \frac{P(a = 1, \V_{a}, \theta_{a})}{P(\V_{a})} =  \int_{\theta_{a}}  \frac{P(a = 1 \mid \V_{a}, \theta_{a}) P(\V_{a}, \theta_{a})}{P(\V_{a})} \\
-    &=  \int_{\theta_{a}}  \frac{P(a = 1 \mid \V_{a}, \theta_{a}) P(\theta_{a} \mid \V_{a})P(\V_{a})}{P(\V_{a})} = \int_{\theta_{a}}P(\theta_{a}\mid \V_{a})\theta_{a} = \E[\theta_{a} \mid \V_{a}] \\
-    &= \frac{\alpha_{a} + \#(a= 1)}{\alpha_{a} + \#(a=1) + \beta_{a} + \#(a=0)}
+    P(A = 1 \mid \V_{A})
+    &= \frac{P(A = 1, \V_{A})}{P(\V_{A})} = \int_{\theta_{A}}  \frac{P(A = 1, \V_{A}, \theta_{A})}{P(\V_{A})} =  \int_{\theta_{A}}  \frac{P(A = 1 \mid \V_{A}, \theta_{A}) P(\V_{A}, \theta_{A})}{P(\V_{A})} \\
+    &=  \int_{\theta_{A}}  \frac{P(A = 1 \mid \V_{A}, \theta_{A}) P(\theta_{A} \mid \V_{A})P(\V_{A})}{P(\V_{A})} = \int_{\theta_{A}}P(\theta_{A}\mid \V_{A})\theta_{A} = \E[\theta_{A} \mid \V_{A}] \\
+    &= \frac{\alpha_{A} + \#(A= 1)}{\alpha_{A} + \#(A=1) + \beta_{A} + \#(A=0)}
   \end{aligned}
 \]
 
 For \(P(d \mid a ,b)\) the situation is more complex, the most convenient way is
-to specify a Beta prior for each one of the four components of \(\theta_{d}\).
-Lets focus on \(P(d = 1 \mid a = 1, b = 0)\), notice the parameters \(\alpha\)
+to specify a Beta prior for each one of the four components of \(\theta_{D}\).
+Lets focus on \(P(D = 1 \mid A = 1, B = 0)\), notice the parameters \(\alpha\)
 and \(\beta\) we used before now depend on \(a\) and \(b\), for this reason we
-are using \(\alpha_{d}(a,b)\) and \(\beta_{d}(a,b)\) as prior parameters, these
+are using \(\alpha_{D}(a,b)\) and \(\beta_{D}(a,b)\) as prior parameters, these
 are called \emph{hyperparameters}.
 \[
-  P(\theta_{2}) = B(\theta_{2} \mid \alpha_{d}(1,0) + \#(d = 1, a = 1, b = 0), \beta_{d}(1,0) + \#(d = 0, a = 1, b = 0))
+  P(\theta_{2}) = B(\theta_{2} \mid \alpha_{D}(1,0) + \#(D = 1, A = 1, B = 0), \beta_{D}(1,0) + \#(D = 0, A = 1, B = 0))
 \]
 
 As before we got that
 
 \[
-  P(d = 1 \mid a = 1, b = 0, \V) = \frac{\alpha_{d}(1,0) + \#(d = 1, a = 1, b = 0)}{\alpha_{d}(1,0) + \beta_{d}(1,0) + \#(a=1, b = 0)}
+  P(D = 1 \mid A = 1, B = 0, \V) = \frac{\alpha_{D}(1,0) + \#(D = 1, A = 1, B = 0)}{\alpha_{D}(1,0) + \beta_{D}(1,0) + \#(A=1, B = 0)}
 \]
 
 In case we had no preference, we could set all hyperparameters to the same
@@ -442,14 +455,14 @@ and the one where we have infinite data.
 In case we have no data, the marginal probability corresponds to the prior which
 in the last case is
 \[
-   P(d = 1 \mid a = 1, b = 0, \V) = \frac{\alpha_{d}(1,0)}{\alpha_{d}(1,0) + \beta_{d}(1,0)}
+   P(D = 1 \mid A = 1, B = 0, \V) = \frac{\alpha_{D}(1,0)}{\alpha_{D}(1,0) + \beta_{D}(1,0)}
  \]
  Note that equal hyperparameters would give a result of \(0.5\).
 
  When infinite data is available, the marginal is generally dominated by it,
  this corresponds to the Maximum Likelihood solution.
  \[
-   P(d = 1 \mid a = 1, b = 0, \V) = \frac{\#(d = 1, a = 1 , b = 0)}{\#(a = 1, b = 0)}
+   P(D = 1 \mid A = 1, B = 0, \V) = \frac{\#(D = 1, A = 1 , B = 0)}{\#(A = 1, B = 0)}
  \]
  This happens unless the prior has a pathologically strong effect.
 
@@ -457,7 +470,7 @@ in the last case is
  equal parameters and hyperparameters \(1\). Then we can compute the differences
  between this and using the Maximum Likelihood technique.
  \[
-   P(a = 1 \mid \V) = \frac{1 + \#(a = 1)}{2 + N} = \frac{5}{9} \approx 0.556
+   P(A = 1 \mid \V) = \frac{1 + \#(A = 1)}{2 + N} = \frac{5}{9} \approx 0.556
  \]
  By comparison, the Maximum Likelihood result is \(4/7 = 0.571\), the Bayesian
  result is more prudent than this one, which fits in with our belief that any
