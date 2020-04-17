@@ -590,18 +590,34 @@ into account.
   \KwResult{\(G\) with removed links}
   \(i = 0\)\;
   \While{all nodes have \(\leq i\) neighbors}{
-    \For{\(x \in \V\)}{
-      \If{\(\exists y \in ne(x), S \subset ne(x)\backslash \{y\}\) such that
-        \(x \bigCI y \mid S\)}{
-        Remove \(x-y\) from \(G\)\;
-        \(S_{xy} = S\)\;
+    \For{\(X \in \V\)}{
+      \For{\(Y \in ne(x)\)}{
+        \If{\(\exists S \subset ne(X)\backslash Y\}\) such that
+          \(X \bigCI Y \mid S\)}{
+          Remove \(X-Y\) from \(G\)\;
+          \(S_{XY} = S\)\;
+        }
       }
     }
     \(i = i+1\)\;
   }
- \caption{PC Algorithm}
+  \caption{PC Algorithm}
+  \label{alg:pc1}
 \end{algorithm}
 
+An approach to learn the structure is the PC algorithm, it begins with a
+complete graph \(G\) and tries to remove as many links as possible studying the
+independence of the variables.
+
+The algorithm \ref{alg:pc1} iterates over a natural counter, ending when it gets bigger
+than all existent neighborhoods. It chooses a linked pair of variables \(X - Y\) and
+a subset \(S_{XY} \subset ne(X)\), following it has the desired size and
+\(Y \notin S_{XY}\). If \(X \bigCI Y \mid S\), then the link is removed and \(S_{XY}\) is stored.
+
+When this process ends, the undirected graph may be constructed following one rule,
+for any undirected link \(X - Y - Z\), if \(Y \notin S_{XZ}\) then set
+\(X \to Y \leftarrow Z\). The rest of links may oriented arbitrarily not
+creating cycles or colliders.
 
 
 \section{Undirected Models}
