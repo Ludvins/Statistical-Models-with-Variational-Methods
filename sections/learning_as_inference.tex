@@ -307,8 +307,7 @@ i.i.d it follows that
 A Bayesian approach where we set a distribution over the parameters is an
 alternative to Maximum Likelihood training of a Bayesian Network, as we did in
 the coin tossing example. We go deep into it using the following scenario, consider a disease
-\(D\) and two habits \(A\) and \(B\), following the Bayesian Network shown in
-figure \ref{fig:bayesian_example}.
+\(D\) and two habits \(A\) and \(B\).
 
 \begin{figure}[!ht]
   \begin{tabular}{*{2}{>{\centering\arraybackslash}b{\dimexpr0.5\linewidth-2\tabcolsep\relax}}}
@@ -318,9 +317,9 @@ figure \ref{fig:bayesian_example}.
     mynode/.style={draw,circle,text width=0.5cm,align=center}
     ]
 
-    \node[mynode] (d) {\(d_{n}\)};
-    \node[mynode, above left=of d] (a) {\(a_{n}\)};
-    \node[mynode, above right=of d] (b) {\(b_{n}\)};
+    \node[mynode] (d) {\(D_{n}\)};
+    \node[mynode, above left=of d] (a) {\(A_{n}\)};
+    \node[mynode, above right=of d] (b) {\(B_{n}\)};
     \node[mynode, above=of a] (ta) {\(\theta_{A}\)};
     \node[mynode, above=of b] (tb) {\(\theta_{B}\)};
     \node[mynode, below=of d] (td) {\(\theta_{D}\)};
@@ -334,6 +333,7 @@ figure \ref{fig:bayesian_example}.
 
   \end{tikzpicture}
     \caption{Bayesian parameter model for the relation between \(A,B,D\)}
+    \label{fig:bayesian_example}
     &
       \renewcommand{\arraystretch}{1.3}
       \begin{tabular}{|l|l|l|}
@@ -356,7 +356,9 @@ figure \ref{fig:bayesian_example}.
 P(a,b,d) = P(d|a,b)P(a)P(b)
 \]
 
-Consider the set of observations
+Consider the set of i.i.d random variables
+\(\{A_{n}, B_{n}, D_{n}\}_{n = 1,\dots, N}\) and the
+corresponding set of observations
 \(\mathcal{V} = \{(a_{n}, b_{n}, d_{n}), n = 1,\dots , N\}\)
 
 We need a notation for the parameters, as all the variables are binary we are
@@ -418,7 +420,7 @@ will hold.
 \]
 So it follows that
 \[
-  (\theta_{A} \mid \V_{A}) \sim \text{Beta}(\theta_{A} \mid \alpha_{A} + \#(a=1), \beta_{A} + \#(a = 0))
+  (\theta_{A} \mid \V_{A}) \sim \text{Beta}(\theta_{A} \mid \alpha_{A} + \#(A=1), \beta_{A} + \#(A = 0))
 \]
 
 The marginal is then
@@ -485,7 +487,8 @@ in the last case is
  example. Secondly, we will consider a variable with a non void set of parents,
  as in the case with the disease \(D\).
 
- Consider a variable \(X\) with \(Dom(X) = \{1, \dots, I\}\), then
+ Consider a variable \(X\) with
+ \(Dom(X) = \{1, \dots, I\}, \ \theta = (\theta_{1},\dots, \theta_{I})\), then
  \[
    P(x \mid \theta) = \prod_{i = 1}^{I}\theta_{i}^{\mathbb{I}[x = i]} \text{
    with  } \sum_{i=1}^{I}\theta_{i} = 1
@@ -495,12 +498,12 @@ So that the posterior (considering \(N\) observations of the variable
 \[
   P(\theta \mid x_{1},\dots,x_{N}) = \frac{1}{P(\V)} P(\theta) \prod_{n = 1}^{N}\prod_{i =1 }^{I}\theta_{i}^{\mathbb{I}[x_{n} = i]} =  \frac{1}{P(\V)} P(\theta) \prod_{i = 1}^{I} \theta_{i}^{\sum_{n} \mathbb{I}[x_{n}=i]}
 \]
-Then assuming a Dirichlet prior with hyperparameters \(\bm{u} = (u_{1}, \dots, u_{N})\)
+Then assuming a Dirichlet prior with hyperparameters \(\bm{u} = (u_{1}, \dots, u_{I})\)
 \[
   P(\theta) = \frac{1}{B(\bm{u})}\prod_{i =1}^{I}\theta_{i}^{u_{i}-1} \implies P(\theta \mid \V) = \frac{1}{B(\bm{u})P(\V)}\prod_{i=1}^{I}\theta_{i}^{u_{i}-1 + \sum_{n}\mathbb{I}[x_{n} = i]}
 \]
 
-Which means that, defining \(\bm{c} = ( \sum_{n=1}^{N}\mathbb{I}[x_{n} = i])_{i \in \I}\)
+Which means that, defining \(\bm{c} = ( \sum_{n=1}^{N}\mathbb{I}[x_{n} = i])_{i = 1,\dots,I}\)
 \[
   P(\theta \mid \V) \sim \text{Dirichlet}(\bm{u} + \bm{c})
 \]
@@ -509,7 +512,7 @@ The marginal is then given by
 \[
   \begin{aligned}
     P(X=i \mid \V) &= \int_{\theta}P(X=i \mid \theta)P(\theta \mid \V) =  \int_{\theta}\theta_{i}P(\theta \mid \V)\\
-    &=  \int_{\theta_{i}}\theta_{i}P(\theta_{i} \mid \V)
+    &=  \int_{\theta_{i}}\theta_{i}P(\theta_{i} \mid \V) = \E[\theta_{i} \mid \V]
 \end{aligned}
 \]
 Where we used that
@@ -519,8 +522,13 @@ Where we used that
 As we already know from Proposition \ref{prop:dirichlet_marginal}, the univariate marginal of a Dirichlet distribution is a
 Beta Distribution, then
 \[
-  P(X = i \mid \V) \sim \text{Beta}(u_{i} + c_{i}, \sum_{j\neq i} u_{j} + c_{j})
+  (\theta_{i} \mid \V) \sim \text{Beta}(u_{i} + c_{i}, \sum_{j\neq i} u_{j} + c_{j})
 \]
+So the marginal is
+\[
+  P(X = i \mid \V) = \frac{u_{i} + c_{i}}{\sum_{j}u_{j} + c_{j}}
+\]
+
 
 Consider now that \(X\) has a set of parent variables \(pa(X)\), in this case,
 we want to compute the marginal given a state of its parents and the data
@@ -529,7 +537,7 @@ we want to compute the marginal given a state of its parents and the data
 \]
 Let set the following notation for the parameters
 \[
-  P(X = i \mid pa(X) = \bm{j}, \theta) = \theta_{i,\bm{j}} \hspace{2cm} \bm{\theta_{j}} = (\theta_{i,\bm{j}})_{i}
+  P(X = i \mid pa(X) = \bm{j}, \theta) = \theta_{i,\bm{j}} \hspace{2cm} \bm{\theta_{j}} = (\theta_{1,\bm{j}},\dots, \theta_{I,\bm{j}})
 \]
 Local independence means that
 \[
@@ -538,20 +546,21 @@ Local independence means that
 
 As we did before, we consider a Dirichlet prior
 \[
-  P(\bm{\theta_{j}})\sim Dirichlet(\bm{u}_{j})
+  \bm{\theta_{j}} \sim Dirichlet(\bm{u_{j}})
 \]
-the posterior is then proportional to
+the posterior is then
 \[
   \begin{aligned}
-    P(\bm{\theta} \mid \V) &= P(\bm{\theta})P(\V \mid \bm{\theta}) = \Big(\prod_{\bm{j}}P(\bm{\theta_{j}}) \Big)P(\V \mid \bm{\theta}) = \Big(\prod_{\bm{j}}\frac{1}{B(\bm{u_{j}})}\prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1}\Big) P(\V \mid \bm{\theta})\\
-    &= \Big(\prod_{\bm{j}}\frac{1}{B(\bm{u_{j}})}\prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1}\Big) \Big(\prod_{n}\prod_{j}\prod_{i} \theta_{i,\bm{j}}^{\mathbb{I}[x_{n} = i, pa(x_{n}) = \bm{j}]}\Big)\\
-    &= \prod_{\bm{j}}\frac{1}{B(\bm{u_{j}})}\prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1 + \#(X = i,pa(X)=\bm{j})}
+    P(\bm{\theta} \mid \V) &= \frac{P(\bm{\theta})P(\V \mid \bm{\theta}) }{P(\V)} = \frac{1}{P(\V)}\Big(\prod_{\bm{j}}P(\bm{\theta_{j}}) \Big)P(\V \mid \bm{\theta}) \\
+    &= \frac{1}{P(\V)}\Big(\prod_{\bm{j}}\frac{1}{B(\bm{u_{j}})}\prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1}\Big) P(\V \mid \bm{\theta})\\
+    &= \frac{1}{P(\V)}\Big(\prod_{\bm{j}}\frac{1}{B(\bm{u_{j}})}\prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1}\Big) \Big(\prod_{n}\prod_{\bm{j}}\prod_{i} \theta_{i,\bm{j}}^{\mathbb{I}[x_{n} = i, pa(x_{n}) = \bm{j}]}\Big)\\
+    &= \frac{1}{P(\V)}\prod_{\bm{j}}\frac{1}{B(\bm{u_{j}})}\prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1 + \#(X = i,pa(X)=\bm{j})}
   \end{aligned}
 \]
 Naming \(\bm{v_{j}} = \bm{u_{j}} + \#(X = i, pa(X) = \bm{j})\), the posterior
 is
 \[
-  P(\bm{\theta} \mid \V) = \prod_{j}\text{Dirichlet}(\bm{v_{j}})
+  (\bm{\theta} \mid \V) \sim \prod_{j}\text{Dirichlet}(\bm{v_{j}})
 \]
 
 Noting \(v_{i,j}\) the components of \(\bm{v_{j}}\), the marginal is then
