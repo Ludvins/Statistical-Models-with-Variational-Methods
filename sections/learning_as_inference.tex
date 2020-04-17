@@ -570,4 +570,38 @@ Noting \(v_{i,j}\) the components of \(\bm{v_{j}}\), the marginal is then
 
 \subsection{Structure Learning}
 
+So far, both data and the BN have given to us. However, the BN structure is not
+always given and may be learned also form the data. Even considering complete
+data (no missing observations), there are some problems that need to be taken
+into account.
+\begin{itemize}
+    \item The number of Belief networks is exponential over the number of
+    variables so a brute force algorithm would not be viable.
+  \item Testing dependencies requires a large amount of data. So a threshold
+    must be set to measure when a dependence is significant.
+    \item A Belief Network or a Markov Network may not be enough to represent
+    the data due to the existence of unobserved variables.
+\end{itemize}
+
+
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \KwData{Complete undirected graph \(G\), with vertices \(\V\)}
+  \KwResult{\(G\) with removed links}
+  \(i = 0\)\;
+  \While{all nodes have \(\leq i\) neighbors}{
+    \For{\(x \in \V\)}{
+      \If{\(\exists y \in ne(x), S \subset ne(x)\backslash \{y\}\) such that
+        \(x \bigCI y \mid S\)}{
+        Remove \(x-y\) from \(G\)\;
+        \(S_{xy} = S\)\;
+      }
+    }
+    \(i = i+1\)\;
+  }
+ \caption{PC Algorithm}
+\end{algorithm}
+
+
+
 \section{Undirected Models}
