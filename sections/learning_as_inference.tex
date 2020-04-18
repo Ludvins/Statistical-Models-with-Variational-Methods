@@ -592,7 +592,7 @@ into account.
   \While{all nodes have \(\leq i\) neighbors}{
     \For{\(X \in \V\)}{
       \For{\(Y \in ne(x)\)}{
-        \If{\(\exists S \subset ne(X)\backslash Y\}\) such that
+        \If{\(\exists S \subset ne(X)\backslash Y\) such that \(\#S = i\) and
           \(X \bigCI Y \mid S\)}{
           Remove \(X-Y\) from \(G\)\;
           \(S_{XY} = S\)\;
@@ -612,12 +612,38 @@ independence of the variables.
 The algorithm \ref{alg:pc1} iterates over a natural counter, ending when it gets bigger
 than all existent neighborhoods. It chooses a linked pair of variables \(X - Y\) and
 a subset \(S_{XY} \subset ne(X)\), following it has the desired size and
-\(Y \notin S_{XY}\). If \(X \bigCI Y \mid S\), then the link is removed and \(S_{XY}\) is stored.
+\(Y \notin S_{XY}\). If \(X \bigCI Y \mid S\), then the link is removed and
+\(S_{XY}\) is stored. The main idea behind this is the set of independencies is
+faithful to a graph then there is no link between two nodes \(X\) and \(Y\) if
+and only if there exists a subset of \(ne(X)\) such that they are independent
+given this subset.
 
 When this process ends, the undirected graph may be constructed following one rule,
 for any undirected link \(X - Y - Z\), if \(Y \notin S_{XZ}\) then set
 \(X \to Y \leftarrow Z\). The rest of links may oriented arbitrarily not
-creating cycles or colliders.
+creating cycles or colliders. The reasoning behind this is using the
+d-separation theorem \ref{th:d-separation}, if \(Y \in S_{XZ}\) and
+\(X \bigCI Z \mid S_{XZ}\) then we want \(S_{XZ}\) to d-separate them, that is,
+using any configuration that doesn't create a collider in \(S_{XZ}\). On the
+other hand if \(Y \notin S_{XZ}\) then \(X \bigCD Z \mid Y\) so \(Y\) d-connect
+them, to get this we set it as a collider.
+
+Our main concern now is given three variables \(X, Y, Z\) to measure \(X \bigCI Y \mid Z\).
+
+\begin{definition}
+  Given two random variables \(X, Y\), we define their \emph{mutual information} as the Kullback-Leibler divergence of their joint distribution and the product of their marginals and
+  \[
+    MI(X;Y) = KL(P_{X,Y}\mid P_{X}P_{Y})
+  \]
+\end{definition}
+
+\begin{definition}
+  Given three random variables \(X, Y, Z\) we define the \emph{conditional mutual information} of \(X\) and \(Y\) over \(Z\) as
+  \[
+    MI(X;Y\mid Z) = \E_{Z}[KL(P_{X,Y \mid Z} \mid P_{X\mid Z} P_{Y \mid Z})]
+  \]
+\end{definition}
+Where \(MI(X;Y \mid Z) \geq 0\) and \(MI(X;Y \mid Z) = 0 \iff P_{X,Y \mid Z} = P_{X\mid Z} P_{Y \mid Z} \iff X\bigCI Y \mid Z\). We can estimate this using the empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\), therefore a threshold must be established.
 
 
 \section{Undirected Models}
