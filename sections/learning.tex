@@ -1,0 +1,191 @@
+
+In Machine Learning and related fields, the distributions are not fully specified
+and need to be learned from the data.
+
+From now on, \(\mathcal{V}\) will denote the known data and \(\theta\) the set
+of parameters of the data distributions. The main task is to determine this set
+of parameters using the information given by the data.
+
+\begin{definition}
+\emph{Priors} and \emph{posteriors} typically refer to the parameter
+distribution before and after seeing the data, respectively. Using Bayes' rule
+\[
+  P(\theta \mid  \mathcal{V}) = \frac{P(\mathcal{V}  \mid  \theta)P(\theta)}{P(\mathcal{V})}
+\]
+The factor \(P(\mathcal{V} \mid \theta)\) is called the \emph{likelihood}.
+\end{definition}
+
+Let us see an example of our goal, in it we will try to learn the bias of a coin,
+given a set of tossing results.
+
+\begin{exampleth}
+  Let \(\V = \{v_n\}_{n \in 0,\dots,N}\) be the results of tossing a coin \(N \in
+  \mathbb{N}\) times, let \(1\) symbolize \emph{heads} and \(0\) \emph{tails}.
+
+  Our objective is to estimate the probability \(\theta\) that the coin will be
+  head \(P(v_n = 1  \mid  \theta)\), for this we have the i.i.d random variables \(v_1,\dots,v_n\)
+  and \(\theta\), and we require a model \(P(v_1,\dots,v_n,\theta)\). We have a
+  Belief Network shown in figure \ref{fig:learning_coin}
+  \[
+    P(\V,\theta) = P(\theta)\prod_{n=1}^N P(v_n \mid \theta)
+  \]
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 0.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (a) {\(\theta\)};
+\node[mynode, below=of a] (b) {\(v_i\)};
+\plate{} {(b)} {\(N\)}; %
+\path (a) edge[-latex] (b)
+;
+
+\end{tikzpicture}
+\caption{Belief network for coin tossing}
+\label{fig:learning_coin}
+\end{figure}
+
+We want to calculate
+\[
+  P(\theta \mid \V) = \frac{P(\V \mid \theta)P(\theta)}{P(\V)}
+\]
+to do so, we need to specify the prior \(P(\theta)\), we are using a discrete
+model where
+\[
+  P(\theta = 0.2) = 0.1 \hspace{2cm} P(\theta = 0.5) = 0.7 \hspace{2cm} P(\theta =
+  0.8) = 0.2
+\]
+This means that we have a \(70\%\) belief that the coin is fair, a \(10\%\)
+belied that is biased to tails and \(20\%\) that is biased to heads.
+Notice that \(P(v_n = 1 \mid \theta) = \theta\) and \(P(v_n = 0 \mid \theta) = 1 - \theta\).
+
+Let \(n_h\) be the number of heads in our observed data and \(n_t\)
+the number of tails
+\[
+  n_{h} = \#\{v= 1\} \hspace{2cm} n_{t} = \#\{v = 0\}
+\]
+
+then the posterior has the form
+
+\[
+  P(\theta  \mid \V) = \frac{P(\theta)}{P(\mathcal{V})} \theta^{n_h}(1-\theta)^{n_t}
+\]
+
+Suppose now that \(n_h = 2\) and \(n_t = 8\), then
+\begin{gather*}
+  P(\theta = 0.2  \mid  \mathcal{V}) = \frac{1}{P(\mathcal{V})}\times 0.1 \times 0.2^{2}
+  \times 0.8^{8} = \frac{1}{P(\mathcal{V})} \times 6.71\times10^{-4} \\
+   P(\theta = 0.5  \mid  \mathcal{V}) = \frac{1}{P(\mathcal{V})}\times 0.7 \times 0.5^{2}
+   \times 0.5^{8} = \frac{1}{P(\mathcal{V})} \times 6.83\times10^{-4}\\
+    P(\theta = 0.8  \mid  \mathcal{V}) = \frac{1}{P(\mathcal{V})}\times 0.2 \times 0.2^{2}
+  \times 0.8^{8} = \frac{1}{P(\mathcal{V})} \times 3.27\times10^{-7}
+\end{gather*}
+
+Now, we can compute
+\[
+   \frac{1}{P(\mathcal{V})} =  6.71\times10^{-4} +   6.83\times10^{-4} +
+   3.27\times10^{-7} = 0.00135
+ \]
+ So,
+\begin{gather*}
+  P(\theta = 0.2  \mid  \mathcal{V}) = 0.4979\\
+  P(\theta = 0.5  \mid  \mathcal{V}) = 0.5059\\
+  P(\theta = 0.8  \mid  \mathcal{V}) = 0.00024
+\end{gather*}
+
+These are the posterior parameter beliefs of our experiment. Given this, it we
+were to choose a single value for the posterior it would be \(\theta = 0.5\).
+This result is intuitive, we had a strong belief of the coin being fair
+and even though the number of tails was quite bigger than heads, it
+was not enough to make the difference. Obviously the posterior of the coin being
+biased to tails is now bigger than the prior.
+
+Suppose an uniform prior distribution so that \(P(\theta) = k \implies \int_0^1 P(\theta) d\theta
+= k = 1\) due to normalization.
+
+Using the previous calculations we have
+\[
+  P(\theta \mid  \mathcal{V}) = \frac{1}{P(\mathcal{V})} \theta^{n_h}(1-\theta)^{n_t}
+\]
+where
+\[
+  P(\mathcal{V}) = \int_0^1 \theta^{n_h}(1-\theta)^{n_t} d\theta
+\]
+this implies that
+\[
+  P(\theta \mid \mathcal{V}) = \frac{\theta^{n_h}(1-\theta)^{n_t} }{ \int_0^1 u^{n_h}(1-u)^{n_t}
+    du} \implies \theta \mid \V \sim Beta(n_h + 1, n_t + 1)
+\]
+\end{exampleth}
+
+\begin{definition}
+If the posterior distribution is in the same probability distribution family as
+the prior distribution, they are then called \emph{conjugate distributions}, and
+the prior is called a \emph{conjugate prior} of the likelihood distribution.
+\end{definition}
+
+Let's use a Beta distribution as the prior in the last example
+
+\[
+  \theta \sim \text{Beta}(\alpha, \beta) \implies P(\theta) = \frac{1}{B(\alpha, \beta)}\theta^{\alpha - 1}(1 - \theta)^{\beta -
+    1}
+\]
+then, repeating the same as before we get that
+\[
+  P(\theta, \mathcal{V}) = \frac{1}{B(\alpha + n_h, \beta + n_t)}\theta^{\alpha
+    + n_h - 1}(1 - \theta)^{\beta + n_t - 1} \implies (\theta, \V) \sim Beta(\alpha + n_h, \beta + n_t)
+\]
+
+So both the prior and posterior are Beta distributions, then the Beta
+distribution is called ``conjugate'' of the Binomial distribution.
+
+
+The Bayesian posterior says nothing about how to benefit from the beliefs it
+represents, in order to do this we need to specify the utility of each decision.
+
+With this idea we define an utility function over the parameters
+
+\[
+  U(\theta, \theta_{true}) = \alpha \mathbb{I}[\theta = \theta_{true}] - \beta
+  \mathbb{I}[\theta \neq \theta_{true}]
+\]
+where \(\alpha, \beta \in \R\). This symbolizes the gains or looses of choosing
+the parameter \(\theta\), when the true value of the parameter is supposed to be
+\(\theta_{true}\). Then the expected utility of a parameter \(\theta_0\) is
+calculated as
+\[
+  U(\theta = \theta_0) = \sum_{\theta_{true}}U(\theta = \theta_0,
+  \theta_{true})P(\theta = \theta_{true}  \mid  \mathcal{V})
+\]
+
+Using the last example, we may define out utility function as
+\[
+  U(\theta, \theta_{true}) = 10\mathbb{I}[\theta = \theta_{true}] - 20
+  \mathbb{I}[\theta \neq \theta_{true}]
+\]
+Where we interpret that the loss of choosing the wrong parameter is twice as
+important as the gains from doing it right.
+
+The expected utility of the decision that the parameter is \(\theta = 0.2\)
+in our discrete example would be
+\[
+  \begin{aligned}
+  U(\theta = 0.2) &= U(\theta = 0.2, \theta_{true} = 0.2)P(\theta_{true} = 0.2  \mid
+  \mathcal{V})\\
+  &+ U(\theta = 0.2, \theta_{true} = 0.5)P(\theta_{true} = 0.5  \mid
+  \mathcal{V}) \\
+  & +  U(\theta = 0.2, \theta_{true} = 0.8)P(\theta_{true} = 0.8  \mid  \mathcal{V})\\
+  &= 10 \times 0.4979 - 20\times 0.5059 -20 \times 0.00024 \\
+  &= -5.1438\\
+  U(\theta = 0.5) &= -4.9038 \\
+  U(\theta = 0.8) &= -20.0736
+\end{aligned}
+\]
+
+
+This illustrate how an utility function can affect the results of the inference.
+The most probable value for \(\theta\) was \(0.2\), but, using this utility
+function, \(0.5\) is the one with which we expect minor losses.
