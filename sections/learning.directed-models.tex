@@ -368,10 +368,19 @@ is
 \[
   (\bm{\theta} \mid \V) \sim \prod_{j}\text{Dirichlet}(\bm{v_{j}})
 \]
-
 Noting \(v_{i,j}\) the components of \(\bm{v_{j}}\), the marginal is then
 \[
   P(X=i, pa(X) = \bm{j}, \V) = \frac{v_{i,j}}{\sum_{i}v_{i,j}}
+\]
+Notice all the above has been done using a fixed variable \(X\), so that all the parameters depend on that variable.
+
+Using the above calculations, we can define the data likelihood under a model
+\[
+  \begin{aligned}
+    P(\V \mid \mathcal{M}) &= \prod_{x}\prod_{n}P(x_{n} \mid pa(x_{n}), \mathcal{M}) = \prod_{x} \int_{\bm{\theta}} P(\bm{\theta}) \prod_{n} P(x_{n}\mid pa(x_{n}), \bm{\theta}, \mathcal{M})\\
+    &= \prod_{x} \prod_{\bm{j}} \frac{1}{B(\bm{u_{j}})} \int_{\bm{\theta}} \prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1 + \#(x = i,pa(x)=\bm{j})}\\
+    &= \prod_{x}\prod_{j} \frac{B(\bm{v_{j}})}{B(\bm{u_{j}})}
+  \end{aligned}
 \]
 
 \section{Structure Learning}
@@ -390,7 +399,7 @@ into account.
 \end{itemize}
 
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
   \SetAlgoLined
   \KwData{Complete undirected graph \(G\), with vertices \(\V\)}
   \KwResult{\(G\) with removed links}
@@ -454,9 +463,4 @@ Our main concern now is given three variables \(X, Y, Z\) to measure \(X \bigCI 
 \end{definition}
 Where \(MI(X;Y \mid Z) \geq 0\) and \(MI(X;Y \mid Z) = 0 \iff P_{X,Y \mid Z} = P_{X\mid Z} P_{Y \mid Z} \iff X\bigCI Y \mid Z\). We can estimate this using the empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\), therefore a threshold must be established.
 
-A Bayesian approach would be comparing the likelihood under independence and dependence hypothesis. For the independent case, we suppose \(X \bigCI Y \mid Z\), then using a parameter \(\theta = (\theta_{X\mid Z}, \theta_{Y \mid Z}, \theta_{Z})\)
-\[
-  P(x, y, z, \theta \mid \mathcal{H}_{indep}) = P( x\mid z , \theta_{X\mid Z})P(y \mid z, \theta_{Y \mid Z})P(z \mid \theta_{Z})P(\theta_{X\mid Z})P(\theta_{Y \mid Z})P(\theta_{Z})
-\]
-
-If the variables are chosen a categorical distribution over their parameters, then a Dirichlet prior is convenient (as conjugacy holds).
+A Bayesian approach would be comparing the model likelihood under independence and dependence hypothesis.
