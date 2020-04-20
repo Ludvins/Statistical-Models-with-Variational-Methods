@@ -1,0 +1,81 @@
+
+So far, both data and the BN have given to us. However, the BN structure is not
+always given and may be learned also form the data. Even considering complete
+data (no missing observations), there are some problems that need to be taken
+into account.
+\begin{itemize}
+    \item The number of Belief networks is exponential over the number of
+    variables so a brute force algorithm would not be viable.
+  \item Testing dependencies requires a large amount of data. So a threshold
+    must be set to measure when a dependence is significant.
+    \item A Belief Network or a Markov Network may not be enough to represent
+    the data due to the existence of unobserved variables.
+\end{itemize}
+
+
+\begin{algorithm}[h]
+  \SetAlgoLined
+  \KwData{Complete undirected graph \(G\), with vertices \(\V\)}
+  \KwResult{\(G\) with removed links}
+  \(i = 0\)\;
+  \While{all nodes have \(\leq i\) neighbors}{
+    \For{\(X \in \V\)}{
+      \For{\(Y \in ne(x)\)}{
+        \If{\(\exists S \subset ne(X)\backslash Y\) such that \(\#S = i\) and
+          \(X \bigCI Y \mid S\)}{
+          Remove \(X-Y\) from \(G\)\;
+          \(S_{XY} = S\)\;
+        }
+      }
+    }
+    \(i = i+1\)\;
+  }
+  \caption{PC Algorithm}
+  \label{alg:pc1}
+\end{algorithm}
+
+\section{PC Algorithm}
+
+An approach to learn the structure is the PC algorithm, it begins with a
+complete graph \(G\) and tries to remove as many links as possible studying the
+independence of the variables.
+
+The algorithm \ref{alg:pc1} iterates over a natural counter, ending when it gets bigger
+than all existent neighborhoods. It chooses a linked pair of variables \(X - Y\) and
+a subset \(S_{XY} \subset ne(X)\), following it has the desired size and
+\(Y \notin S_{XY}\). If \(X \bigCI Y \mid S\), then the link is removed and
+\(S_{XY}\) is stored. The main idea behind this is the set of independencies is
+faithful to a graph then there is no link between two nodes \(X\) and \(Y\) if
+and only if there exists a subset of \(ne(X)\) such that they are independent
+given this subset.
+
+When this process ends, the undirected graph may be constructed following one rule,
+for any undirected link \(X - Y - Z\), if \(Y \notin S_{XZ}\) then set
+\(X \to Y \leftarrow Z\). The rest of links may oriented arbitrarily not
+creating cycles or colliders. The reasoning behind this is using the
+d-separation theorem \ref{th:d-separation}, if \(Y \in S_{XZ}\) and
+\(X \bigCI Z \mid S_{XZ}\) then we want \(S_{XZ}\) to d-separate them, that is,
+using any configuration that doesn't create a collider in \(S_{XZ}\). On the
+other hand if \(Y \notin S_{XZ}\) then \(X \bigCD Z \mid Y\) so \(Y\) d-connect
+them, to get this we set it as a collider.
+
+\section{Independence Learning}
+
+Our main concern now is given three variables \(X, Y, Z\) to measure \(X \bigCI Y \mid Z\). One approach is to measure the empirical \emph{conditional mutual information} of the variables.
+
+\begin{definition}
+  Given two random variables \(X, Y\), we define their \emph{mutual information} as the Kullback-Leibler divergence of their joint distribution and the product of their marginals and
+  \[
+    MI(X;Y) = KL(P_{X,Y}\mid P_{X}P_{Y})
+  \]
+\end{definition}
+
+\begin{definition}
+  Given three random variables \(X, Y, Z\) we define the \emph{conditional mutual information} of \(X\) and \(Y\) over \(Z\) as
+  \[
+    MI(X;Y\mid Z) = \E_{Z}[KL(P_{X,Y \mid Z} \mid P_{X\mid Z} P_{Y \mid Z})]
+  \]
+\end{definition}
+Where \(MI(X;Y \mid Z) \geq 0\) and \(MI(X;Y \mid Z) = 0 \iff P_{X,Y \mid Z} = P_{X\mid Z} P_{Y \mid Z} \iff X\bigCI Y \mid Z\). We can estimate this using the empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\), therefore a threshold must be established.
+
+A Bayesian approach would be comparing the model likelihood under independence and dependence hypothesis.
