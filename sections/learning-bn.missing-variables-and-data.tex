@@ -1,1 +1,11 @@
 
+
+Until this moment we have being using a complete information data but in practice this data is often incomplete in two different ways. There may be unobserved or \emph{hidden} variables that affect the visible ones, and there may be \emph{missing} information, that is, states of visible variables that are missing.
+
+To illustrate the later, think about the example with the disease and the two habits we used in the last section, missing data would be a row in the table where some entry is missing, for example \(x_{3} = \{D = 1, A = 1\}\), where we know that this person got the disease and had habit \(A\) but we have no information about habit \(B\).
+
+One approach to handle this situation would be marginalizing over that variable
+\[
+  P(x_{n} \mid \theta) = \int_{a}P(d_{n}, a, b_{n} \mid \theta) = P(b_{n} \mid \theta_{B})\int_{a}P(a \mid \theta_{A})P(d_{n} \mid a_{n}, b_{n}, \theta_{D})
+\]
+But this leads to a form which cannot be factorized and makes the posterior more complex, therefore, the problem is not conceptual but computational. Missing data does not always lead to this situation, for example, marginalizing over a collider would lead to loosing that variable as the integral simply equals \(1\).

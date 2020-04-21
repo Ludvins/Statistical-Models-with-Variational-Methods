@@ -171,6 +171,20 @@ variable. We will define the \emph{probability distribution} \(P_X\) of a random
 variable \(X\) over the probability space \((\Omega, \mathcal{F}, P)\)
 as the pushforward measure of it, that is, \(P_X = PX^{-1}\).
 
+As summation is integration with respect to the \emph{counting measure} defined as
+
+\[
+ \#(dx) = \sum_{n \in \I}\delta(x - n)dx
+\]
+Where \(\I\) is the set of values \(X\) can take, and \(\delta\) is the Dirac distribution.
+Then
+
+\[
+  \int_{x} P(x) \#(dx) = \sum_{n \in \I}\int_{x} P(x) \delta(x-n) dx = \sum_{n \in I}P(n)
+\]
+
+Where we used that \(\int f(x)\delta(x - x_{0}) = f(x_{0})\). Given this, from now on, we will use the integration notation for both discrete and continuous variables given that the integrals will be respect to the counting measure when needed.
+
 \begin{definition}
   As we did for events, we can define the \emph{conditional probability} over
   random variables, let \(X, Y\) be random variables,
@@ -194,7 +208,7 @@ We can also enunciate the \emph{Bayes' theorem}.
 
 Let \(X, Y\) be two random variables, it follows that
 \[
-  P(x) = \sum_y P(x,y) \hspace{2cm} f_X(x) = \int_y f_{X,Y}(x,y)
+  P(x) = \int_y P(x,y)
 \]
 
 
