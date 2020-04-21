@@ -184,6 +184,8 @@ in the last case is
  example. Secondly, we will consider a variable with a non void set of parents,
  as in the case with the disease \(D\).
 
+ \subsection{No parents}
+
  Consider a variable \(X\) with
  \(Dom(X) = \{1, \dots, I\}, \ \theta = (\theta_{1},\dots, \theta_{I})\), then
  \[
@@ -204,7 +206,9 @@ Which means that, defining \(\bm{c} = ( \sum_{n=1}^{N}\mathbb{I}[x_{n} = i])_{i 
 \[
   P(\theta \mid \V) \sim \text{Dirichlet}(\bm{u} + \bm{c})
 \]
-
+\begin{remark}
+Summarizing the above information, we just proved that the Dirichlet distribution is the conjugate prior of the Categorical Distribution.
+\end{remark}
 The marginal is then given by
 \[
   \begin{aligned}
@@ -214,8 +218,6 @@ The marginal is then given by
 \]
 Where we used that
 \[\int_{\theta_{j \neq i}}\theta_{i} P(\theta \mid \V) = \theta_{i}\prod_{k\neq j}P(\theta_{k} \mid V) \int_{\theta_{j}}P(\theta_{j}\mid \V) = \theta_{i} \prod_{k \neq j}P(\theta_{k} \mid \V)\]
-
-
 
 As we already know from Proposition \ref{prop:dirichlet_marginal}, the univariate marginal of a Dirichlet distribution is a
 Beta Distribution, then
@@ -227,7 +229,7 @@ So the marginal is
   P(X = i \mid \V) = \frac{u_{i} + c_{i}}{\sum_{j}u_{j} + c_{j}}
 \]
 
-
+\subsection{Parents}
 Consider now that \(X\) has a set of parent variables \(pa(X)\), in this case,
 we want to compute the marginal given a state of its parents and the data
 \[
@@ -246,6 +248,9 @@ As we did before, we consider a Dirichlet prior
 \[
   \bm{\theta_{j}} \sim Dirichlet(\bm{u_{j}})
 \]
+
+
+
 the posterior is then
 \[
   \begin{aligned}
@@ -260,13 +265,15 @@ is
 \[
   (\bm{\theta} \mid \V) \sim \prod_{j}\text{Dirichlet}(\bm{v_{j}})
 \]
+
+
 Noting \(v_{i,j}\) the components of \(\bm{v_{j}}\), the marginal is then
 \[
   P(X=i, pa(X) = \bm{j}, \V) = \frac{v_{i,j}}{\sum_{i}v_{i,j}}
 \]
 Notice all the above has been done using a fixed variable \(X\), so that all the parameters depend on that variable.
 
-Using the above calculations, we can define the data likelihood under a model
+Using the above calculations, we can define the data likelihood under a model, usually called the \emph{model likelihood}
 \[
   \begin{aligned}
     P(\V \mid \mathcal{M}) &= \prod_{x}\prod_{n}P(x_{n} \mid pa(x_{n}), \mathcal{M}) = \prod_{x} \int_{\bm{\theta}} P(\bm{\theta}) \prod_{n} P(x_{n}\mid pa(x_{n}), \bm{\theta}, \mathcal{M})\\

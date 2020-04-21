@@ -78,4 +78,10 @@ Our main concern now is given three variables \(X, Y, Z\) to measure \(X \bigCI 
 \end{definition}
 Where \(MI(X;Y \mid Z) \geq 0\) and \(MI(X;Y \mid Z) = 0 \iff P_{X,Y \mid Z} = P_{X\mid Z} P_{Y \mid Z} \iff X\bigCI Y \mid Z\). We can estimate this using the empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\), therefore a threshold must be established.
 
-A Bayesian approach would be comparing the model likelihood under independence and dependence hypothesis.
+A Bayesian approach would be comparing the model likelihood under independence and dependence hypothesis. That is computing the model likelihood for the below joint distributions assuming local and global parameter independence
+\[
+  P_{indep}(x,y,z) = P(x\mid z, \theta_{1})P(y \mid z, \theta_{2})P(z \mid \theta_{3})P(\theta_{1})P(\theta_{2})P(\theta_{3})
+\]
+\[
+P_{dep}(x,y,z) = P(x,y,z \mid \theta)P(\theta)
+\]
