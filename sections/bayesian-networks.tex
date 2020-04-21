@@ -12,7 +12,7 @@ P(X_i = x_i \ | \ \texttt{evidence}) = \frac{ \int_{ j \not \in
 The notation when using discrete variables is analogous replacing integration
 with summations.
 
-Lets suppose all these variables are binary, this calculation will require
+Let us suppose all these variables are binary, this calculation will require
 \(O(2^{N-\#\mathcal{E}})\) operations. Also, all entries of a table \(P(x_1,\dots,
 x_N)\) take \(O(2^N)\) space.
 
@@ -63,12 +63,17 @@ Any probability distribution can be written as a Bayesian Network, even though
 it may end up been a fully-connected DAG.
 To set the specification of the Belief Network, we need to define all elements of the probability
 tables \(P(x_i|pa(x_i))\). When the number of variables is large, this is still
-intractable so the tables are generally parameterized is a low dimensional
+intractable so the tables are generally parameterized in a low dimensional
 manner.
 
 Bayesian Networks are good for encoding conditional independence over the
 variables, but aren't for encoding dependence. For example, with the following
-network \(P(x,y) = P(y|x)P(x)\) represented as \(x \to y\) in a DAG.
+network
+\[
+P(x,y) = P(y\mid x)P(x)
+\]
+
+represented as \(x \to y\) in a DAG (a Bayesian network can be defined giving the graph or the joint probability equally).
 It may appear to encode dependence between both variables but the
 conditional \(P(y|x)\) could happen to equal \(P(y)\), giving \(P(x,y) = P(x)P(y)\).
 

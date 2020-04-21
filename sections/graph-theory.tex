@@ -134,7 +134,7 @@ are \(ne(B) = \{A,C,E,D\}\) and its Markov blanket is \(\{A,B,C,D,E,F\}\).
   \item \( A \) is called a \emph{fork} if \(\forall B \in ne(A) \cap U, (A,B)\in
     E\).
   \end{itemize}
-  Notice, a vertex can be a collider for a path but not for others.
+  Notice, a vertex can be a collider for a path but not for others. A vertex is said to be a collider or a fork without any reference to the path when it is for any path that goes through it. This happens when the edge direction condition is satisfied for every neighbor.
 
   For example in figure \ref{fig:relations}, \(D\) is a collider and \( C \) is
   a fork.
@@ -143,7 +143,7 @@ are \(ne(B) = \{A,C,E,D\}\) and its Markov blanket is \(\{A,B,C,D,E,F\}\).
 \begin{definition}
 Let \(G\) be an undirected graph, a \emph{clique} is a maximally connected
 subset of vertices. That is, all the members of the clique are connected to each
-others and there is no bigger clique that constains another.
+others and there is no bigger clique that contains another.
 
 Formally, \(S \subset V\) is a \emph{clique} if and only if \(\forall A,B \in S,
 \ \{A,B\} \in E\) and \(\nexists C \in V\backslash S\) such that \(\forall A \in

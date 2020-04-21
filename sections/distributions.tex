@@ -17,7 +17,7 @@ A distribution could have more than one mode, in this case we say it is \emph{mu
 \begin{definition}
   The notation \(\mathbb{E}[X]\) is used to denote the \emph{average} or
   \emph{expectation} of the values a real-valued variable takes respect to its
-  distribution.
+  distribution. It is worth mentioning that it might not exists.
   If \(X\) is non-negative, it is defined as
   \[
     \mathbb{E}[X] = \int_{\Omega} X(\omega)dP(\omega) \footnote{\(P\) is a
@@ -55,7 +55,7 @@ case \(X\) is continuous, we have that
   \[
     \mu_k = \mathbb{E}[X^k]
   \]
-  For \(k = 1\) it is typically denoted as \(\mu\).
+  For \(k = 1\) it is typically denoted as \(\mu\). Note \(\mu_{k}\) can also denote the \(k^{th}\) element in the mean vector of a multivariate variable.
 \end{definition}
 
 
@@ -115,7 +115,7 @@ going to be used from now on.
 The Bernoulli distribution describes a discrete binary variable \(X\) that takes
 the value 1 with probability \(p\) and the value 0 with probability \(1-p\).
 \[
-  p(x) =
+  P(x) =
 \left\{
   \begin{array}{ll}
     p  & \mbox{if } x = 1 \\
@@ -124,6 +124,12 @@ the value 1 with probability \(p\) and the value 0 with probability \(1-p\).
 \right.
 \]
 
+\subsection{Categorical Distribution}
+
+A generalization of the Bernoulli Distribution when the variable can take more than two states is the \emph{Categorical Distribution}. Let \(Dom(X) = \{1,\dots,N\}\), then \(X\) follows a categorical distribution of parameters \(\theta = (\theta_{1},\dots, \theta_{N})\) if and only if
+\[
+  P(x \mid \theta) = \prod_{i=1}^{N}\theta_{i}^{\mathbb{I}[x = i]} \text{ and } \sum_{i = 1}^{N}\theta_{i} = 1
+\]
 
 \subsection{Binomial Distribution}
 
@@ -171,7 +177,7 @@ as \(f(x) = ax + b\), then \(f(X) \sim N(\mu + b, a^2 \sigma)\)
 This distribution plays a fundamental role in this project so we will discuss
 its properties in more detail.
 
-This distribution is an extension of the uni-variate one when having a
+This distribution is an extension of the univariate one when having a
 multivariate random variable.
 
 \begin{definition}
