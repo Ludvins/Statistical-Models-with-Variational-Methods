@@ -73,7 +73,7 @@ Our main concern now is given three variables \(X, Y, Z\) to measure \(X \bigCI 
 \begin{definition}
   Given three random variables \(X, Y, Z\) we define the \emph{conditional mutual information} of \(X\) and \(Y\) over \(Z\) as
   \[
-    MI(X;Y\mid Z) = \E_{Z}[KL(P_{X,Y \mid Z} \mid P_{X\mid Z} P_{Y \mid Z})]
+    MI(X;Y\mid Z) = \E{Z}{KL(P_{X,Y \mid Z} \mid P_{X\mid Z} P_{Y \mid Z})}
   \]
 \end{definition}
 Where \(MI(X;Y \mid Z) \geq 0\) and \(MI(X;Y \mid Z) = 0 \iff P_{X,Y \mid Z} = P_{X\mid Z} P_{Y \mid Z} \iff X\bigCI Y \mid Z\). We can estimate this using the empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\), therefore a threshold must be established.

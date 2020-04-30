@@ -54,13 +54,13 @@ empirical distribution as a distribution whose probability mass function
 
  We may calculate this Kullback-Leibler divergence and study their functional independence.
 \[
-  KL(Q \mid P) = \E[\log(Q(x))]_{Q} - \E[\log(P(x))]_Q
+  KL(Q \mid P) = \E{Q}{\log(Q(x))} - \E{Q}{\log(P(x))}
 \]
 
-Notice the term \(\E[\log(Q(x))]_{Q} \) is a constant as the variables are
+Notice the term \(\E{Q}{\log(Q(x))}\) is a constant as the variables are
 i.i.d it follows that
 \[
-   \E[\log(P(x))]_Q = \frac{1}{m}\sum_{i = 1}^mlogP(x_i)
+   \E{Q}{\log(P(x))} = \frac{1}{m}\sum_{i = 1}^mlogP(x_i)
  \]
  where the right side is the log likelihood under \(Q\). As the logarithm is
  a strictly increasing function, maximizing the log likelihood equals to
@@ -79,11 +79,11 @@ i.i.d it follows that
  distribution \(Q(x)\) and \(P(x)\) in order to get the Maximum Likelihood.
  \[
    \begin{aligned}
-   KL(Q \mid P) &= - \E\big[\sum_{i = 1}^K\log{P(x_i \mid pa(X_i))}\big]_Q +
-   \E\big[\sum_{i = 1}^K\log{P(x_i \mid pa(X_i))}\big]_P
+   KL(Q \mid P) &= - \E{Q}{\sum_{i = 1}^K\log{P(x_i \mid pa(X_i))}} +
+   \E{P}{\sum_{i = 1}^K\log{P(x_i \mid pa(X_i))}}
    \\ &= - \sum_{i =
-     1}^K \E\big[\log{P(x_i \mid pa(X_i))}\big]_Q + \sum_{i =
-     1}^K \E\big[\log{P(x_i \mid pa(X_i))}\big]_P
+     1}^K \E{Q}{\log{P(x_i \mid pa(X_i))}} + \sum_{i =
+     1}^K \E{Q}{\log{P(x_i \mid pa(X_i))}}
    \end{aligned}
  \]
 
@@ -91,9 +91,8 @@ i.i.d it follows that
 
  \[
    \begin{aligned}
-     KL(Q \mid P) &= \sum_{i = 1}^K \E\Big[ \log{Q(x_i \mid pa(x_i))}\Big]_{Q(x_i,pa(x_i))} - \E\Big[
-     \log{P(x_i \mid pa(x_i))}\Big]_{Q(x_i,pa(x_i))} \\
-     &= \sum_{i = 1}^K \E \Big[ KL\Big(Q(x_i \mid pa(x_i)) \mid P(x_i \mid pa(x_i))\Big) \Big]_{Q(x_i,pa(x_i))}
+     KL(Q \mid P) &= \sum_{i = 1}^K \E{Q(x_i,pa(x_i))}{\log{Q(x_i \mid pa(x_i))}} - \E{Q(x_i,pa(x_i))}{\log{P(x_i \mid pa(x_i))}}\\
+     &= \sum_{i = 1}^K \E{Q(x_i,pa(x_i))}{KL\Big(Q(x_i \mid pa(x_i)) \mid P(x_i \mid pa(x_i))\Big)}
    \end{aligned}
  \]
 

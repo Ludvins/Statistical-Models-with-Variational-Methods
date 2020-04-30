@@ -125,7 +125,7 @@ The marginal is then
   \begin{aligned}
     P(A = 1 \mid \V_{A})
     &= \frac{P(A = 1, \V_{A})}{P(\V_{A})} = \int_{\theta_{A}}  \frac{P(A = 1, \V_{A}, \theta_{A})}{P(\V_{A})} =  \int_{\theta_{A}}  \frac{P(A = 1 \mid \V_{A}, \theta_{A}) P(\V_{A}, \theta_{A})}{P(\V_{A})} \\
-    &=  \int_{\theta_{A}}  \frac{P(A = 1 \mid \V_{A}, \theta_{A}) P(\theta_{A} \mid \V_{A})P(\V_{A})}{P(\V_{A})} = \int_{\theta_{A}}P(\theta_{A}\mid \V_{A})\theta_{A} = \E[\theta_{A} \mid \V_{A}] \\
+    &=  \int_{\theta_{A}}  \frac{P(A = 1 \mid \V_{A}, \theta_{A}) P(\theta_{A} \mid \V_{A})P(\V_{A})}{P(\V_{A})} = \int_{\theta_{A}}P(\theta_{A}\mid \V_{A})\theta_{A} = \E{}{\theta_{A} \mid \V_{A}} \\
     &= \frac{\alpha_{A} + \#(A= 1)}{\alpha_{A} + \#(A=1) + \beta_{A} + \#(A=0)}
   \end{aligned}
 \]
@@ -213,7 +213,7 @@ The marginal is then given by
 \[
   \begin{aligned}
     P(X=i \mid \V) &= \int_{\theta}P(X=i \mid \theta)P(\theta \mid \V) =  \int_{\theta}\theta_{i}P(\theta \mid \V)\\
-    &=  \int_{\theta_{i}}\theta_{i}P(\theta_{i} \mid \V) = \E[\theta_{i} \mid \V]
+    &=  \int_{\theta_{i}}\theta_{i}P(\theta_{i} \mid \V) = \E{}{\theta_{i} \mid \V}
 \end{aligned}
 \]
 Where we used that

@@ -46,21 +46,19 @@ The \emph{expectation maximization} algorithm is an iterative method to find max
 Consider we have only two variables, one visible \(V\) and one hidden \(H\). Consider also the Kullback-Leibler divergence between a 'variational' distribution \(Q(h\mid v)\) (where variational means that this distribution is the object of an optimization problem) and a parametric one \(P(h \mid v, \theta)\).
 \[
   \begin{aligned}
-    KL(Q(h\mid v) \mid P(h \mid v, \theta)) &= \E_{Q}[\log{Q(h \mid v)} - \log{P(h \mid v, \theta)}] \\
-    &= \E_{Q}[\log{Q(h \mid v)}] - \E_{Q}[\log{P(h,v \mid \theta)}] + \E_{Q}[\log{P(v \mid \theta)}]\\
-    &= \E_{Q}[\log{Q(h \mid v)}] - \E_{Q}[\log{P(h,v \mid \theta)}] + \log{P(v \mid \theta)} \geq 0
+    KL(Q(h\mid v) \mid P(h \mid v, \theta)) &= \E{Q}{\log{Q(h \mid v)} - \log{P(h \mid v, \theta)}} \\
+    &= \E{Q}{\log{Q(h \mid v)}} - \E{Q}{\log{P(h,v \mid \theta)}} + \E{Q}{\log{P(v \mid \theta)}}\\
+    &= \E{Q}{\log{Q(h \mid v)}} - \E{Q}{\log{P(h,v \mid \theta)}} + \log{P(v \mid \theta)} \geq 0
   \end{aligned}
 \]
 We got then a lower bound to \(\log P(v \mid \theta)\)
 \[
-  \log{P(v \mid \theta)}\geq \underbrace{-\E_{Q}[\log{Q(h \mid v)}]}_{\text{Entropy}} + \underbrace{\E_{Q}[\log{P(h,v \mid \theta)}]}_{\text{Energy}}\footnote{This terms come from a statistical physics terminology}
+  \log{P(v \mid \theta)}\geq \underbrace{-\E{Q}{\log{Q(h \mid v)}}}_{\text{Entropy}} + \underbrace{\E{Q}{\log{P(h,v \mid \theta)}}}_{\text{Energy}}\footnote{This terms come from a statistical physics terminology}
 \]
 
 Assume a set of observations of the visible data, \(\V = \{v_{1}, \dots, v_{N}\}\) and the states of the hidden variables in that observations \(\{h_{1},\dots, h_{N}\}\), notice that the values on this last set are unknown but they exists. Then has the variables of the observations are i.i.d we got that
 \[
-  \begin{aligned}
-    \log{P(\V \mid \theta)} = \sum_{n=1}^{N}\log{P(v_{n} \mid \theta)} \geq \sum_{n = 1}^{N} -\E_{Q}[\log{Q(h_{n} \mid v_{n})}] + \E_{Q}[\log{P(h_{n},v_{n} \mid \theta)}]
-  \end{aligned}
+    \log{P(\V \mid \theta)} = \sum_{n=1}^{N}\log{P(v_{n} \mid \theta)} \geq \sum_{n = 1}^{N} -\E{Q}{\log{Q(h_{n} \mid v_{n})}} + \E{Q}{\log{P(h_{n},v_{n} \mid \theta)}}
 \]
 And we know equality holds if and only if \(Q(h_{n} \mid v_{n}) = P(h_{n} \mid v_{n} , \theta) \ \forall n=1, \dots, N\).
 
@@ -82,19 +80,19 @@ This suggest the following iterative procedure to optimize the parameter \(\thet
 
   The lower bound given to the log likelihood is
   \[
-    \log{P(v \mid \theta)} \geq -Q(1)\log{Q(1)} - Q(2)\log{Q(2)} - \E_{Q}[(v - \theta h)^{2}]\ + \text{const.}
+    \log{P(v \mid \theta)} \geq -Q(1)\log{Q(1)} - Q(2)\log{Q(2)} - \E{Q}{(v - \theta h)^{2}}\ + \text{const.}
   \]
-  The M-step can be done analytically, noticing that due to the negative sign we want to minimize \(\E_{Q}[(v - \theta h)^{2}]\)
+  The M-step can be done analytically, noticing that due to the negative sign we want to minimize \(\E{Q}{(v - \theta h)^{2}}\)
   \[
-    \frac{d}{d\theta}\E[(v - \theta h)^{2}] = \E[ 2 v h + 2\theta h^{2} ] = 2v\E[h] + 2\theta \E[h^{2}] = 0 \iff \theta = \frac{v\E[h]}{\E[h^{2}]}
+    \frac{d}{d\theta}\E{Q}{(v - \theta h)^{2}} = \E{Q}{ 2 v h + 2\theta h^{2} } = 2v\E{Q}{h} + 2\theta \E{Q}{h^{2}} = 0 \iff \theta = \frac{v\E{Q}{h}}{\E{Q}{h^{2}}}
   \]
   \[
-     \frac{d^{2}}{d^{2}\theta}\E[(v - \theta h)^{2}] = 2\E[h^{2}] \geq 0
+     \frac{d^{2}}{d^{2}\theta}\E{Q}{(v - \theta h)^{2}} = 2\E{Q}{h^{2}} \geq 0
   \]
 
   so the new parameter optimal parameter is
   \[
-    \theta_{new} = v \frac{\E_{Q}[H]}{\E_{Q}[H^{2}]}
+    \theta_{new} = v \frac{\E{Q}{H}}{\E{Q}{H^{2}}}
   \]
 
   The E-step would set \(Q_{new}(h) = P(h \mid v , \theta)\), in this case
@@ -110,7 +108,7 @@ This suggest the following iterative procedure to optimize the parameter \(\thet
     \For{\(n \in 1,\dots,N\)}{
       \(Q(h \mid v_{n}) = P(h \mid v_{n}, \theta)\)\;
     }
-    \(\theta = \argmax_{\theta}\sum_{n=1}^{N}\E_{Q(h \mid v_{n})}[\log{P(h \mid v_{n}, \theta)}]\)\;
+    \(\theta = \argmax_{\theta}\sum_{n=1}^{N}\E{Q(h \mid v_{n})}{\log{P(h \mid v_{n}, \theta)}}\)\;
   }
   \KwRet{\(\theta\)}\;
   \caption{Expectation Maximization Algorithm}
@@ -128,7 +126,7 @@ Let \(\theta^{new}\) be the value of the parameter after one iteration, we now t
 \]
 So the lower bound in terms of \(\theta\) and \(\theta^{new}\) is
 \[
-  LB(\theta^{new} \mid \theta) =  \underbrace{-\E_{P(h \mid v, \theta)}[\log{P(h \mid v, \theta)}]}_{\text{Entropy}} + \underbrace{\E_{P(h \mid v, \theta)}[\log{P(h,v \mid \theta^{new})}]}_{\text{Energy}}
+  LB(\theta^{new} \mid \theta) =  \underbrace{-\E{P(h \mid v, \theta)}{\log{P(h \mid v, \theta)}}}_{\text{Entropy}} + \underbrace{\E{P(h \mid v, \theta)}{\log{P(h,v \mid \theta^{new})}}}_{\text{Energy}}
 \]
 
 From the definition of the Kullback-Leibler we get that
@@ -152,7 +150,7 @@ As we did before let \(\X = (\V, \mathcal{H}) = \{X_{1}, \dots , X_{M}\} = \{(V_
 
 The \emph{energy term} in a Bayesian networks has the form
 \[
-  \sum_{n=1}^{N} \E_{Q(h^{n}\mid v^{n})}[ \log{P(x^{n} \mid \theta)} ] = \sum_{n = 1}^{N}\sum_{i = 0}^{M} \E_{Q(h^{n} \mid v^{n})} [\log{P(x_{i}^{n} \mid pa(x_{i}^{n}, \theta))}]
+  \sum_{n=1}^{N} \E{Q(h^{n}\mid v^{n})}{ \log{P(x^{n} \mid \theta)} } = \sum_{n = 1}^{N}\sum_{i = 0}^{M} \E{Q(h^{n} \mid v^{n})} {\log{P(x_{i}^{n} \mid pa(x_{i}^{n}, \theta))}}
 \]
 
 It is useful to use the following notation that defines a conditional distribution of the hidden variable when the visible one equals \(v^{n}\).
@@ -166,24 +164,24 @@ We can define the mixture distribution
 Then we have that
 \[
   \begin{aligned}
-    \E_{Q(x)}[\log{P(x \mid \theta)}] &= \int_{x}Q(x)\log{P(x \mid \theta)} =  \int_{x} \frac{1}{N}\sum_{n=1}^{N}Q^{n}(x)\log{P(x \mid \theta)} \\
+    \E{Q(x)}{\log{P(x \mid \theta)}} &= \int_{x}Q(x)\log{P(x \mid \theta)} =  \int_{x} \frac{1}{N}\sum_{n=1}^{N}Q^{n}(x)\log{P(x \mid \theta)} \\
     &= \frac{1}{N} \int_{x}\sum_{n=1}^{N}Q(h \mid v^{n})\mathbb{I}[v = v^{n}]\log{P(x \mid \theta)}\\
-    &= \frac{1}{N}\sum_{n = 1}^{N}\E_{Q(h \mid v^{n})} [\log{P(x^{n} \mid \theta)}]
+    &= \frac{1}{N}\sum_{n = 1}^{N}\E{Q(h \mid v^{n})} {\log{P(x^{n} \mid \theta)}}
   \end{aligned}
 \]
 
 Using the Belief Network structure
 \[
   \begin{aligned}
-    \E_{Q(x)}[\log{P(x \mid \theta)}] &= \sum_{i = 1}^{M}\E_{Q(x)}[\log{P(x_{i} \mid pa(x_{i}, \theta))}]\\
+    \E{Q(x)}{\log{P(x \mid \theta)}} &= \sum_{i = 1}^{M}\E{Q(x)}{\log{P(x_{i} \mid pa(x_{i}, \theta))}}\\
     &= \sum_{i=1}^{M} \int_{x}Q(x) \log{P(x_{i} \mid pa(x_{i}, \theta))}\\
-    &= \sum_{i = 1}^{M}\E_{Q(pa(x_{i}), theta)}\Big[ \E_{Q(x_{i}\mid pa(x_{i}), \theta)} [ \log{P(x_{i} \mid pa(x_{i}), \theta)}  ] \Big]
-  \end{aligned}
+    &= \sum_{i = 1}^{M}\E{Q(pa(x_{i}), theta)}{ \E{Q(x_{i}\mid pa(x_{i}), \theta)}{ \log{P(x_{i} \mid pa(x_{i}), \theta)}}}
+\end{aligned}
 \]
 
 We add a constant to the last term so it comes with the structure of a Kullback-Leibler Divergence (notice it has its sign has changed)
 \[
-  \sum_{i = 1}^{M}\E_{Q(pa(x_{i}))}\Big[[ \E_{Q(x_{i}\mid pa(x_{i}), \theta)} [ \log{Q(x_{i} \mid pa(x_{i}))}  ] - \E_{Q(x_{i}\mid pa(x_{i}), \theta)} [ \log{P(x_{i} \mid pa(x_{i}), \theta)}  ] \Big] =
+  \sum_{i = 1}^{M}\E{Q(pa(x_{i}))}{\E{Q(x_{i}\mid pa(x_{i}), \theta)}{\log{Q(x_{i} \mid pa(x_{i}))}}} - \E{Q(x_{i}\mid pa(x_{i}), \theta)}{\log{P(x_{i} \mid pa(x_{i}), \theta)}}=
 \]
 \[
   = \sum_{i = 1}^{M} E_{Q(pa(x_{i}))} \Big[KL \Big( Q(x_{i}\mid pa(x_{i}), \theta) \mid P(x_{i} \mid pa(x_{i}), \theta) \Big) \Big]
@@ -237,5 +235,73 @@ Variational Bayes tries to factorize the joint hidden a parameter posterior, i.e
 To achieve that, we minimize the Kullback-Leibler divergence between them.
 
 \[
-  KL\big( Q(h)Q(\theta) \mid P(h, \theta \mid v)  \big) = \Ex{Q(h)}{\log{Q(h)}} + \Ex{Q(\theta)}{\log{Q(\theta)}} - \Ex{Q(h)Q(\theta)}{\log{P(h,\theta \mid v)}} \geq 0
+  \KL{Q(h)Q(\theta)}{P(h, \theta \mid v)} = \E{Q(h)}{\log{Q(h)}} + \E{Q(\theta)}{\log{Q(\theta)}} - \E{Q(h)Q(\theta)}{\log{P(h,\theta \mid v)}} \geq 0
 \]
+
+We use that \(\log{P(v)}\) is independent from \(Q(h)Q(\theta)\) to get the desired inequality.
+\[
+  \begin{aligned}
+    0 &\leq \E{Q(h)}{\log{Q(h)}} + \E{Q(\theta)}{\log{Q(\theta)}} - \E{Q(h)Q(\theta)}{\log{P(h,\theta \mid v)}}\\
+    &= \E{Q(h)}{\log{Q(h)}} + \E{Q(\theta)}{\log{Q(\theta)}} - \E{Q(h)Q(\theta)}{\log{P(h,\theta,v)P(v)}} \\
+    &=\E{Q(h)}{\log{Q(h)}} + \E{Q(\theta)}{\log{Q(\theta)}} - \E{Q(h)Q(\theta)}{\log{P(h,\theta, v)}} - \E{Q(h)Q(\theta)}{\log{P(v)}} \\
+    &= \E{Q(h)}{\log{Q(h)}} + \E{Q(\theta)}{\log{Q(\theta)}} - \E{Q(h)Q(\theta)}{\log{P(h,\theta, v)}} - \log{P(v)} \\
+  \end{aligned}
+\]
+We got the following lower bound
+\[
+  \log{P(v)} \geq -\E{Q(h)}{\log{Q(h)}}- \E{Q(\theta)}{\log{Q(\theta)}} + \E{Q(h)Q(\theta)}{\log{P(h,\theta, v)}}
+\]
+So that minimizing the Kullback-Leibler divergence is equivalent to find the tightest lower bound.
+
+The procedure is then split in two steps to keep the structure of the EM algorithm.
+
+\begin{itemize}
+  \item \textbf{E-step}. Given a fixed \(Q(\theta)\), minimize the Kullback-Leibler divergence.
+    \[
+    Q^{new}(h) = \argmin_{Q(h)}\KL{Q(h)Q(\theta)}{P(h,\theta \mid v)}
+    \]
+
+  \item \textbf{M-step}. Given a fixed \(Q(h)\), minimize the Kullback-Leibler divergence.
+    \[
+    Q^{new}(\theta) = \argmin_{Q(\theta)}\KL{Q(h)Q(\theta)}{P(h,\theta \mid v)}
+    \]
+\end{itemize}
+
+As in the case of the EM algorithm, each iterations guarantees an increase in the lower bound of the marginal likelihood, but increasing the marginal likelihood itself is not guaranteed.
+
+When using an i.i.d dataset \((\V, \mathcal{H})\) , we may assume that \(Q(\mathcal{H})\) can be factorized:
+\[
+  Q(h_{1}, \dots, h_{N}) = \prod_{n=1}^{N}Q(h_{n})
+\]
+
+The lower bound to the marginal likelihood is then written as a summation of the bounds on each datapoint.
+\[
+  \log{P(\V, \theta)} = \mathlarger{\sum_{n}} -\E{Q(h_{n})}{\log{Q(h_{n})}}- \E{Q(\theta)}{\log{Q(\theta)}} + \E{Q(h_{n})Q(\theta)}{\log{P(v_{n}, h_{n},\theta)}}
+\]
+
+\subsection{VB is a generalization of the EM algorithm}
+
+We start considering a distribution over the parameter that sumarize the information in the optimal point, let \(\theta_{opt}\) be the optimal value of \(\theta\).
+\[
+  Q(\theta) = \delta(\theta - \theta_{opt})
+\]
+The lower bound takes the form
+\[
+  \log{P(v \mid \theta_{opt})} \geq - \E{Q(h)}{\log{Q(h)}} + \E{Q(h)}{\log{P(h, v, \theta_{opt})}} + \text{ const. }
+\]
+The M-step is then picking the optimal parameter \(\theta_{opt}\) given a fixed \(Q(h)\):
+\[
+  \begin{aligned}
+    \theta_{opt} &= \argmax_{\theta} \Big( \E{Q(h)}{\log{P(v,h,\theta)}} \Big)\\
+    &=  \argmax_{\theta} \Big( \E{Q(h)}{\log{P(v \mid h,\theta)P(h \mid \theta)P(\theta)}} \Big) \\
+    &= \argmax_{\theta} \Big( \E{Q(h)}{\log{P(v \mid h,\theta)P(h \mid \theta)}} + \log{P(\theta)} \Big) \\
+  \end{aligned}
+\]
+
+If we take a flat prior (\(P(\theta) \)  constant), this term is equivalent to the energy one in the EM bound \(\E{Q(h\mid v)}{\log{P(h,v \mid \theta)}}\).
+
+The VB E-step consists on minimizing \(\KL{Q(h)}{P(h,\theta_{opt} \mid v)}\), as
+\[
+  P(h, \theta_{opt}\mid v) \propto P(h, \theta_{opt}, v) \propto P(h \mid \theta_{opt}, h)
+\]
+this is equivalent to the E-step of the EM algorithm which consisted on minimizing the Kullback-Leibler divergence \(\KL{Q(h \mid v)}{P(h \mid v, \theta)}\).

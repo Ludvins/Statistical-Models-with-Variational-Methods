@@ -75,7 +75,7 @@ When using a multivariate distribution \(\bm{X} = (X_1,\dots,X_n)^T\) we can tal
 \begin{aligned}
 \bSigma_{ij} &= \mathbb{E}[ (X_i - \mathbb{E}[X_i])
 (X_j - \mathbb{E}[X_j]) ] = \mathbb{E}[(X_i - \mu_i)(X_j - \mu_j)]\\
-&=\mathbb{E}[X_iX_j]-\mathbb{E}[X_i]\mathbb{E}[X_j]
+&=\mathbb{E}[X_i X_j]-\mathbb{E}[X_i]\mathbb{E}[X_j]
 \end{aligned}
 \]
 
@@ -87,7 +87,7 @@ The following result will be helpful later on
   their probability distributions.
   It follows that the expectation of a function \(g\) over \(\mathcal{X}_0\), verifies
     \[
-      \E[g(\mathcal{X}_0)]_{P(\mathcal{X})} = \E[g(\mathcal{X}_0)]_{P(\mathcal{X}_0)}
+      \E{P(\mathcal{X})}{g(\mathcal{X}_0)} = \E{P(\mathcal{X}_0)}{g(\mathcal{X}_0)}
     \]
     that is, we only need to know the marginal distribution of the subset in
     order to carry out the average.
@@ -97,9 +97,9 @@ The following result will be helpful later on
   Let \(\I = (i_{1}, \dots, i_{k})\) be the indexes corresponding to \(\mathcal{X}_{0}\), then
   \[
     \begin{aligned}
-      \E[g(\mathcal{X}_{0})]_{P(\mathcal{X})} &= \int_{x_{1}}\dots\int_{x_{n}}g(x_{i_{1}},\dots,x_{i_{k}})f(x_{1},\dots,x_{n}) \\
+      \E{P(\mathcal{X})}{g(\mathcal{X}_{0})}&= \int_{x_{1}}\dots\int_{x_{n}}g(x_{i_{1}},\dots,x_{i_{k}})f(x_{1},\dots,x_{n}) \\
       &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) \int \dots \int f(x_{1},\dots,x_{n}) d_{x_{1}},\dots,d_{x_{n}}\\
-      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) f(x_{i_{1}},\dots,x_{i_{k}}) =  \E[g(\mathcal{X}_{0})]_{P(\mathcal{X}_{0})} \\
+      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) f(x_{i_{1}},\dots,x_{i_{k}}) =  \E{P(\mathcal{X}_{0})}{g(\mathcal{X}_{0})}\\
       \end{aligned}
   \]
 Where in the second-last equality we used marginalization.
@@ -194,7 +194,7 @@ Where \(\bm{\mu}\) is the mean vector of the distribution, and \(\bm{\Sigma}\)
 the covariance matrix. The inverse matrix \(\bm{\sigma}^{-1}\) is called \emph{precision}.
 It also satisfies that
 \[
-\bm{\mu} = \mathbb{E}[\bm{X}] \hspace{2cm} \bSigma = \E[(\bx - \bmu)(\bx - \bmu)^T]
+\bm{\mu} = \mathbb{E}[\bm{X}] \hspace{2cm} \bSigma = \E{}{(\bx - \bmu)(\bx - \bmu)^T}
 \]
 
 As \(\bSigma\) is a real symmetric matrix, it can be eigendecomposed
@@ -239,7 +239,7 @@ where \(B(\alpha, \beta)\) is the \emph{beta function} defined as
 \]
 \end{definition}
 
-The mean is given by \(\E[X] = \frac{\alpha}{\alpha + \beta}\)
+The mean is given by \(\E{}{X} = \frac{\alpha}{\alpha + \beta}\)
 
 \subsection{Dirichlet Distribution}
 
