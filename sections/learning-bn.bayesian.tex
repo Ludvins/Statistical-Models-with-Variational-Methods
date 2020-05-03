@@ -1,7 +1,9 @@
 A Bayesian approach where we set a distribution over the parameters is an
 alternative to Maximum Likelihood training of a Bayesian Network, as we did in
-the coin tossing example. We go deep into it using the following scenario, consider a disease
-\(D\) and two habits \(A\) and \(B\).
+the coin tossing example.
+
+We go deep into it using the following scenario, consider a disease
+\(D\) and two habits \(A\) and \(B\). Let \(N = 7\) be the number of observations of the variables as shown in the table below, that means we are considering the following i.i.d variables \(\{A_{1},\dots, A_{N}\}\), \(\{B_{1},\dots,b_{N}\}\) and \(\{D_{1},\dots, D_{N}\}\) governed by the parameters \(\theta_{A}, \theta_{B}\) and \(\theta_{D}\) as shown in the following Bayesian Network.
 
 \begin{figure}[!ht]
   \begin{tabular}{*{2}{>{\centering\arraybackslash}b{\dimexpr0.5\linewidth-2\tabcolsep\relax}}}
@@ -42,30 +44,27 @@ the coin tossing example. We go deep into it using the following scenario, consi
     1 & 0 & 1 \\ \hline
   \end{tabular}\captionof{table}{Observations}
 \end{tabular}
-    \end{figure}
+\end{figure}
 
-
-
+The graph gives the following joint probability distribution over \(A, B\) and \(D\)
 \[
-P(a,b,d) = P(d|a,b)P(a)P(b)
+P(a,b,d) = P(d\mid a,b)P(a)P(b)
 \]
 
-Consider the set of i.i.d random variables
-\(\{A_{n}, B_{n}, D_{n}\}_{n = 1,\dots, N}\) and the
-corresponding set of observations
-\(\mathcal{V} = \{(a_{n}, b_{n}, d_{n}), n = 1,\dots , N\}\)
+Let \(\mathcal{V} = \{(a_{n}, b_{n}, d_{n}), n = 1,\dots , N\}\) be the set of observations.
 
 We need a notation for the parameters, as all the variables are binary we are
 going to use
 \[
   P(A = 1 \mid \theta_{A}) = \theta_{A}, \hspace{1cm} P(B = 1 \mid \theta_{B} = \theta_{B}), \hspace{1cm} P(D = 1 \mid A = 0, B = 1, \theta_{D}) = \theta_{1}
 \]
-\[\theta_{D} = (\theta_{0}, \theta_{1}, \theta_{2}, \theta_{3})\]
-Using the states of \(A\) and \(B\) to create \((01)\) and its correspondent
-decimal form in the sub-index of \(\theta\).
+\[
+  \theta_{D} = ( \theta_{0}, \theta_{1}, \theta_{2},\theta_{3})
+\]
+Where we are using a binary to decimal transformation between the states of \(A\) and \(B\) and the subindex of \(\theta\).
 
-We need to specify a prior and since dealing with multi-dimensional continuous
-distributions is computationally problematic it is normal to use uni-variate
+We need to specify a prior and since dealing with multidimensional continuous
+distributions is computationally problematic it is normal to use univariate
 distributions.
 
 A convenient assumption is that the prior factorizes, this is usually called
@@ -78,9 +77,7 @@ Assuming our data is i.i.d, we have
   P(\theta_{A}, \theta_{B}, \theta_{D}, \mathcal{V}) = P(\theta_{A})P(\theta_{B})P(\theta_{D})\prod_{n}P(a_{n}\mid \theta_{A})P(b_{n} \mid \theta_{B})P(d_{n}\mid a_{n}, b_{n}, \theta_{D})
 \]
 
-
 Learning then corresponds to inference
-
 \[
   \begin{aligned}
     P(\theta_{A}, \theta_{B}, \theta_{D}\mid \mathcal{V}) &= \frac{P(\mathcal{V} \mid \theta_{a}, \theta_{B}, \theta_{D})P(\theta_{A}, \theta_{B}, \theta_{D})}{P(\mathcal{V})} =\frac{P(\mathcal{V} \mid \theta_{A}, \theta_{B}, \theta_{D})P(\theta_{A}) P(\theta_{B})P( \theta_{D})}{P(\mathcal{V})}\\

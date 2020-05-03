@@ -3,10 +3,12 @@ In this section we will introduce two concepts, Maximum Likelihood and Maximum a
 Posteriori, showing that \emph{training} a model's parameter to maximize the
 Maximum Likelihood equals to take the empirical distribution as it.
 
+Let \(\{X_{1},\dots, X_{N}\}\) be a set of real i.i.d random variables and \(\V = \{x_{1}, \dots, x_{N}\}\) be the set of observations and \(\theta\) the considered parameters of the model.
+
 \begin{definition}
   Maximum Likelihood is calculated as
   \[
-    \theta^{ML} = \argmax_\theta p(\mathcal{V} \mid \theta)
+    \theta^{ML} = \argmax_\theta P(\mathcal{V} \mid \theta)
   \]
    it refers to the value of the parameter
 \(\theta\) for which the observed data better fits the model.
@@ -15,7 +17,7 @@ Maximum Likelihood equals to take the empirical distribution as it.
 \begin{definition}
   Maximum A Posteriori refers to
   \[
-    \theta^{MAP} = \argmax_\theta p(\mathcal{V} \mid \theta)P(\theta)
+    \theta^{MAP} = \argmax_\theta P(\mathcal{V} \mid \theta)P(\theta)
   \]
 \end{definition}
 
@@ -35,70 +37,71 @@ This means that the maximum utility decision is to take the value \(\theta_0\)
 with the highest posterior value.
 
 \begin{remark}
-When using a flat prior \(\theta^{ML}= \theta ^{MAP}\).
+  When using a flat prior, i.e, \(P(\theta)\) is constant, \(\theta^{ML}= \theta ^{MAP}\).
 \end{remark}
 
-\section{Relation with Kullback-Leibler divergergence}
+\section{ML and KL divergence}
 
 Now, we are going to show the relation between the Maximum Likelihood and the
 Kullback-Leibler divergence of the empirical distribution and our model.
-Firstly, we define the empirical distribution of a set
-
-Let \(\{X_1, \dots, X_m\}\) be a set of real i.i.d random variables and
-\(\{x_{1}, \dots, x_{m}\}\) a set of observations of those variables, we can define the
-empirical distribution as a distribution whose probability mass function
+Firstly, we define the empirical distribution as a distribution whose probability mass function
 \(Q\) is
 \[
-  Q(x) = \frac{1}{m}\sum_{i = 1}^m \mathbb{I}[x = x_i]
+  Q(x) = \frac{1}{N}\sum_{i = 1}^N \mathbb{I}[x = x_i]
 \]
 
- We may calculate this Kullback-Leibler divergence and study their functional independence.
+We may calculate the Kullback-Leibler divergence between the empirical and our considered model \(P(x \mid \theta)\) and study their functional independence.
 \[
-  KL(Q \mid P) = \E{Q}{\log(Q(x))} - \E{Q}{\log(P(x))}
+  \KL{Q}{P} = \E{Q}{\log(Q(x))} - \E{Q}{\log(P(x \mid \theta))}
 \]
 
-Notice the term \(\E{Q}{\log(Q(x))}\) is a constant as the variables are
-i.i.d it follows that
+Notice the term \(\E{Q}{\log(Q(x))}\) is a constant and the log likelihood under \(Q\) takes the form
 \[
-   \E{Q}{\log(P(x))} = \frac{1}{m}\sum_{i = 1}^mlogP(x_i)
+   \E{Q}{\log(P(x \mid \theta))} = \frac{1}{N}\int_{x}\sum_{i=1}^{N}\mathbb{I}[x = x_{i}]\log{P(x \mid \theta)} = \frac{1}{N}\sum_{i = 1}^N \log{P(x_i \mid \theta)}
  \]
- where the right side is the log likelihood under \(Q\). As the logarithm is
+ As the logarithm is
  a strictly increasing function, maximizing the log likelihood equals to
  maximize the likelihood itself, and we can see here how it is equivalent to
  minimize the Kullback-Leibler divergence between the empirical distribution and
  our distribution.
-
- In case \(P(x)\) is unconstrained, the optimal choice is \(P(x) = Q(x)\), that
- is, the maximum likelihood distribution corresponds to the empirical distribution.
-
- For a Belief Network we know there is the following constraint
- \[
-   P(x_{1}, \dots, x_{m}) = \prod_{i = 1}^K P(x_i  \mid  pa(x_i))
- \]
- We now want to minimize the Kullback-Leibler divergence between the empirical
- distribution \(Q(x)\) and \(P(x)\) in order to get the Maximum Likelihood.
  \[
    \begin{aligned}
-   KL(Q \mid P) &= - \E{Q}{\sum_{i = 1}^K\log{P(x_i \mid pa(X_i))}} +
-   \E{P}{\sum_{i = 1}^K\log{P(x_i \mid pa(X_i))}}
-   \\ &= - \sum_{i =
-     1}^K \E{Q}{\log{P(x_i \mid pa(X_i))}} + \sum_{i =
-     1}^K \E{Q}{\log{P(x_i \mid pa(X_i))}}
+     &\argmin_{\theta} \KL{Q}{P} = \argmin_{\theta} - \E{Q}{\log(P(x \mid \theta))} =  \argmax_{\theta} \E{Q}{\log(P(x \mid \theta))}\\
+     &\argmax_{\theta} \frac{1}{N}\sum_{i=1}^{N}\log{P(x_{i} \mid \theta)} =  \argmax_{\theta} \frac{1}{N}\sum_{i=1}^{N}P(x_{i} \mid \theta) = \argmax_{\theta} \sum_{i=1}^{N}P(x_{i}\mid \theta)= \theta^{ML}
    \end{aligned}
  \]
 
- We can not use Proposition \ref{prop:expectation_over_marginal} on \(\log{P(x_i \mid pa(x_i))}\).
+ In case \(P(x \mid \theta)\) is unconstrained, the optimal choice is \(P(x \mid \theta) = Q(x)\), that
+ is, the \textbf{maximum likelihood distribution corresponds to the empirical distribution}.
+
+ For a Belief Network we know there is the following constraint
+ \[
+   P(x_{1}, \dots, x_{m} \mid \theta) = \prod_{i = 1}^K P(x_i  \mid  pa(x_i), \theta)
+ \]
+ We now want to minimize the Kullback-Leibler divergence between the empirical
+ distribution \(Q(x)\) and \(P(x \mid \theta)\) in order to get the Maximum Likelihood.
+ \[
+   \begin{aligned}
+   \KL{Q}{P} &= - \E{Q}{\sum_{i = 1}^K\log{P(x_i \mid pa(x_i), \theta)}} +
+   \E{Q}{\sum_{i = 1}^K\log{Q(x_i \mid pa(x_i))}}
+   \\ &= - \sum_{i =
+     1}^K \E{Q}{\log{P(x_i \mid pa(x_i), \theta)}} + \sum_{i =
+     1}^K \E{Q}{\log{Q(x_i \mid pa(x_i))}}
+   \end{aligned}
+ \]
+
+ Notice the expectation is over the full distribution \(Q(x_{1},\dots, x_{k})\), we can use proposition \ref{prop:expectation_over_marginal} on \(\log{P(x_i \mid pa(x_i), \theta)}\) and \(Q(x_{i}, pa(x_{i}))\).
 
  \[
    \begin{aligned}
-     KL(Q \mid P) &= \sum_{i = 1}^K \E{Q(x_i,pa(x_i))}{\log{Q(x_i \mid pa(x_i))}} - \E{Q(x_i,pa(x_i))}{\log{P(x_i \mid pa(x_i))}}\\
-     &= \sum_{i = 1}^K \E{Q(x_i,pa(x_i))}{KL\Big(Q(x_i \mid pa(x_i)) \mid P(x_i \mid pa(x_i))\Big)}
+     \KL{Q}{P} &= \sum_{i = 1}^K \E{Q(x_i,pa(x_i))}{\log{Q(x_i \mid pa(x_i))}} - \E{Q(x_i,pa(x_i))}{\log{P(x_i \mid pa(x_i), \theta)}}\\
+     &= \sum_{i = 1}^K \E{Q(x_i,pa(x_i))}{\KL{Q(x_i \mid pa(x_i))}{P(x_i \mid pa(x_i), \theta)}}
    \end{aligned}
  \]
 
  The minimal setting is then
  \[
-   P(x_i \mid pa(x_i)) = Q(x_i \mid pa(x_i))
+   P(x_i \mid pa(x_i), \theta) = Q(x_i \mid pa(x_i))
  \]
  in terms of the initial data it is to set \(P(x_i \mid pa(x_i))\) to the number of
  times the state appears in it.
