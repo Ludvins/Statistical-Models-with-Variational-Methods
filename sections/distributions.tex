@@ -55,7 +55,7 @@ case \(X\) is continuous, we have that
   \[
     \mu_k = \mathbb{E}[X^k]
   \]
-  For \(k = 1\) it is typically denoted as \(\mu\). Note \(\mu_{k}\) can also denote the \(k^{th}\) element in the mean vector of a multivariate variable.
+  For \(k = 1\) it is typically denoted as \(\mu\). Note \(\mu_{k}\) can also denote the \(k^{th}\) element in the mean vector of a multi-variate variable.
 \end{definition}
 
 
@@ -68,7 +68,7 @@ case \(X\) is continuous, we have that
   The square root of the variance \(\sigma\) is called the \emph{standard deviation}.
 \end{definition}
 
-When using a multivariate distribution \(\bm{X} = (X_1,\dots,X_n)^T\) we can talk about the \emph{covariance
+When using a multi-variate distribution \(\bm{X} = (X_1,\dots,X_n)^T\) we can talk about the \emph{covariance
   matrix} \(\bSigma \) whose elements are
 
 \[
@@ -144,7 +144,7 @@ independent Bernoulli Trials. A discrete binary random variable \(X\) follows a
 
 \section{Continuous Distributions}
 
-\subsection{Univariate Normal Distribution}
+\subsection{Uni-Variate Normal Distribution}
 
 The \emph{normal} or \emph{Gaussian distribution} is a type of continuous
 probability distribution for real-valued random variables.
@@ -172,16 +172,16 @@ its density function is
 One of the properties of the normal distribution is that if \(X \sim N(\mu, \sigma)\), \(a,b \in \mathbb{R}\) and \(f:\mathbb{R} \to \mathbb{R}\) be defined
 as \(f(x) = ax + b\), then \(f(X) \sim N(\mu + b, a^2 \sigma)\)
 
-\subsection{Multivariate Normal Distribution}
+\subsection{Multi-Variate Normal Distribution}
 
 This distribution plays a fundamental role in this project so we will discuss
 its properties in more detail.
 
-This distribution is an extension of the univariate one when having a
-multivariate random variable.
+This distribution is an extension of the uni-variate one when having a
+multi-variate random variable.
 
 \begin{definition}
-We say that a random vector \(\bm{X} = (X_1,\dots,X_p)\) follows a \emph{multivariate normal
+We say that a random vector \(\bm{X} = (X_1,\dots,X_p)\) follows a \emph{multi-variate normal
   distribution} of parameters \(\bm{\mu} \in \mathbb{R}^p\) and \(\bm{\Sigma}
 \in \mathbb{M}_n(\mathbb{R})\), denoted as \(\bm{X} \sim N(\bm{\mu},
 \bm{\Sigma})\) if and only if its probability density function is
@@ -214,8 +214,8 @@ we get that
   (\bx - \bmu)^T\bSigma(\bx - \bmu) = \bm{y}^T\bm{y}
 \]
 
-Using this, the multivariate Normal Distribution reduces to a product of \(n\)
-univariate standard normal distributions.
+Using this, the multi-variate Normal Distribution reduces to a product of \(n\)
+uni-variate standard normal distributions.
 
 \end{definition}
 
@@ -243,12 +243,12 @@ The mean is given by \(\E{}{X} = \frac{\alpha}{\alpha + \beta}\)
 
 \subsection{Dirichlet Distribution}
 
-The Dirichlet distribution is a family of continuous multivariate probability
+The Dirichlet distribution is a family of continuous multi-variate probability
 distributions parameterized by a vector \(\bm{\alpha}\) of positive reals. It is
-a multivariate generalization of the Beta Distribution.
+a multi-variate generalization of the Beta Distribution.
 
 \begin{definition}
-  We say that a continuous random multivariate variable \(\bX\) with order
+  We say that a continuous random multi-variate variable \(\bX\) with order
   \(K \geq 2\), follows a \emph{Dirichlet
     Distribution} with parameters \(\bm{\alpha} = (\alpha_{1}, \dots, \alpha_{K})\), if and
   only if its density function is defined as
@@ -261,7 +261,7 @@ a multivariate generalization of the Beta Distribution.
   \]
 \end{definition}
 
-Where the normalization constant is the multivariate beta function
+Where the normalization constant is the multi-variate beta function
 \[
   B(\bm{\alpha}) = \frac{\prod_{k} \Gamma (\alpha_{k})}{\Gamma \big( \sum_{k}\alpha_{k} \big)}
 \]

@@ -1,3 +1,6 @@
+
+
+
 A Bayesian approach where we set a distribution over the parameters is an
 alternative to Maximum Likelihood training of a Bayesian Network, as we did in
 the coin tossing example.
@@ -61,18 +64,20 @@ going to use
 \[
   \theta_{D} = ( \theta_{0}, \theta_{1}, \theta_{2},\theta_{3})
 \]
-Where we are using a binary to decimal transformation between the states of \(A\) and \(B\) and the subindex of \(\theta\).
+Where we are using a binary to decimal transformation between the states of \(A\) and \(B\) and the sub-index of \(\theta\).
 
 We need to specify a prior and since dealing with multidimensional continuous
-distributions is computationally problematic it is normal to use univariate
+distributions is computationally problematic it is normal to use uni-variate
 distributions.
 
+\section{Global and local parameter independence}
+
 A convenient assumption is that the prior factorizes, this is usually called
-\emph{global parameter independence}. We assume then
+\emph{global parameter independence}.
 \[
   P(\theta_{A}, \theta_{B}, \theta_{D}) = P(\theta_{A})P(\theta_{B})P(\theta_{D})
 \]
-Assuming our data is i.i.d, we have
+Using this
 \[
   P(\theta_{A}, \theta_{B}, \theta_{D}, \mathcal{V}) = P(\theta_{A})P(\theta_{B})P(\theta_{D})\prod_{n}P(a_{n}\mid \theta_{A})P(b_{n} \mid \theta_{B})P(d_{n}\mid a_{n}, b_{n}, \theta_{D})
 \]
@@ -81,13 +86,12 @@ Learning then corresponds to inference
 \[
   \begin{aligned}
     P(\theta_{A}, \theta_{B}, \theta_{D}\mid \mathcal{V}) &= \frac{P(\mathcal{V} \mid \theta_{a}, \theta_{B}, \theta_{D})P(\theta_{A}, \theta_{B}, \theta_{D})}{P(\mathcal{V})} =\frac{P(\mathcal{V} \mid \theta_{A}, \theta_{B}, \theta_{D})P(\theta_{A}) P(\theta_{B})P( \theta_{D})}{P(\mathcal{V})}\\
-    &= \frac{1}{P(\mathcal{V})}P(\theta_{A})\prod_{n}P(a_{n}\mid \theta_{A})P(\theta_{B})\prod_{n}P(b_{n}\mid \theta_{B})P(\theta_{D})\prod_{n}P(d_{n}\mid a_{n}, b_{n},\theta_{D})\\
+    &= \frac{1}{P(\mathcal{V})}P(\theta_{A})P(\theta_{B})P(\theta_{D})\prod_{n}P(a_{n}\mid \theta_{A})P(b_{n}\mid \theta_{B})P(d_{n}\mid a_{n}, b_{n},\theta_{D})\\
     &= P(\theta_{A} \mid \V_{A} )P(\theta_{B}\mid \V_{B})P(\theta_{D} \mid \V)
   \end{aligned}
 \]
 
-Where \(V_{i}\) is the subset of the data restricted to the variable \(i\). If
-we further assume that \(P(\theta_{D})\) factorizes as
+If we further assume that \(P(\theta_{D})\) factorizes as
 \(P(\theta_{D}) = P(\theta_{0})P(\theta_{1})P(\theta_{2})P(\theta_{3})\),
 this is called \emph{local parameter independence}, then it follows that
 \[
@@ -98,7 +102,7 @@ this is called \emph{local parameter independence}, then it follows that
 
 The simplest cases to continue are \(P(a\mid \theta_{A})\) and
 \(P(b \mid \theta_{b})\) since they require only a uni-variate prior distribution
-\(P(\theta_{A})\) or \(P(\theta_{b})\). We use \(P(\theta_{A})\) as the other
+\(P(\theta_{A})\) or \(P(\theta_{B})\). We use \(P(\theta_{A})\) as the other
 case is analogous.
 
 The posterior is
@@ -114,7 +118,7 @@ will hold.
 \]
 So it follows that
 \[
-  (\theta_{A} \mid \V_{A}) \sim \text{Beta}(\theta_{A} \mid \alpha_{A} + \#(A=1), \beta_{A} + \#(A = 0))
+  (\theta_{A} \mid \V_{A}) \sim \text{Beta}(\alpha_{A} + \#(A=1), \beta_{A} + \#(A = 0))
 \]
 
 The marginal is then
@@ -126,41 +130,41 @@ The marginal is then
     &= \frac{\alpha_{A} + \#(A= 1)}{\alpha_{A} + \#(A=1) + \beta_{A} + \#(A=0)}
   \end{aligned}
 \]
+Where the last equality is the expected value of a Beta distribution.
 
-For \(P(d \mid a ,b)\) the situation is more complex, the most convenient way is
-to specify a Beta prior for each one of the four components of \(\theta_{D}\).
-Lets focus on \(P(D = 1 \mid A = 1, B = 0)\), notice the parameters \(\alpha\)
-and \(\beta\) we used before now depend on \(a\) and \(b\), for this reason we
-are using \(\alpha_{D}(a,b)\) and \(\beta_{D}(a,b)\) as prior parameters, these
+For \(P(d \mid a ,b)\) the situation is more complex, the simplest approach
+to specify a Beta prior for each of the components of \(\theta_{D}\).
+Focus on \(\theta_{2}\), notice the parameters \(\alpha\)
+and \(\beta\) we used before are now dependent from \(A\) and \(B\), these
 are called \emph{hyperparameters}.
 \[
-  P(\theta_{2}) = B(\theta_{2} \mid \alpha_{D}(1,0) + \#(D = 1, A = 1, B = 0), \beta_{D}(1,0) + \#(D = 0, A = 1, B = 0))
+  \theta_{2} \sim Beta(\alpha_{D}(1,0) + \#(D = 1, A = 1, B = 0), \beta_{D}(1,0) + \#(D = 0, A = 1, B = 0))
 \]
 
-As before we got that
+Repeating the procedure we used with \(A\) we get that
 \[
   P(D = 1 \mid A = 1, B = 0, \V) = \frac{\alpha_{D}(1,0) + \#(D = 1, A = 1, B = 0)}{\alpha_{D}(1,0) + \beta_{D}(1,0) + \#(A=1, B = 0)}
 \]
 
 In case we had no preference, we could set all hyperparameters to the same
-value, and, a complete ignorance prior would correspond to set them to 1.
+value, where a complete ignorance prior would correspond to set them to 1.
 
-Let now consider two limit possibilities, the one where we have no data at all,
-and the one where we have infinite data.
-
-In case we have no data, the marginal probability corresponds to the prior which
+Once we get to this situation there are two limit possibilities depending on the amount of data we got.
+\begin{itemize}
+  \item \textbf{No data}. The marginal probability corresponds to the prior which
 in the last case is
-\[
-   P(D = 1 \mid A = 1, B = 0, \V) = \frac{\alpha_{D}(1,0)}{\alpha_{D}(1,0) + \beta_{D}(1,0)}
- \]
- Note that equal hyperparameters would give a result of \(0.5\).
-
- When infinite data is available, the marginal is generally dominated by it,
- this corresponds to the Maximum Likelihood solution.
- \[
-   P(D = 1 \mid A = 1, B = 0, \V) = \frac{\#(D = 1, A = 1 , B = 0)}{\#(A = 1, B = 0)}
- \]
- This happens unless the prior has a pathologically strong effect.
+    \[
+    P(D = 1 \mid A = 1, B = 0, \V) = \frac{\alpha_{D}(1,0)}{\alpha_{D}(1,0) + \beta_{D}(1,0)}
+    \]
+    Note that equal hyperparameters would give a result of \(0.5\).\newline
+   
+  \item \textbf{Infinite data}. When infinite data is available, the marginal is generally dominated by it,
+    this corresponds to the Maximum Likelihood solution.
+    \[
+    P(D = 1 \mid A = 1, B = 0, \V) = \frac{\#(D = 1, A = 1 , B = 0)}{\#(A = 1, B = 0)}
+    \]
+    This happens unless the prior has a pathologically strong effect.
+\end{itemize}
 
  Consider the data given in the table in figure \ref{fig:bayesian_example}, and
  equal parameters and hyperparameters \(1\). Then we can compute the differences
@@ -175,37 +179,42 @@ in the last case is
  \section{Learning discrete variables}
 
  The natural generalization to more than two states is using a Dirichlet
- distribution as prior, assuming i.i.d data and local and global prior
+ distribution as prior, assuming i.i.d data, local and global prior
  independence. We are considering two different scenarios, firstly one where the
  variable has no parents, as the case for \(A\) and \(B\) in the previous
- example. Secondly, we will consider a variable with a non void set of parents,
- as in the case with the disease \(D\).
+ example. Secondly, we will consider a variable with a non void set of parents.
 
  \subsection{No parents}
 
- Consider a variable \(X\) with
- \(Dom(X) = \{1, \dots, I\}, \ \theta = (\theta_{1},\dots, \theta_{I})\), then
+ Consider a variable \(X \sim Categorical(\theta)\) with
+ \(Dom(X) = \{1, \dots, I\} \) and \(\theta = (\theta_{1},\dots, \theta_{I})\) so that
  \[
-   P(x \mid \theta) = \prod_{i = 1}^{I}\theta_{i}^{\mathbb{I}[x = i]} \text{
+   P(x) = \prod_{i = 1}^{I}\theta_{i}^{\mathbb{I}[x = i]} \text{
    with  } \sum_{i=1}^{I}\theta_{i} = 1
 \]
 So that the posterior (considering \(N\) observations of the variable
-\((x_{1}, \dots, x_{N}) = \V\)) is
+\(\V = (x_{1}, \dots, x_{N})\)) is
 \[
-  P(\theta \mid x_{1},\dots,x_{N}) = \frac{1}{P(\V)} P(\theta) \prod_{n = 1}^{N}\prod_{i =1 }^{I}\theta_{i}^{\mathbb{I}[x_{n} = i]} =  \frac{1}{P(\V)} P(\theta) \prod_{i = 1}^{I} \theta_{i}^{\sum_{n} \mathbb{I}[x_{n}=i]}
+  P(\theta \mid \V) = \frac{1}{P(\V)} P(\theta) \prod_{n = 1}^{N}\prod_{i =1 }^{I}\theta_{i}^{\mathbb{I}[x_{n} = i]} =  \frac{1}{P(\V)} P(\theta) \prod_{i = 1}^{I} \theta_{i}^{\sum_{n} \mathbb{I}[x_{n}=i]}
 \]
-Then assuming a Dirichlet prior with hyperparameters \(\bm{u} = (u_{1}, \dots, u_{I})\)
+Then assuming a prior \(\theta \sim Dirichlet(\bm{u})\) with \( \bm{u} = (u_{1}, \dots, u_{I})\)
 \[
   P(\theta) = \frac{1}{B(\bm{u})}\prod_{i =1}^{I}\theta_{i}^{u_{i}-1} \implies P(\theta \mid \V) = \frac{1}{B(\bm{u})P(\V)}\prod_{i=1}^{I}\theta_{i}^{u_{i}-1 + \sum_{n}\mathbb{I}[x_{n} = i]}
 \]
 
 Which means that, defining \(\bm{c} = ( \sum_{n=1}^{N}\mathbb{I}[x_{n} = i])_{i = 1,\dots,I}\)
 \[
-  P(\theta \mid \V) \sim \text{Dirichlet}(\bm{u} + \bm{c})
+  (\theta \mid \V) \sim Dirichlet(\bm{u} + \bm{c})
 \]
+It may not be easy to decompose \(B(\bm{u} + \bm{c})\) as \(B(\bm{u})P(\V)\), but using that it ensures normalization of the Beta distribution we may use that
+\[
+  \int_{\theta} P(\theta \mid \V) = 1 \implies \int_{\theta}\prod_{i=1}^{I}\theta_{i}^{u_{i}+c_{i}-1} = B(\bm{u} + \bm{c}) = B(\bm{u})P(\V)
+\]
+
 \begin{remark}
 Summarizing the above information, we just proved that the Dirichlet distribution is the conjugate prior of the Categorical Distribution.
 \end{remark}
+
 The marginal is then given by
 \[
   \begin{aligned}
@@ -216,12 +225,12 @@ The marginal is then given by
 Where we used that
 \[\int_{\theta_{j \neq i}}\theta_{i} P(\theta \mid \V) = \theta_{i}\prod_{k\neq j}P(\theta_{k} \mid V) \int_{\theta_{j}}P(\theta_{j}\mid \V) = \theta_{i} \prod_{k \neq j}P(\theta_{k} \mid \V)\]
 
-As we already know from Proposition \ref{prop:dirichlet_marginal}, the univariate marginal of a Dirichlet distribution is a
-Beta Distribution, then
+As we already know from Proposition \ref{prop:dirichlet_marginal}, the uni-variate marginal of a Dirichlet distribution is a
+Beta Distribution of parameters
 \[
   (\theta_{i} \mid \V) \sim \text{Beta}(u_{i} + c_{i}, \sum_{j\neq i} u_{j} + c_{j})
 \]
-So the marginal is
+Using the expectation of a Beta distribution we get that
 \[
   P(X = i \mid \V) = \frac{u_{i} + c_{i}}{\sum_{j}u_{j} + c_{j}}
 \]
@@ -232,7 +241,7 @@ we want to compute the marginal given a state of its parents and the data
 \[
   P(X = i \mid pa(X) = \bm{j}, \V)
 \]
-Let set the following notation for the parameters
+We are using the following notation for the parameters
 \[
   P(X = i \mid pa(X) = \bm{j}, \theta) = \theta_{i,\bm{j}} \hspace{2cm} \bm{\theta_{j}} = (\theta_{1,\bm{j}},\dots, \theta_{I,\bm{j}})
 \]
@@ -246,9 +255,7 @@ As we did before, we consider a Dirichlet prior
   \bm{\theta_{j}} \sim Dirichlet(\bm{u_{j}})
 \]
 
-
-
-the posterior is then
+The posterior is then
 \[
   \begin{aligned}
     P(\bm{\theta} \mid \V) &= \frac{P(\bm{\theta})P(\V \mid \bm{\theta}) }{P(\V)} = \frac{1}{P(\V)}\Big(\prod_{\bm{j}}P(\bm{\theta_{j}}) \Big)P(\V \mid \bm{\theta}) \\
@@ -257,24 +264,20 @@ the posterior is then
     &= \frac{1}{P(\V)}\prod_{\bm{j}}\frac{1}{B(\bm{u_{j}})}\prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1 + \#(X = i,pa(X)=\bm{j})}
   \end{aligned}
 \]
-Naming \(\bm{v_{j}} = \bm{u_{j}} + \#(X = i, pa(X) = \bm{j})\), the posterior
-is
+Naming \(\bm{v_{j}} = \bm{u_{j}} + \#(X = i, pa(X) = \bm{j})\) and using the same argument as we did in the \emph{no parents} case with the normalization constants, the posterior then follows
 \[
   (\bm{\theta} \mid \V) \sim \prod_{j}\text{Dirichlet}(\bm{v_{j}})
 \]
-
-
 Noting \(v_{i,j}\) the components of \(\bm{v_{j}}\), the marginal is then
 \[
   P(X=i, pa(X) = \bm{j}, \V) = \frac{v_{i,j}}{\sum_{i}v_{i,j}}
 \]
 Notice all the above has been done using a fixed variable \(X\), so that all the parameters depend on that variable.
 
-Using the above calculations, we can define the data likelihood under a model, usually called the \emph{model likelihood}
+We can define the data likelihood under a model, usually called the \emph{model likelihood} using the same calculations as we did with \(P(\bm{\theta} \mid \V)\) but applied to all the variables of the model
 \[
   \begin{aligned}
-    P(\V \mid \mathcal{M}) &= \prod_{x}\prod_{n}P(x_{n} \mid pa(x_{n}), \mathcal{M}) = \prod_{x} \int_{\bm{\theta}} P(\bm{\theta}) \prod_{n} P(x_{n}\mid pa(x_{n}), \bm{\theta}, \mathcal{M})\\
-    &= \prod_{x} \prod_{\bm{j}} \frac{1}{B(\bm{u_{j}})} \int_{\bm{\theta}} \prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1 + \#(x = i,pa(x)=\bm{j})}\\
-    &= \prod_{x}\prod_{j} \frac{B(\bm{v_{j}})}{B(\bm{u_{j}})}
+    P(\V \mid \mathcal{M}) &= \int_{\bm{\theta}}P(\bm{\theta})P(\V \mid \bm{\theta}, \mathcal{M}) = \prod_{x} \prod_{\bm{j}} \frac{1}{B(\bm{u_{j}})} \int_{\bm{\theta}} \prod_{i}\theta_{i,\bm{j}}^{u_{i,\bm{j}}-1 + \#(x = i,pa(x)=\bm{j})}\\
+    &= \prod_{x}\prod_{\bm{j}} \frac{B(\bm{v_{j}})}{B(\bm{u_{j}})}
   \end{aligned}
 \]
