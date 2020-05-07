@@ -2,7 +2,7 @@
 % Plantilla para un Trabajo Fin de Grado de la Universidad de Granada,
 % adaptada para el Doble Grado en Ingeniería Informática y Matemáticas.
 %
-%  Autor: Mario Román.
+%  Autor de la plantilla: Mario Román.
 %  Licencia: GNU GPLv2.
 %
 % Esta plantilla es una adaptación al castellano de la plantilla
@@ -26,7 +26,7 @@
 
 % Paquetes de latex que se cargan al inicio. Cubren la entrada de
 % texto, gráficos, código fuente y símbolos.
-  \usepackage{relsize}
+\usepackage{relsize}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{fixltx2e}
@@ -52,8 +52,7 @@
 \usetikzlibrary{positioning}
 \usetikzlibrary{bayesnet}
 \usepackage{caption}
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+
 % Plantilla classicthesis
 \usepackage[beramono,eulerchapternumbers,linedheaders,parts,a5paper,dottedtoc,
 manychapters,pdfspacing]{classicthesis}
@@ -121,15 +120,15 @@ Some introduction about how important Variational methods are nowadays and what 
 
 \chapter{Probability}
 
-\input{sections/probability}
+\input{sections/BasicConcepts/probability}
 
 \chapter{Distributions}
 
-\input{sections/distributions}
+\input{sections/BasicConcepts/distributions}
 
 \chapter{Graph Theory}
 
-\input{sections/graph-theory}
+\input{sections/BasicConcepts/graph-theory}
 
 
 \ctparttext{
@@ -149,11 +148,11 @@ factorization of the distribution that they include.  \end{center}
 
 \chapter{Bayesian networks}
 
-\input{sections/bayesian-networks}
+\input{sections/GraphicalModels/bayesian-networks}
 
 \chapter{Markov Random Fields}
 
-\input{sections/markov-networks}
+\input{sections/GraphicalModels/markov-networks}
 
 
 \ctparttext{
@@ -166,23 +165,32 @@ factorization of the distribution that they include.  \end{center}
 
 \chapter{Introduction}
 
-\input{sections/learning-bn.intro}
+\input{sections/BayesianNetworksLearning/intro}
 
 \chapter{Maximum Likelihood Training}
 
-\input{sections/learning-bn.maximum-likelihood}
+\input{sections/BayesianNetworksLearning/maximum-likelihood}
 
 \chapter{Bayesian Training}
 
-\input{sections/learning-bn.bayesian}
+\input{sections/BayesianNetworksLearning/bayesian}
 
 \chapter{Structure Learning}
 
-\input{sections/learning-bn.structure}
+\input{sections/BayesianNetworksLearning/structure-learning}
 
 \chapter{Learning With Missing Variables and Data}
 
-\input{sections/learning-bn.missing-variables-and-data}
+\input{sections/BayesianNetworksLearning/missing-variables-and-data}
+
+\section{Expectation Maximization}
+
+\input{sections/BayesianNetworksLearning/expectation-maximization}
+
+\section{Variational Bayes}
+
+\input{sections/BayesianNetworksLearning/variational-bayes}
+
 
 \clearpage
 \nocite{*}
