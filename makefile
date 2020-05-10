@@ -1,4 +1,4 @@
-main.pdf: main.tex sections/*.tex
+main.pdf: main.tex chapters/*/*.tex
 	pdflatex --shell-escape main.tex
 	bibtex main
 	pdflatex --shell-escape main.tex

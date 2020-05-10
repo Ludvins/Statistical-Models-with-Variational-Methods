@@ -4,19 +4,14 @@ and need to be learned from the data.
 
 From now on, \(\mathcal{V}\) will denote the known data and \(\theta\) the set
 of parameters of the data distributions. The main task is to determine this set
-of parameters using the information given by the data.
+of parameters using the information given by the data. No latent or hidden variables are being considered right now.
 
-\begin{definition}
-\emph{Priors} and \emph{posteriors} typically refer to the parameter
-distribution before and after seeing the data, respectively. Using Bayes' rule
+The goal now is to determine the posterior \(P(\theta \mid \V)\) using a prior belief \(P(\theta)\) and the likelihood function \(P(\V \mid \theta)\).  
 \[
   P(\theta \mid  \mathcal{V}) = \frac{P(\mathcal{V}  \mid  \theta)P(\theta)}{P(\mathcal{V})}
 \]
-The factor \(P(\mathcal{V} \mid \theta)\) is called the \emph{likelihood}.
-\end{definition}
 
-Let us see an example of our goal, in it we will try to learn the bias of a coin,
-given a set of tossing results.
+We are using the following example to illustrate the situation, in it we will try to learn the bias of a coin, given a set of tossing results.
 
 \begin{exampleth}
   Let \(\V = \{v_n\}_{n \in 0,\dots,N}\) be the results of tossing a coin \(N \in

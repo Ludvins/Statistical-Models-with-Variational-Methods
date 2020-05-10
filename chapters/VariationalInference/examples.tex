@@ -1,0 +1,42 @@
+
+\section{Gaussian Mixture example}
+
+\begin{exampleth}
+  Consider a mixture of \(K\) uni-variate Gaussians with variance \(1\). Let \(\bm{\mu} = \{\mu_{1},\dots, \mu_{K}\}\) be the mean value of every Gaussian and \(\bm{c} = \{c_{1},\dots, c_{K}\}\) be a set of \(K\)-vectors all zeros except the position corresponding to its sub-index, where \(c_{i}\) indicates the considered variable belongs to the \(i^{th}\) Gaussian distribution. Considering a sample \(\V = \{x_{1}, \dots, x_{N}\}\), we are considering the following distributions
+  \[
+    \begin{aligned}
+      \mu_{k} &\sim N(0, \sigma^{2})\\
+      c_{i} &\sim Categorical \Big( \frac{1}{K},\dots,\frac{1}{K} \Big)\\
+      (x_{i} \mid c_{i}, \bm{\mu}) &\sim N(\mu_{i}, 1) = N(c_{i}^{T}\bm{\mu}, 1)
+    \end{aligned}
+  \]
+
+  The joint probability distribution is then
+  \[
+    P(\V, \bm{\mu}, \bm{c}) = P(\bm{\mu})\prod_{n=1}^{N}P(c_{n})P(x_{n}\mid c_{n}, \bm{\mu})
+  \]
+  Where the latent variables are \(\bm{z} = \{\bm{\mu}, \bm{c}\}\), marginalizing over them results on
+  \[
+    P(\V) = \int_{\bm{\mu}}\prod_{n=1}^{N}\sum_{c_{n}}P(c_{n})P(x_{n} \mid c_{n},\bm{\mu})
+  \]
+  This integral can not be reduced to a product of one dimensional integrals as the factors \(\mu_{k}\) appear in all the \(N\) factors of the integral.
+
+  Using the mean-field family to approximate the posterior means that our distributions \(Q\) satisfy
+  \[
+    Q(\bm{\mu}, \bm{c}) = \prod_{k = 1}^{K}Q(\mu_{k})\prod_{n=1}^{N}Q(c_{n})
+  \]
+  where each \(Q(\mu_{k})\) is a Gaussian distribution of parameters \((m_{k}, s_{k}^{2})\)  and each \(Q(c_{n})\) is a Categorical distribution with probabilities \(\phi_{n}\). As we have fixed the structure of \(Q\) given this hyper-parameters, we can express the ELBO as a function of them.
+  \[
+    \begin{aligned}
+      \textsc{ELBO}(\bm{m}, \bm{s}^{2}, \bm{\phi}) &= \sum_{k=1}^{K}\E{Q_{m_{k},s_{k}^{2}}}{\log{P(\mu_{k})}}\\
+      &+ \sum_{n=i}^{N} \E{Q_{\phi_{n}}}{\log{P(c_{i})}} + \E{Q_{\phi_{n}, \bm{m}, \bm{s}^{2}}}{\log{P(x_{n}\mid c_{n}, \bm{\mu})}}\\
+      &- \sum_{n=1}^{N} \E{Q_{\phi_{n}}}{\log{Q(c_{i})}} - \sum_{k=1}^{K}\E{Q_{m_{k},s_{k}^{2}}}{\log{Q(\mu_{k})}}
+     \end{aligned}
+   \]
+
+   The CAVI algorithm updates each distribution factor in turns. We start with \(Q(c_{i})\), following the algorithm we set
+   \[
+     Q^{new}(c_{i}) \propto \exp{ \E{Q_{\bm{c_{\backslash i}}, \bm{m}, \bm{s}^{2}}}{\log{ P(c_{i}\mid \bm{c}_{\backslash i}, \bm{m}, \bm{s}^{2}, \V) }} }
+   \]
+
+\end{exampleth}

@@ -1,9 +1,13 @@
 
+
 % Plantilla para un Trabajo Fin de Grado de la Universidad de Granada,
 % adaptada para el Doble Grado en Ingeniería Informática y Matemáticas.
 %
-%  Autor de la plantilla: Mario Román.
+%  Autor de la plantilla original: Mario Román.
+%  Enlace: https://github.com/mroman42/templates
+%  Cambios en la plantilla por: Luis Ortega
 %  Licencia: GNU GPLv2.
+%
 %
 % Esta plantilla es una adaptación al castellano de la plantilla
 % classicthesis de André Miede, que puede obtenerse en:
@@ -21,8 +25,7 @@
 %   pdflatex --shell-escape main.tex
 
 % Opciones del tipo de documento
-\documentclass[twoside,openright,titlepage,numbers=noenddot,openany,headinclude,footinclude=true,
-  cleardoublepage=empty,abstractoff,BCOR=5mm,paper=a4,fontsize=11pt]{scrreprt}
+\documentclass[twoside,openright,titlepage,numbers=noenddot,openany,headinclude,footinclude=true, cleardoublepage=empty,abstractoff,BCOR=5mm,paper=a4,fontsize=11pt]{scrreprt}
 
 % Paquetes de latex que se cargan al inicio. Cubren la entrada de
 % texto, gráficos, código fuente y símbolos.
@@ -42,12 +45,12 @@
 \usepackage{capt-of}
 \usepackage[colorlinks=true]{hyperref}
 \usepackage{tikz} % Diagramas conmutativos.
+\usepackage{pgfplots}
 \usepackage{dcolumn}
 \usepackage{booktabs}
 \usepackage{minted} % Código fuente.
 \usepackage{natbib}
 \usepackage{bm}
-\usepackage{todonotes}
 \usepackage{centernot}
 \usetikzlibrary{positioning}
 \usetikzlibrary{bayesnet}
@@ -66,10 +69,15 @@ manychapters,pdfspacing]{classicthesis}
 \setlength\itemsep{0em}
 \setlength{\parindent}{0pt}
 \usepackage{parskip}
+
+% Algoritmos
 \usepackage[ruled,vlined]{algorithm2e}
+
 % Todo notes
 \usepackage{todonotes}
 \let\marginpar\oldmarginpar
+
+
 % Profundidad de la tabla de contenidos.
 \setcounter{secnumdepth}{3}
 
@@ -112,7 +120,7 @@ Some introduction about how important Variational methods are nowadays and what 
 \ctparttext{
   \color{black}
   \begin{center}
-    In this chapter we will introduce the underlying concepts of probability and
+    In this part we will introduce the underlying concepts of probability and
     graph theory that we will need.
   \end{center}
 }
@@ -120,39 +128,61 @@ Some introduction about how important Variational methods are nowadays and what 
 
 \chapter{Probability}
 
-\input{sections/BasicConcepts/probability}
+\input{chapters/BasicConcepts/probability}
 
 \chapter{Distributions}
 
-\input{sections/BasicConcepts/distributions}
+\input{chapters/BasicConcepts/distributions}
 
 \chapter{Graph Theory}
 
-\input{sections/BasicConcepts/graph-theory}
+\input{chapters/BasicConcepts/graph-theory}
 
 
 \ctparttext{
   \color{black}
   \begin{center}
 
-A \emph{graphical model} is a statistical model for which a graph expresses the
-conditional dependence structure between random variables.
+  \end{center}
+}
+\part{Variational Inference}
 
-Commonly, they provide a graph-based representation for encoding a multi-dimensional
-distribution representing a set of independences that hold in the specific
-distribution. The most commonly used are \emph{Bayesian networks} and \emph{Markov random
-fields}, which differ in the set of independences they can encode and the
-factorization of the distribution that they include.  \end{center}
+\chapter{Introduction}
+
+\input{chapters/VariationalInference/introduction}
+
+\chapter{Mean-Field Variational Inference}
+
+\input{chapters/VariationalInference/meanfield-variational-inference.tex}
+
+\chapter{Exponential Family}
+
+\input{chapters/VariationalInference/exponential-family.tex}
+
+
+\ctparttext{
+  \color{black}
+  \begin{center}
+
+    A \emph{graphical model} is a statistical model for which a graph expresses the
+    conditional dependence structure between random variables.
+
+    Commonly, they provide a graph-based representation for encoding a multi-dimensional
+    distribution representing a set of independences that hold in the specific
+    distribution. The most commonly used are \emph{Bayesian networks} and \emph{Markov random
+      fields}, which differ in the set of independences they can encode and the
+    factorization of the distribution that they include.
+  \end{center}
 }
 \part{Graphical Models}
 
 \chapter{Bayesian networks}
 
-\input{sections/GraphicalModels/bayesian-networks}
+\input{chapters/GraphicalModels/bayesian-networks}
 
 \chapter{Markov Random Fields}
 
-\input{sections/GraphicalModels/markov-networks}
+\input{chapters/GraphicalModels/markov-networks}
 
 
 \ctparttext{
@@ -165,31 +195,31 @@ factorization of the distribution that they include.  \end{center}
 
 \chapter{Introduction}
 
-\input{sections/BayesianNetworksLearning/intro}
+\input{chapters/BayesianNetworksLearning/intro}
 
 \chapter{Maximum Likelihood Training}
 
-\input{sections/BayesianNetworksLearning/maximum-likelihood}
+\input{chapters/BayesianNetworksLearning/maximum-likelihood}
 
 \chapter{Bayesian Training}
 
-\input{sections/BayesianNetworksLearning/bayesian}
+\input{chapters/BayesianNetworksLearning/bayesian}
 
 \chapter{Structure Learning}
 
-\input{sections/BayesianNetworksLearning/structure-learning}
+\input{chapters/BayesianNetworksLearning/structure-learning}
 
-\chapter{Learning With Missing Variables and Data}
+\chapter{Variational Inference in Bayesian Networks}
 
-\input{sections/BayesianNetworksLearning/missing-variables-and-data}
+\input{chapters/BayesianNetworksLearning/missing-variables-and-data}
 
 \section{Expectation Maximization}
 
-\input{sections/BayesianNetworksLearning/expectation-maximization}
+\input{chapters/BayesianNetworksLearning/expectation-maximization}
 
 \section{Variational Bayes}
 
-\input{sections/BayesianNetworksLearning/variational-bayes}
+\input{chapters/BayesianNetworksLearning/variational-bayes}
 
 
 \clearpage
