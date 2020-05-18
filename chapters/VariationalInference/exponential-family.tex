@@ -3,46 +3,48 @@ The exponential family is a parametric set of probability distributions of a cer
 
 Let \(X\) be a random variable and \(\bm{\theta}\) a set of parameters. A family a distributions is said to belong the exponential family if its probability distribution is
 \[
-  P(x \mid \bm{\theta}) = h(x)\exp{\Big( \sum_{i=1}^{S} \eta_{i}(\bm{\theta})T_{i}(x) - \psi(\bm{\theta}) \Big)}
+  P(x \mid \bm{\theta}) = h(x)\exp{\Big( \sum_{i=1}^{S} \eta_{i}(\bm{\theta})T_{i}(x) - \psi(\bm{\theta}) \Big)},
 \]
-where \(h(x)\), \(T_{i}(x)\), \(\eta_{i}(\bm{\theta})\) and \(\psi(\bm{\theta})\)  are known functions such that \(h\) is called a \emph{base measure}, \(\eta_{i}(\bm{\theta})\) are called the \emph{parameters},  \(T_{i}(x)\) the \emph{test statistics} and \(\psi\) is the \emph{log normalizer} as it ensures logarithmic normalization:
+where \(h(x)\), \(T_{i}(x)\), \(\eta_{i}(\bm{\theta})\) and \(\psi(\bm{\theta})\)  are known functions such that \(h\) is called a \emph{base measure}, \(\eta_{i}(\bm{\theta})\) are called the \emph{parameters},  \(T_{i}(x)\) the \emph{test statistics} and \(\psi\) is the \emph{log normalizer} as it ensures logarithmic normalization due to
 \[
   \begin{aligned}
     1 &= \int_{x}  h(x)\exp{\Big( \sum_{i=1}^{S} \eta_{i}(\bm{\theta})T_{i}(x) - \psi(\bm{\theta}) \Big)}\\
     &= \int_{x} e^{-\psi(\btheta)} h(x)\exp{\Big( \sum_{i=1}^{S} \eta_{i}(\bm{\theta})T_{i}(x) \Big)}\\
-    &= e^{-\psi(\btheta)} \int_{x} h(x)\exp{\Big( \sum_{i=1}^{S} \eta_{i}(\bm{\theta})T_{i}(x) \Big)}
+    &= e^{-\psi(\btheta)} \int_{x} h(x)\exp{\Big( \sum_{i=1}^{S} \eta_{i}(\bm{\theta})T_{i}(x) \Big)},
   \end{aligned}
 \]
-So \(\psi\) verifies
+so \(\psi\) verifies
 \[
-      \psi(\bm{\theta}) = \log \int_{x} h(x) \exp \Big( \sum_{i=1}^{S} \eta_{i}(\bm{\theta})T_{i}(x) \Big)
+      \psi(\bm{\theta}) = \log \int_{x} h(x) \exp \Big( \sum_{i=1}^{S} \eta_{i}(\bm{\theta})T_{i}(x) \Big).
 \]
 
-Naming \(\bm{\eta}\) and \(\bm{T}\) the corresponding vector applications, the parameters can always be transformed as \(\bm{\theta}^{new} = \bm{\eta}(\bm{\theta})\), in which case we say the distribution is in \emph{canonical form} (notice \(\psi\) has changed):
+Naming \(\bm{\eta}\) and \(\bm{T}\) the corresponding vector functions, the parameters can always be transformed as \(\bm{\theta}^{new} = \bm{\eta}(\bm{\theta})\), in which case we say the distribution is in \emph{canonical form} (notice \(\psi\) has changed but we are not differentiating it from the other since it is determined by the other functions):
 \[
-  P(x \mid \bm{\theta}) = h(x) e^{\bm{\theta}^{T}\bm{T}(x) - \psi(\bm{\theta})}
+  P(x \mid \bm{\theta}) = h(x) e^{\bm{\theta}^{T}\bm{T}(x) - \psi(\bm{\theta})}.
 \]
 
-Consider our case of study where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family. Using a exponential family distribution for the marginal \(P(z_{n} \mid \bz_{\backslash n}, \V)\) and defining \( \theta_{n} = (\bm{z}_{\backslash n}, \V)\) so the notation is cleaner. Notice that \( (\bm{z}_{\backslash n}, \V) \) are the model parameters for the exponential family.
+Consider our case of study where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family. Using a exponential family distribution for the marginal \(P(z_{n} \mid \bz_{\backslash n}, \V)\) and defining \( \theta_{n} = (\bm{z}_{\backslash n}, \V)\) so the notation is cleaner,
 \[
-  P(z_{n} \mid \theta_{n}) = h(z_{n})\exp \Big( {\eta_{n}(\theta_{n})}^{T}z_{n} - \psi(\theta_{n}) \Big)
+  P(z_{n} \mid \theta_{n}) = h(z_{n})\exp \Big( {\eta_{n}(\theta_{n})}^{T}z_{n} - \psi(\theta_{n}) \Big).
 \]
-The update of the CAVI algorithm  is then given by:
+Notice that \( (\bm{z}_{\backslash n}, \V) \) are the model parameters for the exponential family.
+
+The update of the CAVI algorithm  is then given by
   \begin{align}
     Q(z_{n}) &\propto \exp{\E{Q(\bm{z}_{\backslash n})}{\log P(z_{n} \mid \theta_{n})}} = h(z_{n})\exp \Big(\E{Q_{\bm{z}_{\backslash n}}}{ {\eta_{n}(\theta_{n})}}^{T}z_{n} - \E{Q_{\bm{z}_{\backslash n}}}{ \psi(\theta_{n})}\Big) \nonumber \\
-    &\propto  h(z_{n})\exp \Big(\E{Q_{\bm{z}_{\backslash n}}}{ {\eta_{n}(\theta_{n})}}^{T}z_{n}\Big) = h(z_{n})e^{v_{n}^{T}z_{n} } \label{eq:exponential_update}
+    &\propto  h(z_{n})\exp \Big(\E{Q_{\bm{z}_{\backslash n}}}{ {\eta_{n}(\theta_{n})}}^{T}z_{n}\Big) = h(z_{n})e^{v_{n}^{T}z_{n} }, \label{eq:exponential_update}
   \end{align}
 
-Where
+where
 \[
-  v_{n} = \E{Q_{\bm{z}_{\backslash n}}}{\eta_{n}(\theta_{n})} =  \E{Q_{\bm{z}_{\backslash n}}}{\eta_{n}(\bm{z}_{\backslash n}, \V)}
+  v_{n} = \E{Q_{\bm{z}_{\backslash n}}}{\eta_{n}(\theta_{n})} =  \E{Q_{\bm{z}_{\backslash n}}}{\eta_{n}(\bm{z}_{\backslash n}, \V)}.
 \]
 
-The factor is in the exponential family with the same base measure \(h\) and updating it is equivalent to setting the parameter \(\eta\) to the expected one of the complete conditional \(\E{}{\eta_{n}(\theta_{n})}\). This expression facilitates deriving CAVI algorithm for many complex models.
+Summarizing, the factor is in the exponential family with the same base measure \(h\) and updating it is equivalent to setting the parameter \(\eta\) to the expected one of the complete conditional \(\E{}{\eta_{n}(\theta_{n})}\). This expression facilitates deriving CAVI algorithm for many complex models.
 
 \section{Conditional Conjugate Models}
 
-Let us begin defining what ``conjugate'' refers to in this context.
+One important case of exponential family are \emph{conditionally conjugate models}, but, before explaining it, let us define what ``conjugate'' refers to in this context.
 
 \begin{definition}
 If the posterior distribution is in the same probability distribution family as
@@ -50,33 +52,31 @@ the prior distribution, they are then called \emph{conjugate distributions}, and
 the prior is called a \emph{conjugate prior} of the likelihood distribution.
 \end{definition}
 
-One important case of exponential family are \emph{conditionally conjugate models}, the following elements and assumptions are made:
-\begin{enumerate}
+ In conditionally conjugate models, the following elements and assumptions are made:
+\begin{enumerate}\itemsep0.5em
   \item There is a random variable \(X\) and a set of i.i.d observations \(\V = (x_{1}, \dots, x_{N})\).
-  \item Both global \(\btheta\) and local parameters \(\bm{Z} = \{Z_{1}, \dots, Z_{n}\}\) govern the data (both seen as latent variables). We refer to \emph{global latent variables} when they affect the whole distribution and \emph{local latent variables} when they affect only to a subset, in this case each \(Z_{i}\) affects only \(x_{i}\).
+  \item Both global \(\btheta\) and local parameters \(\bm{Z} = \{Z_{1}, \dots, Z_{n}\}\) govern the data (both seen as latent variables). We refer to \emph{global latent variables} when they affect the whole distribution and \emph{local latent variables} when they affect only to a subset, in this case each \(Z_{i}\) affects only \(x_{i}\). Given this, the joint probability is
     \[
-    P(\V, \btheta, \bz) = P(\btheta)\prod_{n=1}^{N}P(z_{i}, x_{i} \mid \btheta)
+    P(\V, \btheta, \bz) = P(\btheta)\prod_{n=1}^{N}P(z_{n}, x_{n} \mid \btheta).
     \]
-  \item Each local term \(P(z_{n},x_{n} \mid \btheta)\) is in the exponential family.
+  \item Each local term \(P(z_{n},x_{n} \mid \btheta)\) is in the exponential family of the form
     \[
-  P(z_{n},x_{n} \mid \btheta) = h(z_{n}, x_{n}) \exp \Big( \btheta^{T} T(z_{n}, x_{n}) - \psi(\btheta) \Big)
+    P(z_{n},x_{n} \mid \btheta) = h(z_{n}, x_{n}) \exp \Big( \btheta^{T} T(z_{n}, x_{n}) - \psi(\btheta) \Big),
     \]
-    Where \(T\) is the sufficient statistic for \(\btheta\) (the conditional probability distribution of the datapoint \((x_{i}, z_{i})\) given the statistic does not depend on \(\btheta\)). \todo{¿Porqué usar el estadistico suficiente?}
-  \item The prior for the global latent variable is also in the exponential family with an hyper-parameter \(\alpha = [\alpha_{1}, \alpha_{2}]\) and statistics that concatenate the global variable and its log normalizer in the density of the local variables:
+    where \(T\) is the sufficient statistic for \(\btheta\). This is a consequence of \emph{Fisher–Neyman factorization theorem} which says that \textit{\(T\) is sufficient for \(\btheta\)  if and only if the probability distribution \(P\)  can be factored into a product such that one factor, \(h\), does not depend on \(\btheta\)  and the other factor, which does depend on \(\btheta\), depends on \((x_{n}, x_{n})\)  only through \(T(x_{x}, z_{n})\).}
+  \item The prior for the global latent variable \(P(\btheta)\) is also in the exponential family with an hyper-parameter \(\alpha = [\alpha_{1}, \alpha_{2}]\) and statistics that concatenate the global latent variable and its log normalizer \([\btheta, -\psi(\btheta)]\),
     \[
-    P(\btheta) = h(\btheta) \exp \Big( \alpha^{T}[\btheta, -\psi(\btheta)] - \psi(\alpha)\Big)
+    P(\btheta) = h(\btheta) \exp \Big( \alpha^{T}[\btheta, -\psi(\btheta)] - \psi(\alpha)\Big).
     \]
 \end{enumerate}
 
-This type of models are frequent in Bayesian statistics and statistical machine learning (cite?).\todo{Añadir cita}
-
 \begin{remark}
-  A mixture is an example of this type of distributions, where the global variables are mixture components and each \(Z_{i}\) is the cluster assignment for the data point \(x_{i}\).
+  This type of models are frequent in Bayesian statistics and statistical machine learning, for example in mixtures, where the global variables are mixture components and each \(Z_{i}\) is the cluster assignment for the data point \(x_{i}\) and \(\btheta\) is the vector of global parameters that govern the model.
 \end{remark}
 
 As conjugacy holds, the posterior \(P(\btheta \mid \V, \bz)\) is in the same family with parameter
 \[
-  \bar{\alpha} = [\alpha_{1} + \sum_{n=1}^{N} T(z_{i}, x_{i}), \alpha_{2}+ N1_{v}]^{T}
+  \bar{\alpha} = [\alpha_{1} + \sum_{n=1}^{N} T(z_{i}, x_{i}), \alpha_{2}+ N1_{v}]^{T}.
 \]
 This is calculated as follows,
 \[
@@ -85,20 +85,20 @@ This is calculated as follows,
     &\propto  h(\btheta) \exp \Big( \alpha^{T}[\btheta, -\psi(\btheta)]\Big)  \prod_{n=1}^{N}h(x_{n}, z_{n})\exp \Big( \btheta^{T}T(z_{n}, x_{n})  - \psi(\btheta) \Big)\\
     &\propto h(\btheta) \exp \Big(   \alpha^{T}[\btheta, -\psi(\btheta)] + \sum_{n=1}^{N}  \btheta^{T}T(z_{n}, x_{n})  - \psi(\btheta)  \Big)\\
     &\propto h(\btheta) \exp \Big(   \alpha_{1}^{T}\btheta  - \alpha_{2}^{T}\psi(\btheta) - N\psi(\btheta) + \sum_{n=1}^{N}  T(z_{n}, x_{n})^{T}\btheta  \Big)\\
-    &\propto h(\btheta) \exp \Big(   \big(\alpha_{1} + \sum_{n=1}^{N}  T(z_{n}, x_{n})\big)^{T} \btheta  - (\alpha_{2} + N1_{v})^{T}\psi(\btheta) \Big)
+    &\propto h(\btheta) \exp \Big(   \big(\alpha_{1} + \sum_{n=1}^{N}  T(z_{n}, x_{n})\big)^{T} \btheta  - (\alpha_{2} + N1_{v})^{T}\psi(\btheta) \Big).
   \end{aligned}
 \]
 
 The local variable \(z_{n}\) is conditionally independent of other local variables \(\bz_{\backslash n}\)  and other data \(\bx_{\backslash n}\), i.e
 \[
-  P(z_{n} \mid x_{n}, \btheta, \bx_{\backslash n}, \bz_{\backslash n}) = P(z_{n} \mid x_{n}, \btheta)
+  P(z_{n} \mid x_{n}, \btheta, \bx_{\backslash n}, \bz_{\backslash n}) = P(z_{n} \mid x_{n}, \btheta).
 \]
 
 The complete conditional of the local variable \(P(z_{n} \mid x_{n}, \btheta)\) is also in the exponential family as
 \[
   \begin{aligned}
     P(z_{n}\mid x_{n} , \btheta) &= \frac{P(z_{n}, x_{n} \mid \btheta)}{P(x_{n})} \propto  h(z_{n}, x_{n}) \exp \Big( \btheta^{T} T(z_{n}, x_{n})\Big)\\
-    &\propto h(z_{n})\exp \Big( {\eta(\btheta, x_{n})}^{T}z_{n} - \psi(\btheta, x_{n}) \Big)
+    &\propto h(z_{n})\exp \Big( {\eta(\btheta, x_{n})}^{T}z_{n} - \psi(\btheta, x_{n}) \Big).
   \end{aligned}
 \]
 \todo[inline]{Comprobar esto, que ocurre con \(T\) }
@@ -108,24 +108,32 @@ This is a property of the local likelihood term \(P(z_{n}, x_{n} \mid \btheta)\)
 
 \section{CAVI in conditionally conjugate models}
 
-In this section we describe the CAVI algorithm for this class of models. Our variational distribution is \(Q(\btheta \mid \lambda)\) where \(\lambda\) is called the \emph{global variational parameter}. Similarly, the posterior on each local variable is \(Q(z_{n} \mid \gamma_{n})\), where \(\gamma_{n}\) is called the \emph{local variational parameter}.
-We are setting this variational distributions in the exponential family as
+In this section we describe the CAVI algorithm for this class of models. Our variational distribution is \(Q(\btheta \mid \lambda)\) where \(\lambda\) is called the \emph{global variational parameter}. Similarly, the posterior on each local variable is \(Q(z_{n} \mid \gamma_{n})\), where \(\gamma_{n}\) is called a \emph{local variational parameter}.
+We are setting this variational distributions in the exponential family:
 \[
-  Q(z_{n} \mid \gamma_{n}) \propto h(z_{n})e^{{\gamma_{n}}^{T}z_{n}}
+  Q(z_{n} \mid \gamma_{n}) \propto h(z_{n})e^{{\gamma_{n}}^{T}z_{n}},
 \]
 \[
-  Q(\btheta \mid \lambda) = h(\btheta) \exp \Big( {\lambda}^{T}[\btheta, -\psi(\theta)] - \psi(\lambda) \Big)
+  Q(\btheta \mid \lambda) = h(\btheta) \exp \Big( {\lambda}^{T}[\btheta, -\psi(\theta)] - \psi(\lambda) \Big).
 \]
 
 As we already know, CAVI iteratively updates each local variational parameter and the global variational parameter.
 
 The local variational parameter update is
 \[
-  \gamma_{n}^{new} = \E{Q(\btheta \mid \lambda)}{\eta(\btheta, x_{n})}
+  \gamma_{n}^{new} = \E{Q(\btheta \mid \lambda)}{\eta(\btheta, x_{n})},
 \]
 as we saw in~\ref{eq:exponential_update}, where we take the expectation of the natural parameter of the complete conditional. And the global variational parameter update is
 \[
-  \lambda^{new} = \Bigg[ \lambda_{1} + \sum_{n=1}^{N} \E{Q(z_{n}\mid \gamma_{n})}{T(x_{n},z_{n})}, \lambda_{2} + N \Bigg]
+  \lambda^{new} = \Bigg[ \lambda_{1} + \sum_{n=1}^{N} \E{Q(z_{n}\mid \gamma_{n})}{T(x_{n},z_{n})}, \lambda_{2} + N \Bigg].
+\]
+The procedure is setting
+\[
+  \begin{aligned}
+    Q^{new}(\btheta \mid \lambda) &\propto \exp \E{Q(\bz)}{\log P(\btheta \mid \bz , \V)} \propto h(\btheta) \exp \E{Q(\bz)}{\big[  \lambda_{1} + \sum_{n=1}^{N}T(x_{n}, z_{n}), \lambda_{2} + N \big]^{T}\big[ \btheta, \psi(\btheta) \big]}\\
+    &\propto h(\btheta) \exp \Bigg( {\Big[  \lambda_{1} + \sum_{n=1}^{N}\E{Q(\bz)}{T(x_{n}, z_{n})}, \lambda_{2} + N \Big]}^{T}\Big[ \btheta, - \psi(\btheta) \Big]\Bigg)\\
+    &= Q(\btheta, \lambda^{new}).
+  \end{aligned}
 \]
 
 We can compute the ELBO at each iteration up to a constant that does not depend on the variational parameters,

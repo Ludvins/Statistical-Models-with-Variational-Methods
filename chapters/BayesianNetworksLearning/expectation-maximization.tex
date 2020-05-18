@@ -177,6 +177,27 @@ The ML approach is setting
 
 Consider now that the identity on the coin that is being flipped is unknown. Let \(X\) be the random variable modeling the number of heads in \(M\) flips and \(Z\) the coin being flipped. Consider a dataset of size \(N\). This time, using the ML approach is not possible so the EM algorithm enters the game.
 
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[
+    node distance=1cm and 0.5cm,
+    mynode/.style={draw,circle,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (theta) {\(\btheta\)};
+    \node[mynode, below left=of theta] (zn) {\(Z_{n}\)};
+    \node[mynode, below right=of theta] (xn) {\(X_{n}\)};
+    \plate{} {(zn)(xn)} {\(n = 1\dots N\)}; %
+    \path (theta) edge[-latex] (zn)
+    (theta) edge[-latex] (xn)
+    (zn) edge[-latex] (xn)
+    ;
+
+  \end{tikzpicture}
+  \caption{Bayesian Network modeling the flipping coin experiment}
+\end{figure}
+
+
 The lower bound is in this case
 \[
   \sum_{n=1}^{N}\log{P(x_{n} \mid \bm{\theta})} \geq \sum_{n=1}^{N}-\E{Q}{\log{Q(z_{n}\mid x_{n})}} + \E{Q}{\log{P(z_{n}, x_{n} \mid \bm{\theta})}}
@@ -184,7 +205,7 @@ The lower bound is in this case
 
 Lets start with \textbf{E-step}, we already know it consist on setting
 \[
-  Q(z_{n} \mid x_{n}, \bm{\theta}) = P(z_{n} \mid x_{n}, \bm{\theta}) = \frac{P(x_{n} \mid z_{n}, \bm{\theta})P(z_{n})}{P(x_{n})} = \frac{\theta_{z_{n}}^{x_{n}}(1-\theta_{z_{n}}^{M - x_{n}})}{  \theta_{A}^{x_{n}}(1-\theta_{A}^{M - x_{n}}) + \theta_{B}^{x_{n}}(1-\theta_{B}^{M - x_{n}})} \ \forall n
+  Q(z_{n} \mid x_{n}, \bm{\theta}) = P(z_{n} \mid x_{n}, \bm{\theta}) = \frac{P(x_{n} \mid z_{n}, \bm{\theta})P(z_{n})}{P(x_{n})} = \frac{\theta_{z_{n}}^{x_{n}}(1-\theta_{z_{n}})^{M - x_{n}}}{  \theta_{A}^{x_{n}}(1-\theta_{A})^{M - x_{n}} + \theta_{B}^{x_{n}}(1-\theta_{B})^{M - x_{n}}} \ \forall n
 \]
 
 The \textbf{M-step} consists on setting
