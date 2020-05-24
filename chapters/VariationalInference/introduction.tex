@@ -1,17 +1,19 @@
 
 \emph{Statistical inference} is the process of using data analysis to deduce properties of an underlying distribution.
 
-Consider a random variable \(X\) with its corresponding set of observations \(\V = x_{1},\dots, x_{N}\) and a \emph{hidden or latent variable} \(Z\), which means that it is unobserved and the values \(z_{1}, \dots, z_{N}\) are unknown. The samples are governed by the joint distribution \(P(\V, z)\). Where \(z\) represents a vector with length \(N\) with a possible configuration of the unknown values, then, it is not fixed as \(\V\).
+The following elements are being considered: a random variable \(X\) with its corresponding set of observations \(\V = x_{1},\dots, x_{N}\) and a \emph{hidden or latent variable} \(Z\), which means that it is unobserved and the values \(z_{1}, \dots, z_{N}\) are unknown. The samples are governed by the joint distribution \(P(\V, z)\). Where \(z\) represents a vector with length \(N\) with a possible configuration of the unknown values, then, it is not fixed as \(\V\).
 
-\emph{Bayesian inference} is a method of statistical inference in which Bayes' theorem is used, it derives the posterior probability \(P(z \mid \V)\) as a consequence of two antecedents: a prior probability \(P(z)\) and a ``likelihood function'' \(P(\V \mid z)\)  derived from a statistical model for the observed data. In classical inference, the conditional is calculated as
+In \emph{classical inference} the conditional is calculated as
 \[
-  P(z \mid \V) = \frac{P(\V, z)}{\int_{z} P(\V,z)}
+  P(z \mid \V) = \frac{P(\V, z)}{\int_{z} P(\V,z)}\ ,
 \]
-using the observations of \(P(\V,z)\), but for many models this integral is computationally hard to solve. For this reason, other methods as \emph{Markov Chain Monte Carlo (MCMC)} and \emph{Variational Inference} try a different approach when solving the given inference problem.
+but for many models this integral is computationally hard to solve.
 
-\emph{Variational inference} is a machine learning method whose main goal is to approximate probability distributions (\cite{jordan1999introduction}, \cite{wainwright}).
+By comparison, \emph{Bayesian inference} is a method of statistical inference in which Bayes' theorem is used, it derives the posterior probability \(P(z \mid \V)\) as a consequence of two antecedents: a prior probability \(P(z)\) and a \emph{likelihood function} \(P(\V \mid z)\)  derived from a statistical model for the observed data.
 
-Before comparing how MCMC and variational inference differ in the way of handling with this latent variable, let us introduce the concept of \emph{Markov chain} and \emph{MCMC} briefly.
+Other methods as \emph{Markov chain Monte Carlo (MCMC)} and \emph{variational Bayesian inference} try a different approach when solving the given inference problem.
+
+On one hand, \emph{Variational Bayesian inference} or \emph{variational inference}, is a machine learning method whose main goal is to approximate probability distributions (\cite{jordan1999introduction}, \cite{wainwright}). On the other hand, \emph{MCMC} approximates the posterior distribution using a Markov chain. Let us introduce briefly the main idea behind this method, we need to introduce two concepts: \emph{Markov chain} and \emph{MCMC}.
 
 A \emph{Markov Chain} is formally defined as a stochastic process, i.e, a family of random variables, that satisfies the \emph{Markov property} also known as the memoryless property: \textit{the conditional probability distribution of future states of the process (conditional on both present and past values) depends only on the present state}. To fully understand it, imagine a system with a number of possible states \(S_{1},\dots,S_{5}\) and the probabilities of going from one state to another as in the following diagram.
 
@@ -39,45 +41,45 @@ start chain=going right
 \end{tikzpicture}
 \end{center}
 
-Consider a sequence of random variables \(X_{t}\) that symbolize the current state at the step \(t\). The Markov property means that the probability of moving to the next state depends only on the present one
+Consider a sequence of random variables \(X_{t}\) that symbolize the current state at the step \(t\). The Markov property means that the probability of moving to the next state depends only on the present one, i.e,
 \[
-  P(X_{n+1} = x \mid X_{1} = x_{1} \dots, X_{n} = x_{n}) = P(X_{n+1} = x \mid X_{n} = x_{n})
+  P(X_{n+1} = x \mid X_{1} = x_{1} \dots, X_{n} = x_{n}) = P(X_{n+1} = x \mid X_{n} = x_{n}).
 \]
 
 We need two concepts to define the process of MCMC:
 \begin{itemize}
-  \item \textbf{Ergodic Markov chain}. A markov chain such that exists a number \(N\) such that any state can be reached from any other state in any number of steps less or equal to a number \(N\).
+  \item \textbf{Ergodic Markov chain}. A Markov chain where it exists a number \(N \in \mathbb{N}\) such that any state can be reached from any other state in any number of steps less or equal than \(N\).
   \item \textbf{Stationary Distribution}. The probability distribution to which the process converges over time.
 \end{itemize}
 
-In MCMC we construct an ergodic Markov chain on the latent variable whose stationary distribution is the posterior \(P(z \mid \V)\), samples are taken from the chain to collect samples of the posterior and it is approximated with them.
+In MCMC, an ergodic Markov chain over the latent variable whose stationary distribution is the posterior \(P(z \mid \V)\), samples are taken from the chain to approximate the posterior with them.
 
-Instead, \emph{variational inference} changes the inference problem with an optimization one. We fix a family of distributions \(\mathcal{Q}\) over the latent variable \(Z\) and find the element that minimizes the Kullback-Leibler divergence with the posterior \(P(z \mid \V)\).
+Instead, \emph{variational inference} changes the inference problem with an optimization one. We fix a family of distributions \(\mathcal{Q}\) over the latent variable \(Z\) and find the element that minimizes its Kullback-Leibler divergence with the posterior \(P(z \mid \V)\).
 \[
-  Q^{opt} = \argmin_{Q \in \mathcal{Q}} \KL{Q(z)}{P(z \mid \V)}
+  Q^{opt} = \argmin_{Q \in \mathcal{Q}} \KL{Q(z)}{P(z \mid \V)}.
 \]
 Compared to \emph{Markov Chain Monte Carlo (MCMC)}, variational inference tends to be faster and scale easier to large data.
 
-We can further analyze the Kullback-Leibler divergence we want to minimize
+We can further analyze the Kullback-Leibler divergence we want to minimize, it may be decomposed the following way:
 \[
   \begin{aligned}
     \KL{Q(z)}{P(z \mid \V)} &= \E{Q(z)}{\log{Q(z)}} - \E{Q(z)}{\log{P(z \mid \V)}}\\
-    &= \E{Q(z)}{\log{Q(z)}} - \E{Q(z)}{\log{P(\V, z)}} + \log{P(\V)}
+    &= \E{Q(z)}{\log{Q(z)}} - \E{Q(z)}{\log{P(\V, z)}} + \log{P(\V)}.
   \end{aligned}
 \]
 
-As the Kullback-Leibler divergence can not be computed, we can optimize an equivalent objective. As we know the divergence is always positive we have the following lower bound to the evidence \(\log{P(\V)}\).
+Given that the Kullback-Leibler divergence cannot be computed (as \(P(z \mid \V)\) is unknown), we can optimize an equivalent objective: we already saw that the divergence is always positive so we have the following lower bound to the evidence, defined as \emph{evidence lower bound} or \emph{ELBO}.
 \[
-  \log{P(\V)} \geq  - \E{Q(z)}{\log{Q(z)}} + \E{Q(z)}{\log{P(\V, z)}}  = \text{ELBO}(Q)
+  \log{P(\V)} \geq  - \E{Q(z)}{\log{Q(z)}} + \E{Q(z)}{\log{P(\V, z)}}  = \text{ELBO}(Q).
 \]
 
-So that minimizing the Kullback-Leibler divergence is equivalent to maximize the ELBO. We can rewrite the bound as
+So that minimizing the Kullback-Leibler divergence is equivalent to maximize the ELBO. We can rewrite this bound as
 \[
   \begin{aligned}
     \text{ELBO}(Q) &= \E{Q(z)}{\log{P(z)}} + \E{Q(z)}{\log{P(\V \mid z)}} - \E{Q(z)}{\log{Q(z)}}\\
-    &= \E{Q(z)}{\log{P(\V \mid z)}} - \KL{Q(z)}{P(z)}
+    &= \E{Q(z)}{\log{P(\V \mid z)}} - \KL{Q(z)}{P(z)},
   \end{aligned}
 \]
 where it is expressed as the sum of the log likelihood of the observations and the Kullback-Leibler divergence between the prior \(P(z)\) and \(Q(z)\).
 
-The \emph{Expectation Maximization algorithm} is designed to optimize this lower bound in order to solve the optimization problem we are focusing. We will go deep into this algorithm in a succeeding chapter.
+The \emph{Expectation Maximization algorithm} is designed to optimize this lower bound in order to solve the optimization problem we are focusing. We will go deep into this algorithm in Section~\ref{sec:em}.

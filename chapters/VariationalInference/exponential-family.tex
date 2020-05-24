@@ -1,5 +1,5 @@
 
-The exponential family is a parametric set of probability distributions of a certain form. This form is chosen based on some useful algebraic properties and generality.
+The exponential family is a parametric set of probability distributions of a certain form. This form is chosen based on some useful algebraic properties and generality (figure~\ref{tab:ef}).
 
 Let \(X\) be a random variable and \(\bm{\theta}\) a set of parameters. A family a distributions is said to belong the exponential family if its probability distribution is
 \[
@@ -22,8 +22,72 @@ Naming \(\bm{\eta}\) and \(\bm{T}\) the corresponding vector functions, the para
 \[
   P(x \mid \bm{\theta}) = h(x) e^{\bm{\theta}^{T}\bm{T}(x) - \psi(\bm{\theta})}.
 \]
+In this form, it is easier to see that \(\bm{T}\) is the sufficient statistic for \(\btheta\). This is a consequence of \emph{Fisher–Neyman factorization theorem} which says that \textit{\(\bm{T}\) is sufficient for \(\btheta\)  if and only if the probability distribution \(P\)  can be factored into a product such that one factor, \(h\), does not depend on \(\btheta\)  and the other factor, which does depend on \(\btheta\), depends on \(x\)  only through \(\bm{T}\).}
 
-Consider our case of study where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family. Using a exponential family distribution for the marginal \(P(z_{n} \mid \bz_{\backslash n}, \V)\) and defining \( \theta_{n} = (\bm{z}_{\backslash n}, \V)\) so the notation is cleaner,
+\begin{figure}
+  \centering
+  \begin{tabular}{ |c|c|c|c|c| }
+    \hline
+    Distribution & Parameter set \(\btheta\) & Base measure \(h\) & Parameter function \(\bm{\eta}\) & Statistics \(\bm{T}\) \\
+    \hline
+    Bernoulli & \(p\)  & \(1\)  & \(\log{\frac{p}{1 - p}}\) & \(x\) \\
+    Binomial & \(p\)  & \(\binom{n}{x}\) & \(\log{\frac{p}{1 - p}}\) & \(x\)  \\[10pt]
+    Categorical & \(p_{1},\dots,p_{K}\) & \(1\) &
+                                                  \(\begin{pmatrix}
+                                                    \log p_{1}\\
+                                                    \vdots\\
+                                                    \log p_{K}
+                                                  \end{pmatrix}\)
+                 &
+                                                  \(\begin{pmatrix}
+                                                    [x=1]\\
+                                                    \vdots\\
+                                                    [x=k]
+                                                  \end{pmatrix}\)\\[30pt]
+    Gaussian & \(\mu, \sigma^{2}\) & \(\frac{1}{\sqrt{2\pi}}\) &
+                                     \(\begin{pmatrix}
+                                       \frac{\mu}{\sigma^2}\\
+                                       -\frac{1}{2\sigma^{2}}
+                                     \end{pmatrix}\)
+                 &
+                   \(\begin{pmatrix}
+                     x\\
+                     x^{2}
+                   \end{pmatrix}\) \\[30pt]
+    Beta & \(\alpha, \beta\) & \(\frac{1}{x(1-x)}\)
+                                                               &
+                                                                 \(\begin{pmatrix}
+                                                                   \alpha \\
+                                                                   \beta
+                                                                 \end{pmatrix}\)
+                 &
+                   \(\begin{pmatrix}
+                     \log x \\
+                     \log (1-x)
+                   \end{pmatrix}\) \\[30pt]
+    Dirichlet & \(\alpha_{1},\dots,\alpha_{K}\) & \(1\) &
+                                                  \(\begin{pmatrix}
+                                                    \alpha_{1} - 1\\
+                                                    \vdots\\
+                                                    \alpha_{K} - 1
+                                                  \end{pmatrix}\)
+                 &
+                                                  \(\begin{pmatrix}
+                                                    \log x_{1}\\
+                                                    \vdots\\
+                                                    \log x_{K}
+                                                  \end{pmatrix}\)\\
+    \hline
+  \end{tabular}
+  \caption{Some distributions in the exponential family}
+  \label{tab:ef}
+\end{figure}
+
+An important property of the exponential family is that they have \emph{conjugate priors}, when the posterior distribution is in the same probability distribution family as
+the prior distribution, they are called \emph{conjugate distributions}, and
+the prior is called a \emph{conjugate prior} of the likelihood distribution.
+
+Consider our case of study where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family, now using a exponential family distribution for the marginal \(P(z_{n} \mid \theta_{n})\), where \( \theta_{n} = (\bm{z}_{\backslash n}, \V)\) so the notation is cleaner:
 \[
   P(z_{n} \mid \theta_{n}) = h(z_{n})\exp \Big( {\eta_{n}(\theta_{n})}^{T}z_{n} - \psi(\theta_{n}) \Big).
 \]
@@ -42,43 +106,49 @@ where
 
 Summarizing, the factor is in the exponential family with the same base measure \(h\) and updating it is equivalent to setting the parameter \(\eta\) to the expected one of the complete conditional \(\E{}{\eta_{n}(\theta_{n})}\). This expression facilitates deriving CAVI algorithm for many complex models.
 
-\section{Conditional Conjugate Models}
+\section{Latent Variable Models}
 
-One important case of exponential family are \emph{conditionally conjugate models}, but, before explaining it, let us define what ``conjugate'' refers to in this context.
-
-\begin{definition}
-If the posterior distribution is in the same probability distribution family as
-the prior distribution, they are then called \emph{conjugate distributions}, and
-the prior is called a \emph{conjugate prior} of the likelihood distribution.
-\end{definition}
-
- In conditionally conjugate models, the following elements and assumptions are made:
+One important case of exponential family are \emph{latent variable models} or \emph{LVMs}. In this models, the following assumptions are made:
 \begin{enumerate}\itemsep0.5em
   \item There is a random variable \(X\) and a set of i.i.d observations \(\V = (x_{1}, \dots, x_{N})\).
   \item Both global \(\btheta\) and local parameters \(\bm{Z} = \{Z_{1}, \dots, Z_{n}\}\) govern the data (both seen as latent variables). We refer to \emph{global latent variables} when they affect the whole distribution and \emph{local latent variables} when they affect only to a subset, in this case each \(Z_{i}\) affects only \(x_{i}\). Given this, the joint probability is
     \[
     P(\V, \btheta, \bz) = P(\btheta)\prod_{n=1}^{N}P(z_{n}, x_{n} \mid \btheta).
     \]
+
+\end{enumerate}
+
+\begin{remark}
+  These models are widely used to discover patterns in data sets (\cite{blei2014build}).
+  LVMs include popular models like \emph{Latent Dirichlet Allocation} models used to uncover the hidden topics in text corpora (cite?), mixture of Gaussian models to discover hidden clusters in data (cite) and probabilistic principal component analysis for dimensionality reduction (cite).
+\end{remark}
+
+One important case of LVMs and exponential family models are \emph{Conditionally conjugate models}, where the following assumptions are made.
+\begin{enumerate}
+  \item The prior for the global latent variable \(P(\btheta)\) is in the exponential family with an hyper-parameter \(\alpha = [\alpha_{1}, \alpha_{2}]\) and statistics that concatenate the global latent variable and its log normalizer \([\btheta, -\psi(\btheta)]\),
+    \[
+    P(\btheta) = h(\btheta) \exp \Big( \alpha^{T}[\btheta, -\psi(\btheta)] - \psi(\alpha)\Big).
+    \]
   \item Each local term \(P(z_{n},x_{n} \mid \btheta)\) is in the exponential family of the form
     \[
     P(z_{n},x_{n} \mid \btheta) = h(z_{n}, x_{n}) \exp \Big( \btheta^{T} T(z_{n}, x_{n}) - \psi(\btheta) \Big),
     \]
-    where \(T\) is the sufficient statistic for \(\btheta\). This is a consequence of \emph{Fisher–Neyman factorization theorem} which says that \textit{\(T\) is sufficient for \(\btheta\)  if and only if the probability distribution \(P\)  can be factored into a product such that one factor, \(h\), does not depend on \(\btheta\)  and the other factor, which does depend on \(\btheta\), depends on \((x_{n}, x_{n})\)  only through \(T(x_{x}, z_{n})\).}
-  \item The prior for the global latent variable \(P(\btheta)\) is also in the exponential family with an hyper-parameter \(\alpha = [\alpha_{1}, \alpha_{2}]\) and statistics that concatenate the global latent variable and its log normalizer \([\btheta, -\psi(\btheta)]\),
+
+  \item The complete conditional of a local latent variable is also in the exponential family
     \[
-    P(\btheta) = h(\btheta) \exp \Big( \alpha^{T}[\btheta, -\psi(\btheta)] - \psi(\alpha)\Big).
+    P(z_{n}\mid x_{n} , \btheta) =  h(z_{n})\exp \Big( {\eta(\btheta, x_{n})}^{T}z_{n} - \psi(\btheta, x_{n}) \Big).
     \]
+
+
 \end{enumerate}
 
-\begin{remark}
-  This type of models are frequent in Bayesian statistics and statistical machine learning, for example in mixtures, where the global variables are mixture components and each \(Z_{i}\) is the cluster assignment for the data point \(x_{i}\) and \(\btheta\) is the vector of global parameters that govern the model.
-\end{remark}
+
 
 As conjugacy holds, the posterior \(P(\btheta \mid \V, \bz)\) is in the same family with parameter
 \[
   \bar{\alpha} = [\alpha_{1} + \sum_{n=1}^{N} T(z_{i}, x_{i}), \alpha_{2}+ N1_{v}]^{T}.
 \]
-This is calculated as follows,
+This can be calculated as follows,
 \[
   \begin{aligned}
     P(\btheta \mid \V, \bz) &= \frac{P(\V, \bz \mid \btheta) P(\btheta)}{P(\V, \bz)} \propto  P(\V, \bz \mid \btheta) P(\btheta) = P(\btheta) \prod_{n=1}^{N}h(x_{n}, z_{n})\exp \Big( \btheta^{T}T(z_{n}, x_{n})  - \psi(\btheta) \Big)\\
@@ -89,27 +159,17 @@ This is calculated as follows,
   \end{aligned}
 \]
 
-The local variable \(z_{n}\) is conditionally independent of other local variables \(\bz_{\backslash n}\)  and other data \(\bx_{\backslash n}\), i.e
+It is worth mentioning that the local variable \(z_{n}\) is conditionally independent of other local variables \(\bz_{\backslash n}\)  and other data \(\bx_{\backslash n}\), i.e
 \[
   P(z_{n} \mid x_{n}, \btheta, \bx_{\backslash n}, \bz_{\backslash n}) = P(z_{n} \mid x_{n}, \btheta).
 \]
-
-The complete conditional of the local variable \(P(z_{n} \mid x_{n}, \btheta)\) is also in the exponential family as
-\[
-  \begin{aligned}
-    P(z_{n}\mid x_{n} , \btheta) &= \frac{P(z_{n}, x_{n} \mid \btheta)}{P(x_{n})} \propto  h(z_{n}, x_{n}) \exp \Big( \btheta^{T} T(z_{n}, x_{n})\Big)\\
-    &\propto h(z_{n})\exp \Big( {\eta(\btheta, x_{n})}^{T}z_{n} - \psi(\btheta, x_{n}) \Big).
-  \end{aligned}
-\]
-\todo[inline]{Comprobar esto, que ocurre con \(T\) }
-
-This is a property of the local likelihood term \(P(z_{n}, x_{n} \mid \btheta)\). For example in a Gaussian mixture, the complete conditional of the local variable is a categorical distribution.
+Which is supposed in the exponential family. For example in a Gaussian mixture, the complete conditional of the local variable is a categorical distribution.
 
 
-\section{CAVI in conditionally conjugate models}
+\section{CAVI in Conditionally conjugate models} \label{sec:cavi_ccm}
 
-In this section we describe the CAVI algorithm for this class of models. Our variational distribution is \(Q(\btheta \mid \lambda)\) where \(\lambda\) is called the \emph{global variational parameter}. Similarly, the posterior on each local variable is \(Q(z_{n} \mid \gamma_{n})\), where \(\gamma_{n}\) is called a \emph{local variational parameter}.
-We are setting this variational distributions in the exponential family:
+Our variational distribution is in the mean-field family with \(Q(\btheta \mid \lambda)\) where \(\lambda\) is called the \emph{global variational parameter}, and the posterior on each local variable is \(Q(z_{n} \mid \gamma_{n})\), where \(\gamma_{n}\) is called a \emph{local variational parameter}.
+As we already have seen, this distributions are in the exponential family as:
 \[
   Q(z_{n} \mid \gamma_{n}) \propto h(z_{n})e^{{\gamma_{n}}^{T}z_{n}},
 \]
@@ -123,11 +183,7 @@ The local variational parameter update is
 \[
   \gamma_{n}^{new} = \E{Q(\btheta \mid \lambda)}{\eta(\btheta, x_{n})},
 \]
-as we saw in~\ref{eq:exponential_update}, where we take the expectation of the natural parameter of the complete conditional. And the global variational parameter update is
-\[
-  \lambda^{new} = \Bigg[ \lambda_{1} + \sum_{n=1}^{N} \E{Q(z_{n}\mid \gamma_{n})}{T(x_{n},z_{n})}, \lambda_{2} + N \Bigg].
-\]
-The procedure is setting
+as we saw in~\ref{eq:exponential_update}, where we take the expectation of the natural parameter of the complete conditional. And the global variational parameter update is calculated as
 \[
   \begin{aligned}
     Q^{new}(\btheta \mid \lambda) &\propto \exp \E{Q(\bz)}{\log P(\btheta \mid \bz , \V)} \propto h(\btheta) \exp \E{Q(\bz)}{\big[  \lambda_{1} + \sum_{n=1}^{N}T(x_{n}, z_{n}), \lambda_{2} + N \big]^{T}\big[ \btheta, \psi(\btheta) \big]}\\
@@ -135,17 +191,19 @@ The procedure is setting
     &= Q(\btheta, \lambda^{new}).
   \end{aligned}
 \]
+The, the parameter updated is
+\[
+  \lambda^{new} = \Bigg[ \lambda_{1} + \sum_{n=1}^{N} \E{Q(z_{n}\mid \gamma_{n})}{T(x_{n},z_{n})}, \lambda_{2} + N \Bigg].
+\]
 
 We can compute the ELBO at each iteration up to a constant that does not depend on the variational parameters,
 
 \[
   \begin{aligned}
     ELBO &= {\Big( \lambda_{1} + \sum_{n=1}^{N} \E{Q(z_{n}\mid \gamma_{n})}{T(x_{n},z_{n})}\Big)}^{T}\E{Q(\btheta \mid \lambda)}{\btheta} - (\lambda_{2} + N) \E{Q(\btheta \mid \lambda)}{\psi(\btheta)}\\
-    &+ \lambda ^{T} \E{Q(\btheta, \lambda)}{T(\btheta)} - \psi(\lambda) + \sum_{n=1}^{N}\gamma_{n}^{T}\E{Q(z_{n}, \gamma_{n})}{z_{n}} - \psi(\gamma_{n})
+    &+ \lambda ^{T} \E{Q(\btheta, \lambda)}{T(\btheta)} - \psi(\lambda) + \sum_{n=1}^{N}\gamma_{n}^{T}\E{Q(z_{n}, \gamma_{n})}{z_{n}} - \psi(\gamma_{n}) + \text{ const. }
   \end{aligned}
 \]
-
-\todo[inline]{¿Poner calculos de esto? Ocupa aproximadamente una pagina entera.}
 
 % \[
 %   \begin{aligned}

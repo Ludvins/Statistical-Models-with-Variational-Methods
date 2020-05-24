@@ -1,0 +1,272 @@
+
+Firstly, we discuss two conditionally conjugate models. For these model we discussed in Section~\ref{sec:cavi_ccm} how CAVI algorithm updates in each iteration.
+
+\section{Gaussian Mixture}
+
+A Gaussian mixture model is a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. We will discuss another mixture example with the EM algorithm in Section~\ref{sec:mixture_em}.
+
+\pgfmathdeclarefunction{gauss}{2}{%
+  \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
+}
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[every axis plot post/.append style={
+        mark=none,domain=-2:5,samples=50,smooth}, % All plots: from -2:2, 50 samples, smooth, no marks
+      axis x line*=bottom, % no box around the plot, only x and y axis
+      axis y line*=left, % the * suppresses the arrow tips
+      enlargelimits=upper] % extend the axes a bit to the right and top
+      \addplot {gauss(0,0.5)};
+      \addplot {gauss(2,0.75)};
+      \addplot {gauss(3, 0.4)};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{One-dimensional Gaussian mixture with 3 clusters.}
+\end{figure}
+
+
+The following elements are being considered:
+\begin{itemize}\setlength\itemsep{1em}
+  \item \(K\) mixture components and \(N\) observations.
+  \item \(\mu_{0}, \lambda, v, \sigma_{0}^{2}\) shared hyper-parameters.
+  \item \(\bm{\phi} = \{\phi_{1},\dots,\phi_{K}\}\) mixture weights, i.e, prior probability of a particular component \(k\).
+  \item \(\btheta = \{(\mu_{1}, \sigma^{2}_{1}),\dots,(\mu_{K},\sigma^{2}_{K})\}\) parameter of distribution of observation associated with component. Mean and variance of component \(k\) are \((\mu_{k}, \sigma_{k}^{2})\).
+  \item A set of i.i.d real valued random variables \(\{X_{1},\dots, X_{N}\}\) and a corresponding set of observations \(\bx = \{x_{1},\dots, x_{n}\}\).
+  \item The cluster assignment latent variables \(\{Z_{1}, \dots, Z_{N}\}\), where each \(z_{n}\) is a indicator vector.
+\end{itemize}
+
+The \textbf{full conditional distributions} are (skipping the conditionals for the sake of clarity):
+\[
+  \begin{aligned}
+    \bm{\phi} &\sim \text{Symmetric-Dirichlet}_{K}(\beta)\\[5pt]
+    \mu_{k} &\sim \mathcal{N}(\mu_{0}, \lambda \sigma^{2}_{k})\\[5pt]
+    \sigma_{k}^{2} &\sim \text{Inverse-Gamma}(v, \sigma_{0}^{2})\\[5pt]
+    X_{n} &\sim \mathcal{N}(\mu_{z_{n}}, \sigma_{z_{n}}^{2})\\[5pt]
+    Z_{n} & \sim \text{Categorical}(\bm{\phi})
+  \end{aligned}
+\]
+
+The known variables are \(\bx, \mu_{0}, \lambda, v, \sigma_{0}^{2}\) and \(\beta\), which corresponds to the observed data and the hyper-parameters.
+
+The joint probability factorizes as
+\[
+  P(\bm{x}, \bm{z}, \bm{\phi}, \bm{\mu}, \bm{\sigma}) = P(\bm{x}\mid \bm{z}, \bm{\mu}, \bm{\sigma})P(\bm{z}\mid \bm{\phi})P(\bm{\phi})P(\bm{\mu}\mid \bm{\sigma})P(\bm{\sigma}).
+\]
+
+\cite{bishop2006pattern} Chapter 10.2 gives the explicit update of the CAVI algorithm for this model.
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.5cm and 1.5cm,
+    mynode/.style={draw,circle,text width=0.5cm,align=center},
+    param/.style={draw,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (mu) {\(\mu_{k}\)};
+    \node[mynode, right=of mu] (sigma) {\(\sigma_{k}^{2}\) };
+
+
+    \node[mynode, below =of sigma] (z) {\(Z_{n}\)};
+    \node[mynode, left =of z] (phi) {\(\bm{\phi}\)};
+    \node[mynode, right =of z] (x) {\(X_{n}\)};
+
+    \node[param, above=of mu] (lambda) {\(\lambda\)};
+    \node[param, left=of lambda] (mu0) {\(\mu_{0}\)};
+    \node[param, above=of sigma] (v) {\(v\)};
+    \node[param, right=of v] (sigma0) {\(\sigma_{0}^{2}\)};
+    \node[param, left=of phi] (beta) {\(\beta\)};
+
+
+    \plate{} {(z)(x)} {\(n = 1\dots N\)}; %
+
+    \plate{} {(mu)(sigma)} {\(k = 1\dots K\)}; %
+
+
+    \path (mu) edge[-latex] (x)
+    (sigma) edge[-latex] (x)
+    (sigma) edge[-latex] (mu)
+    (z) edge[-latex] (x)
+    (beta) edge[-latex] (phi)
+    (phi) edge[-latex] (z)
+    (mu0) edge[-latex] (mu)
+    (lambda) edge[-latex] (mu)
+    (v) edge[-latex] (sigma)
+    (sigma0) edge[-latex] (sigma)
+    ;
+
+  \end{tikzpicture}
+  \caption{Gaussian mixture model. Squares represent hyper-parameters}
+  \label{fig:gaussian_mixture}
+\end{figure}
+
+
+\section{Latent Dirichlet allocation}
+
+\emph{Latent Dirichlet allocation} or \emph{LDA} is a statistical model in natural language processing that allows set of observations to be explained by unobserved groups that explain why some parts of the data are similar.
+
+For example, observations may be words in a document, which is a mixture of a small number of topics and each word's presence is attributable to one of the document's topics. Learning corresponds to extract information as the set of topics, their associated word probabilities, the topic of each word, and the particular topic mixture of each document.
+
+The considered elements are (using~\cite{hoffman2013stochastic} notation):
+\begin{itemize}\setlength\itemsep{1em}
+  \item \(K\) number of topics, \(V\) number of words in the vocabulary, \(M\) number of documents, \(N_{d}\) number of words in document \(d\) and \(N\) total number of words.
+  \item \(\bm{\beta} = \{\beta_{1}, \dots, \beta_{K}\}\), where a topic \(\beta_{k}\) is a distribution over the vocabulary. Each topic is a vector of length \(V\) that sums one (\(V-1\) simplex). Let \(\eta\) be an hyper-parameter, then
+
+  \item Each document is associated with a vector of topic proportions \(\theta_{d}\), which is a \(K-1\) simplex. Note \(\bm{\theta} = \{\theta_{1},\dots,\theta_{K}\}\).  Let \(\alpha\) be another hyper-parameter
+  \item Each word in each document is assumed to be related with a single topic. The variable \(Z_{d,n}\) indexes the topic of the \(n^{th}\) word in the \(d^{th}\) document.
+\end{itemize}
+
+The \textbf{full conditionals distributions} of the variables are (skipping the conditionals for the sake of clarity):
+    \[
+    \begin{aligned}
+      \beta_{k} &\sim \text{Symmetric-Dirichlet}_{V}(\eta) \quad \forall k=1,\dots,K \\[5pt]
+      \theta_{d} &\sim \text{Symmetric-Dirichlet}_{K}(\alpha) \quad \forall d=1,\dots,D\\[5pt]
+      Z_{d,n} &\sim \text{Multinomial}(\theta_{d}),\\[5pt]
+      W_{d,n}  &\sim \text{Multinomial}(\beta_{Z_{d,n}}) \quad \forall n=1,\dots,N_{d}, \quad d=1,\dots,D
+    \end{aligned}
+    \]
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.5cm and 1.5cm,
+    mynode/.style={draw,circle,text width=0.7cm,align=center},
+    param/.style={draw,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (w) {\(W_{d,n}\)};
+    \node[mynode, left=of w] (z) {\(Z_{d,n}\) };
+
+    \node[mynode, left=of z] (theta) {\(\theta_{d}\)};
+    \node[mynode, right=of w] (beta) {\(\beta_{k}\)};
+
+
+    \node[param, left=of theta] (alpha) {\(\alpha\)};
+    \node[param, right=of beta] (eta) {\(\eta\)};
+
+
+    \plate{plate1} {(z)(w)} {\(n = 1\dots N_{d}\)}; %
+
+    \plate{} {(plate1)(theta)} {\(d = 1\dots D\)}; %
+
+    \plate{} {(beta)}{\(k=1,\dots,K\) };
+
+    \path (z) edge[-latex] (w)
+    (theta) edge[-latex] (z)
+    (alpha) edge[-latex] (theta)
+
+    (beta) edge[-latex] (w)
+    (eta) edge[-latex] (beta)
+    ;
+
+  \end{tikzpicture}
+  \caption{Latent Dirichlet Allocation model. Squares represent hyper-parameters}
+  \label{fig:lda}
+\end{figure}
+
+
+
+\section{From PCA to Variational auto-encoders}
+
+LVMs have usually been restricted to the exponential family because, in this case, inference is feasible. But recent advances in variational inference have enabled LVMs to be extended with deep neural networks. For example, \emph{Variational Auto-encoders} or \emph{VAE} (cita Kingma and Welling 2013) are the most influential models combining both concepts.
+
+VAEs extent the classical technique of \emph{principal components analysis} for data representation in lower-dimensional spaces. Let us begin describing the graphical model behind LVMs (figure~\ref{fig:dnn}).
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1cm and 0.5cm,
+    mynode/.style={draw,circle,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (theta) {\(\bm{W}\)};
+    \node[mynode, below left=of theta] (zn) {\(Z_{n}\)};
+    \node[mynode, below right=of theta] (xn) {\(X_{n}\)};
+    \plate{} {(zn)(xn)} {\(n = 1\dots N\)}; %
+    \path (theta) edge[-latex] (zn)
+    (theta) edge[-latex] (xn)
+    (zn) edge[-latex] (xn)
+    ;
+
+  \end{tikzpicture}
+  \caption{Bayesian network of a Latent Variable Model}
+  \label{fig:dnn}
+\end{figure}
+
+
+\emph{Principal Component Analysis} or \emph{PCA} is a classical statistical technique for dimensionality reduction. Suppose we have a \(D\)-dimensional representation of a data point \(x\) and \(z\) is its latent \(K\)-dimensional representation (\(K < D\)). PCA computes an affine transformation \(\bm{W}\), represented by a \(K \times D\) matrix.
+
+A probabilistic view of PCA can be modeled with an LVM (\cite{tipping1999probabilistic}), with the following elements:
+
+\begin{itemize}
+  \item \(\{X_{1},\dots,X_{N}\}\) i.i.d \(\mathbb{R}^{D}\)-valued random variables and the corresponding observations \(\V = \{x_{1},\dots, x_{N}\}\).
+  \item \(\{Z_{1}, \dots, Z_{N}\}\) i.i.d latent \(\mathbb{R}^{K}\)-valued random variables, where \(Z_{n}\) models the \(K\)-dimensional representation of \(x_{n}\).
+  \item A global latent \(K\times D\)-dimensional random variable \(\bm{W}\).
+\end{itemize}
+
+We assume the priors are normally distributed:
+\[
+  Z_{n} \sim N_{K}(0, I) \quad \forall n =1,\dots,N \quad \text{ and } \quad \bm{W} \sim N_{K\times D}(0, I).
+\]
+
+The data points are considered generated via a projection,
+\[
+  (X_{n} \mid Z_{n}, \beta) \sim N(\bm{W}^{T}Z_{n}, \sigma^{2}I)\quad \forall n = 1,\dots, N.
+\]
+Where \(\sigma^{2}\) is the noise term. This is where the probabilistic model extends the classical one, for the reason that the latter assumes the noise is infinitesimally small, i.e, \(\sigma^{2} \to 0\). The \emph{expectation-maximization algorithm} (Section~\ref{sec:em}) is commonly used to solve this variational inference problem.
+
+
+
+\subsection{Artificial Neural networks}
+
+An \emph{artificial neural network} or \emph{ANN} with \(L\) hidden layers can be seen as a deterministic non-linear function \(f\) parameterized by a set of matrix \(\bm{W} = \{\bm{W}_{0},\dots, \bm{W}_{L}\}\) and non-linear activation functions \(\{r_{0},\dots, r_{L}\}\). Given an input \(x\) the output \(y\) is calculated has
+\[
+  h_{0} = r_{0}(\bm{W}^{T}_{0}x), \quad \dots, \quad h_{l} = r_{l}(\bm{W}_{l}^{T}h_{l-1}) \quad \dots \quad y = r_{L}(\bm{W}_{L}^{T}h_{L-1}).
+\]
+
+\emph{Deep neural networks} or \emph{DNNs} are ANNs where the number of hidden layers is higher. Commonly, any neural network with more that 2 hidden layers is considered deep. Given a dataset \(\{(x_{1}. y_{1}), \dots, (x_{N}, y_{N})\}\) and a loss function \(l(y,y^{*})\) that defines how well the output \(y^{*} = f_{\bm{W}}(x)\)  returned by the model matches the real output \(y\) , learning reduces to the optimization problem
+\[
+  \bm{W}^{opt} = \argmin_{\bm{W}} \sum_{n=1}^{N}l(y_{n}, f_{\bm{W}}(x_{n})).
+\]
+
+This problem is usually solved by applying a variant of the stochastic gradient descent method, which involves the computation of the gradient of the loss function with respect to the parameters of the network. The algorithm for computing this gradient is known as \emph{back-propagation}, which is based on a recursive application of the chain-rule of derivates. This can be implemented using the computational graph on the network.
+
+\subsection{Computational Graphs}
+
+The main idea of a computational graph is to express a deterministic function, as is the case of a neural network, using an acyclic directed graph. It is composed of input, output and operation nodes, where model data and parameters are shown as input nodes.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.5cm and 1cm,
+    mynode/.style={draw,rectangle,minimum size=1cm,,align=center}
+    ]
+
+    \node[mynode] (1) {\(*\)};
+    \node[left=of 1] (2) {\(4\)};
+    \node[above=of 1] (3) {\(x\)};
+    \node[mynode, right=of 1] (4) {\(+\)};
+    \node[above=of 4] (5) {\(y\)};
+    \node[right=of 4] (6) {\(f\)};
+
+    \path (2) edge[-latex] (1)
+    (3) edge[-latex] (1)
+    (1) edge[-latex] (4)
+    (5) edge[-latex] (4)
+    (4) edge[-latex] (6)
+    ;
+
+  \end{tikzpicture}
+  \caption{Computational graph example of function \(f(x,y) = 4x + y\) }
+  \label{fig:dnn}
+\end{figure}
+
+\subsection{Variational Auto Encoders}
+
+\emph{Variational auto encoders} extend the classical PCA where the relation between the low dimensional space and the observed data is governed by a DNN instead of a linear transformation.
+It can be seen as a non-linear probabilistic PCA model.
+
+The model is quite similar to the one presented for the PCA, the difference comes from the conditional distribution of \(X\), that depends on \(Z\) through a DNN parameterized by \(\beta_{0}, \beta_{1}, \alpha_{0}, \alpha_{1}\).
+\[
+  h_{n} = relu(\beta_{0}^{T}z_{n} + \alpha_{0}) \quad \mu_{n} = \beta_{1}^{T}h_{n} + \alpha_{1} \quad X_{n} \sim N(\mu_{n}, \sigma^{2}I)
+\]

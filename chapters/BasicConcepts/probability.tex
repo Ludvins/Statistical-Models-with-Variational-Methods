@@ -38,10 +38,10 @@ The third condition implies that given a set of pairwise disjoint events,
 the probability of either one of them occurring is equal to the sum of the
 probabilities of each one.
 
-From these conditions it follows that
+From these conditions follows
 \begin{itemize}
-\item \(P(\emptyset) = 0\)
-\item \(P(\alpha \cup \beta) = P(\alpha) + P(\beta) - P(\alpha \cap \beta)\)
+\item \(P(\emptyset) = 0\).
+\item \(P(\alpha \cup \beta) = P(\alpha) + P(\beta) - P(\alpha \cap \beta)\).
 \end{itemize}
 
 The triple \((\Omega, \mathcal{F}, P)\) is called a \emph{probability space}.
@@ -52,7 +52,7 @@ The triple \((\Omega, \mathcal{F}, P)\) is called a \emph{probability space}.
   quotient of the probability of the joint events and the probability of
   \(\beta\):
   \[
-    P(\alpha \mid \beta) = \frac{P(\alpha \cap \beta)}{P(\beta)}
+    P(\alpha \mid \beta) = \frac{P(\alpha \cap \beta)}{P(\beta)}.
   \]
 \end{definition}
 
@@ -62,7 +62,7 @@ The triple \((\Omega, \mathcal{F}, P)\) is called a \emph{probability space}.
   \textbf{(Bayes' theorem)}. Let \(\alpha, \beta\) be two events of an
   experiment, given that \(P(\beta) \neq 0\). Then
   \[
-  P(\alpha \mid \beta)= \frac{P(\beta \mid \alpha)P(\alpha)}{P(\beta)}
+  P(\alpha \mid \beta)= \frac{P(\beta \mid \alpha)P(\alpha)}{P(\beta)}.
 \]
 \end{theorem}
 
@@ -75,7 +75,7 @@ probability that a person with habit \(h\) will have the disease \(d\)?
 
 \[
 P(d \mid h) = \frac{P(d \cap h)}{P(h)} = \frac{P(h \mid d)P(d)}{P(h)} =
-\frac{ 0.9 \times 10^{-5}}{ 0.5 } = 1.8 \times 10^{-5}
+\frac{ 0.9 \times 10^{-5}}{ 0.5 } = 1.8 \times 10^{-5}.
 \]
 
 If we set the probability of having habit \(h\) to a much lower value as \(P(h) =
@@ -90,14 +90,14 @@ is stronger now compared with the case where more people had the habit.
   about the other. Mathematically,
 
   \[
-    P(\alpha \cap \beta) = P(\alpha)P(\beta) \hspace{2cm} P(\alpha \mid \beta) = P(\alpha)
+    P(\alpha \cap \beta) = P(\alpha)P(\beta), \quad P(\alpha \mid \beta) = P(\alpha).
   \]
 
   Let \(\gamma \in \mathcal{F}\), we say that \(\alpha\) and \(\beta\) are
   \emph{conditionally independent} on \(\gamma\), \(\alpha \bigCI \beta \mid \gamma\)
   if and only if
   \[
-    P(\alpha \cup \beta \mid \gamma) = P(\alpha \mid \gamma)P(\beta \mid \gamma)
+    P(\alpha \cup \beta \mid \gamma) = P(\alpha \mid \gamma)P(\beta \mid \gamma).
   \]
   Otherwise, they are said to be \emph{conditionally dependent} on \(\gamma\),  \(\alpha \bigCD \beta \mid \gamma\).
 
@@ -135,29 +135,29 @@ Using a lower case letter like \(P(x)\) will denote the probability of the
 corresponding upper case variable \(X\) taking a specific value.
 
 \begin{definition}
-The \emph{cumulative distribution function} of a real-valued random variable \(X\) is the
-function given by:
+The \emph{cumulative distribution function} of a real-valued random variable \(X\) is defined as
 \[
-F_X (x) = P(X \leq x)
+F_X (x) = P(X \leq x),
 \]
 where the right-hand side represents the probability of the random variable
 taking value below or equal to \(x\).
 \end{definition}
 
 \begin{definition}
-When the image of a random variable \(X\) is countable, the random variable it
+When the image of a random variable \(X\) is countable, the random variable
 is called a
-\emph{discrete random variable}, its \emph{probability mass function} \(p\) gives the
-probability of it being equal to some value.
+\emph{discrete random variable} and its \emph{probability mass function} \(p\) gives the
+probability of it being equal to some value:
 \[
-p(x) = P(X = x)
+p(x) = P(X = x).
 \]
-If the image is uncountable and real, then \(X\) is called a \emph{continuous random
-  variable} if there exists is a non-negative
-Lebesgue-integrable \(f\), called its \emph{probability density function} such that
+In case the image is uncountable and real, then \(X\) is called a \emph{continuous random
+  variable} and if there exists is a non-negative
+Lebesgue-integrable \(f\) such that
 \[
-F_X(x) = P(X \leq x) = \int_{-\infty}^x f(u) du
+F_X(x) = P(X \leq x) = \int_{-\infty}^x f(u) du,
 \]
+then it is called its \emph{probability density function}.
 
 A \emph{mixed random variable} is a random variable who is neither discrete nor
 continuous, it can be realized as the sum of a discrete and continuous random
@@ -171,35 +171,31 @@ variable. We define the \emph{probability distribution} \(P_{X}\) of a random
 variable \(X\) over the probability space \((\Omega, \mathcal{F}, P)\)
 as the pushforward measure of it, that is, \(P_X = PX^{-1}\).
 
-As summation is integration with respect to the \emph{counting measure} defined as
-
+Integrate notation will be used in both continuous and discrete cases, where the last one can be interpreted as integration with respect to the \emph{counting measure} defined as
 \[
- \#(dx) = \sum_{n \in \I}\delta(x - n)dx
+ \#(dx) = \sum_{n \in \I}\delta(x - n)dx,
 \]
-Where \(\I\) is the set of values \(X\) can take, and \(\delta\) is the Dirac distribution.
-Then
-
+where \(\I\) is the set of values \(X\) can take, and \(\delta\) is the Dirac distribution. Given this measure, integration corresponds to summation as
 \[
-  \int_{x} P(x) \#(dx) = \sum_{n \in \I}\int_{x} P(x) \delta(x-n) dx = \sum_{n \in I}P(n)
+  \int_{x} P(x) \#(dx) = \sum_{n \in \I}\int_{x} P(x) \delta(x-n) dx = \sum_{n \in I}P(n).
 \]
 
 Where we used that \(\int f(x)\delta(x - x_{0}) = f(x_{0})\). Given this, from now on, we will use the integration notation for both discrete and continuous variables given that the integrals will be respect to the counting measure when needed.
 
 \begin{definition}
   As we did for events, we can define the \emph{conditional probability} over
-  random variables, let \(X, Y\) be random variables,
+  random variables, let \(X, Y\) be two random variables, then
   \[
-    P(x \mid y) = \frac{P(x,y)}{P(y)}
+    P(x \mid y) = \frac{P(x,y)}{P(y)}.
   \]
   It is  required that \(P(y) \neq 0\) for the conditional probability to be defined.
 \end{definition}
 
-We can also enunciate the \emph{Bayes' theorem}.
-
+We can also enunciate the \emph{Bayes' theorem} as
 \[
   P(x,y) = \frac{P(y\mid x)P(x)}{P(y)}
 \]
-
+Clearly an arbitrary number of variables can be considered in both cases.
 
 \begin{definition}
   The \emph{marginal distribution} of a subset of random variables is the
@@ -208,7 +204,7 @@ We can also enunciate the \emph{Bayes' theorem}.
 
 Let \(X, Y\) be two random variables, it follows that
 \[
-  P(x) = \int_y P(x,y)
+  P(x) = \int_y P(x,y).
 \]
 
 
@@ -218,23 +214,22 @@ Let \(X, Y\) be two random variables, it follows that
   falling in a particular range or discrete set of values for that variable. It is
   called a \emph{multi-variate distribution}.
 
-  When using only two random variables, then is called a \emph{bivariate
+  When using only two random variables, then is called a \emph{bi-variate
     distribution}.
 
-  This distribution can be expressed in terms of a joint cumulative distribution
+  This distribution can be expressed either in terms of a joint cumulative distribution
   function
   \[
 F_{\bm{X}}(\bm{x}) = F_{X_1,\dots,X_n}(x_1,\dots,x_n) = P(X_1 \leq x_1, \dots,
-X_n \leq x_n) \footnote{Where \(\bm{x} = (x_1,\dots,x_n)\)}
+X_n \leq x_n) \footnote{Where \(\bm{x} = (x_1,\dots,x_n)\)},
 \]
-or using a probability density function (all variables must be continuous) or a
-probability mass function (all variables must be discrete).
+or using a probability density or mass function.
 \end{definition}
 
 \begin{definition}
 We say that two random variables \(X\) and \(Y\) are \emph{independent} if knowing one of them doesn't give any extra information about the other. Mathematically,
 \[
-P(x,y) = P(x)P(y)
+P(x,y) = P(x)P(y).
 \]
 From this it follows that if \(X\) and \(Y\) are independent, then \(P(x\mid y) = P(x)\).
 \end{definition}
@@ -244,7 +239,7 @@ From this it follows that if \(X\) and \(Y\) are independent, then \(P(x\mid y) 
 Let \(X,Y\) and \(Z\) be three random variables, then \(X\) and \(Y\) are
 \emph{conditionally independent} given \(Z\) if and only if
 \[
-P(x,y \mid  z) = P(x\mid z)P(y\mid z)
+P(x,y \mid  z) = P(x\mid z)P(y\mid z),
 \]
 in that case we will denote \(X \bigCI Y \mid Z\). If \(X\) and \(Y\) are not
 conditionally independent, they are \emph{conditionally dependent} \(X \bigCD Y \mid Z\)
@@ -259,15 +254,15 @@ Both independence definitions can be made over sets of variables \(\bm{X},
   We say that a set of \(n\) random variables \(\{X_1,\dots,X_n\}\) defined to
   assume values in \(I \subset \R\) are
   \emph{independent and identically distributed (i.i.d)}
-  if and only if they are independent
+  if and only if they are independent, i.e,
   \[
     F_{X_1,\dots,X_n}(x_1,\dots,x_n) = F_{X_1}(x_1)\dots F_{X_n}(x_n) \ \forall
-    x_1,\dots,x_n \in I
+    x_1,\dots,x_n \in I,
   \]
   and are identically distributed
   \[
     F_{X_1}(x_1) = F_{X_k}(x_k) \ \forall k \in \{2,\dots,n\} \text{ and } \forall x
-    \in I
+    \in I.
   \]
 
 

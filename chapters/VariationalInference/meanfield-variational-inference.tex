@@ -1,14 +1,14 @@
 
 \section{The mean-field variational family}
 
-The \emph{mean-field variational family} \(\mathcal{Q}\) as the family of distributions where the latent variables are mutually independent, i.e, any \(Q \in \mathcal{Q}\) verifies
+The \emph{mean-field variational family} \(\mathcal{Q}\) is defined as the family of distributions where the variables are mutually independent, i.e, any \(Q \in \mathcal{Q}\) verifies
 \[
-  Q(\bz) = \prod_{n=1}^{N}Q_{n}(z_{n})
+  Q(\bz) = \prod_{n=1}^{N}Q_{n}(z_{n}),
 \]
 
-Where \(\bm{z} = \{z_{1},\dots,z_{N}\}\) is the set of latent variables considered in the problem. Notice that each \emph{factor} \(Q_{n}\) can be different and this family does not depend on the observed data. The mean-field family can capture any marginal of the latent variables but not correlation between them. For example, consider a two dimensional Gaussian distribution shown in blue in the next figure. Any mean-field approximation would factorize as a product of two Gaussian distributions (shown in purple).
+where \(\bm{z} = \{z_{1},\dots,z_{N}\}\) is the considered set of variables. The mean-field family is commonly used to model the family of distributions over the latent variables in our optimization problem. Notice that each \emph{factor} \(Q_{n}\) can be different and this family does not depend on the observed data.
 
-
+The mean-field family can capture any marginal of the latent variables but not correlation between them, as it assumes they are independent. For example, consider a two dimensional Gaussian distribution where a high percentage of the density is inside the blue ellipse shown in the next figure. Any mean-field approximation would factorize as a product of two Gaussian distributions, condensing its density in a circle as shown in purple.
 
 \begin{figure}[h!]
 \centering
@@ -27,16 +27,15 @@ Where \(\bm{z} = \{z_{1},\dots,z_{N}\}\) is the set of latent variables consider
         \filldraw[color=purple!50, fill=purple!20, very thick, opacity=0.7]  (110,110) circle (25);
         % \addlegendentry{Mean-field Approximation}
     \end{axis}
-\end{tikzpicture}
+  \end{tikzpicture}
+  \caption{Mean-field family distribution (purple) approximating a Gaussian distribution (blue)}
 \end{figure}
 
-Using this family to approximate the conditional is then equivalent to find the ``circle'' that best explains the ``ellipse'' given that the Kullback-Leibler divergence penalizes more placing mass in \(Q\) where \(P\) has little mass than the reverse.
-
-Notice the parametric form of each factor \(Q_{n}\) is not specified and the appropriate configuration depends on the variable. For example, a continuous variable might have a Gaussian factor and a categorical variable will have a categorical factor.
+Notice the parametric form of each factor \(Q_{n}\) is not specified and the appropriate configuration depends on the variable. For example, a continuous variable might have a Gaussian factor and a categorical variable have a categorical factor.
 
 \section{CAVI Algorithm }
 
-In this section, we describe a widely used algorithm to solve the optimization problem we discussed in the previous section using the mean-field family. It is \emph{coordinate ascent variational inference (CAVI)} and its procedure is to iteratively optimize each factor of the mean-field family distribution, while fixing the others. With this, the ELBO reaches a local optimum.
+In this section, we describe a widely used algorithm to solve the optimization problem we discussed in the previous section using the mean-field family. It is \emph{coordinate ascent variational inference} or \emph{CAVI} and its procedure is to iteratively optimize each factor of the mean-field family distribution, while fixing the others. With this, the ELBO reaches a local optimum.
 
  \begin{algorithm}[t]
   \SetAlgoLined
@@ -55,25 +54,25 @@ In this section, we describe a widely used algorithm to solve the optimization p
   \label{alg:cavi}
 \end{algorithm}
 
-Let us see the main idea behind this iterative process, consider the \(n^{th}\) variable \(z_{n}\) and the let \(\bm{z}_{\backslash n} = (z_{1},\dots,z_{n-1},z_{n+1},\dots,z_{N})\) denote the full set of variables without the focused one. Let the other factors \(Q_{m}, m\neq n\) be fixed The ELBO over \(z_{n}\) has the form
+Let us see the main idea behind this iterative process, consider the \(n^{th}\) variable \(z_{n}\) and the let \(\bm{z}_{\backslash n} = (z_{1},\dots,z_{n-1},z_{n+1},\dots,z_{N})\), that is, the full set of variables without the focused one. Let the other factors \(Q_{m}, m\neq n\) be fixed. Under this assumptions, the ELBO has the form
 \[
   \begin{aligned}
-    ELBO(Q_{n}) &= \E{Q_{n}}{\E{Q_{\bm{z}_{\backslash n}}}{\log{P(\V, \bm{z})}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}}\\
-    &= \E{Q_{n}}{\E{Q_{\bm{z}_{\backslash n}}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)} + \log{P(\bm{z}_{\backslash n}, \V)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}}\\
+    ELBO(Q) &= \E{Q_{n}}{\E{Q_{\bm{z}_{\backslash n}}}{\log{P(\V, \bm{z})}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
+    &= \E{Q_{n}}{\E{Q_{\bm{z}_{\backslash n}}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)} + \log{P(\bm{z}_{\backslash n}, \V)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
     &=  \E{Q_{n}}{\E{Q_{\bm{z}_{\backslash n}}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
-    &= - \KL{Q_{n}(z_{z})}{Q_{n}^{*}(z_{n})} + \text{ const.}
+    &= - \KL{Q_{n}(z_{z})}{  \exp{\E{Q(\bm{z}_{\backslash n})}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)}}} } + \text{ const.}.
   \end{aligned}
 \]
-Where \(Q_{n}^{*}(z_{n}) \) is proportional to
+Minimizing the ELBO corresponds to setting the new distribution \(Q_{n}^{new}\) as:
 \[
-  Q_{n}^{*}(z_{n}) \propto \exp{\E{Q(\bm{z}_{\backslash n})}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)}}}
+  Q_{n}^{new}(z_{n}) \propto \exp{\E{Q(\bm{z}_{\backslash n})}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)}}}.
 \]
 
 Notice that the proportionality restriction is enough to fully determine the distribution as its integral is normalized. Equivalently, the distribution is proportional to
 \[
-    Q_{n}^{*}(z_{n}) \propto \exp{\E{Q(\bm{z}_{\backslash n})}{\log{P(z_{n}, \bm{z}_{\backslash n}, \V)}}}
+    Q_{n}^{new}(z_{n}) \propto \exp{\E{Q(\bm{z}_{\backslash n})}{\log{P(z_{n}, \bm{z}_{\backslash n}, \V)}}}.
 \]
 
-Maximizing the ELBO is equivalent to minimizing that Kullback-Leibler divergence, which corresponds to setting \(Q_{n}(z_{n}) = Q_{n}^{*}(z_{n})\).
+
 As the ELBO is generally a non-convex function and the CAVI algorithm converges to a local optimum, the initialization values of the algorithm play an important role on its performance.
 The convergence criteria is usually a threshold for the ELBO.

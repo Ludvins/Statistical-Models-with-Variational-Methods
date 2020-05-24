@@ -9,51 +9,52 @@ From now on, let \(X\) be a random variable and \(P\) its probability distributi
   The \emph{mode} \(X_*\) of the probability distribution \(P\) is the state
   of \(X\) where the distribution takes it's highest value
   \[
-X_* = \argmax_x P(x)
-\]
+    X_* = \argmax_x P(x).
+  \]
 A distribution could have more than one mode, in this case we say it is \emph{multi-modal}.
 \end{definition}
 
 \begin{definition}
-  The notation \(\mathbb{E}[X]\) is used to denote the \emph{average} or
+  The notation \(\E{}{X}\) is used to denote the \emph{average} or
   \emph{expectation} of the values a real-valued variable takes respect to its
   distribution. It is worth mentioning that it might not exists.
   If \(X\) is non-negative, it is defined as
   \[
-    \mathbb{E}[X] = \int_{\Omega} X(\omega)dP(\omega) \footnote{\(P\) is a
-      measure over \(\Omega\)}
+    \E{}{X} = \int_{\Omega} X(\omega)dP(\omega) \footnote{\(P\) is a
+      measure over \(\Omega\)}.
   \]
-  For a general variable X it is defined as \(\mathbb{E}[X] = \mathbb{E}[X^+] -
-  \mathbb{E}[X^-]\). Where
+  For a general variable X it is defined as \(\E{}{X} = \E{}{X^+} -
+  \E{}{X^-}\). Where
   \[
-    X^+(\omega) = \max(X(\omega), 0) \hspace{2cm} X^-(\omega) = \min(X(\omega), 0)
+    X^+(\omega) = \max(X(\omega), 0), \quad X^-(\omega) = \min(X(\omega), 0).
   \]
 
   Suppose now that \(X\) is a real-valued random variable, in case it is also
-  continuous
-\[
-\mathbb{E}[X] =  \int_{-\infty}^{+\infty} x f(x) dx
-\]
-and if it is discrete, let \(x_i\) be the values \(X\) can take
-\[
-\mathbb{E}[X] =  \sum_{i = 1}^{+\infty} x_i p(x_i) dx
-\]
+  continuous, the expectation is
+  \[
+    \E{}{X} =  \int_{-\infty}^{+\infty} x f(x) dx.
+  \]
+  And if it is discrete, let \(x_i\) be the values \(X\) can take, the expectation takes the form
+  \[
+    \E{}{X} =  \sum_{i = 1}^{+\infty} x_i p(x_i) dx.
+  \]
 
 
 Let \(g:\mathbb{R} \to \mathbb{R}\) be a measurable function, then \(g \circ X\)
-is another random variable and we can talk about \(\mathbb{E}[g(X)]\), so in
+is another random variable and we can talk about \(\E{}{g(X)}\), so in
 case \(X\) is continuous, we have that
 \[
-\mathbb{E}[g(X)] =  \int_{-\infty}^{+\infty} g(x) f(x) dx
+\E{}{g(X)} =  \int_{-\infty}^{+\infty} g(x) f(x) dx.
 \]
 \end{definition}
 
+In the above definition, the expectation is calculated over the probability distribution \(P\) of the random variable, in future sections this distribution is unknown and a guessed distribution \(Q\) will be used. In this cases when the distribution is not clear from the context the notation \(\E{Q}{X}\) will be used.
 
 \begin{definition}
   We define the \(k^{th}\) moment of a distribution as the average of \(X^k\)
   over the distribution
   \[
-    \mu_k = \mathbb{E}[X^k]
+    \mu_k = \E{}{X^k}
   \]
   For \(k = 1\) it is typically denoted as \(\mu\). Note \(\mu_{k}\) can also denote the \(k^{th}\) element in the mean vector of a multi-variate variable.
 \end{definition}
@@ -62,7 +63,7 @@ case \(X\) is continuous, we have that
 \begin{definition}
   The \emph{variance} of a distribution is defined as
   \[
-    Var(X) = \sigma^2 = \mathbb{E}[(X - \mathbb{E}[X])^2] = \mathbb{E}[X]^2 - \mathbb{E}[X^2]
+    Var(X) = \sigma^2 = \E{}{(X - \E{}{X})^2} = \E{}{X}^2 - \E{}{X^2}
   \]
 
   The square root of the variance \(\sigma\) is called the \emph{standard deviation}.
@@ -73,13 +74,13 @@ When using a multi-variate distribution \(\bm{X} = (X_1,\dots,X_n)^T\) we can ta
 
 \[
 \begin{aligned}
-\bSigma_{ij} &= \mathbb{E}[ (X_i - \mathbb{E}[X_i])
-(X_j - \mathbb{E}[X_j]) ] = \mathbb{E}[(X_i - \mu_i)(X_j - \mu_j)]\\
-&=\mathbb{E}[X_i X_j]-\mathbb{E}[X_i]\mathbb{E}[X_j]
+\bSigma_{ij} &= \E{}{\Big(X_i - \E{}{X_i}\Big)
+  \Big(X_j - \E{}{X_j}\Big)} = \E{}{(X_i - \mu_i)(X_j - \mu_j)}\\
+&=\E{}{X_i X_j}-\E{}{X_i}\E{}{X_j}
 \end{aligned}
 \]
 
-The following result will be helpful later on
+The following result will be helpful later on.
 
 \begin{proposition} \label{prop:expectation_over_marginal}
   Let \(\mathcal{X} = \{X_1,\dots,X_n\}\) be a set of random variables,
@@ -87,9 +88,9 @@ The following result will be helpful later on
   their probability distributions.
   It follows that the expectation of a function \(g\) over \(\mathcal{X}_0\), verifies
     \[
-      \E{P(\mathcal{X})}{g(\mathcal{X}_0)} = \E{P(\mathcal{X}_0)}{g(\mathcal{X}_0)}
+      \E{P(\mathcal{X})}{g(\mathcal{X}_0)} = \E{P(\mathcal{X}_0)}{g(\mathcal{X}_0)}.
     \]
-    that is, we only need to know the marginal distribution of the subset in
+    That is, we only need to know the marginal distribution of the subset in
     order to carry out the average.
 \end{proposition}
 
@@ -99,7 +100,7 @@ The following result will be helpful later on
     \begin{aligned}
       \E{P(\mathcal{X})}{g(\mathcal{X}_{0})}&= \int_{x_{1}}\dots\int_{x_{n}}g(x_{i_{1}},\dots,x_{i_{k}})f(x_{1},\dots,x_{n}) \\
       &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) \int \dots \int f(x_{1},\dots,x_{n}) d_{x_{1}},\dots,d_{x_{n}}\\
-      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) f(x_{i_{1}},\dots,x_{i_{k}}) =  \E{P(\mathcal{X}_{0})}{g(\mathcal{X}_{0})}\\
+      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) f(x_{i_{1}},\dots,x_{i_{k}}) =  \E{P(\mathcal{X}_{0})}{g(\mathcal{X}_{0})}.\\
       \end{aligned}
   \]
 Where in the second-last equality we used marginalization.
@@ -120,7 +121,7 @@ the value 1 with probability \(p\) and the value 0 with probability \(1-p\).
   \begin{array}{ll}
     p  & \mbox{if } x = 1 \\
     1-p & \mbox{if } x = 0
-  \end{array}
+  \end{array}.
 \right.
 \]
 
@@ -128,7 +129,7 @@ the value 1 with probability \(p\) and the value 0 with probability \(1-p\).
 
 A generalization of the Bernoulli Distribution when the variable can take more than two states is the \emph{Categorical Distribution}. Let \(Dom(X) = \{1,\dots,N\}\), then \(X\) follows a categorical distribution of parameters \(\theta = (\theta_{1},\dots, \theta_{N})\) if and only if
 \[
-  P(x \mid \theta) = \prod_{i=1}^{N}\theta_{i}^{\mathbb{I}[x = i]} \text{ and } \sum_{i = 1}^{N}\theta_{i} = 1
+  P(x \mid \theta) = \prod_{i=1}^{N}\theta_{i}^{\mathbb{I}[x = i]} \text{ and } \sum_{i = 1}^{N}\theta_{i} = 1.
 \]
 
 \subsection{Binomial Distribution}
@@ -138,7 +139,7 @@ independent Bernoulli Trials. A discrete binary random variable \(X\) follows a
 \emph{binomial distribution} of parameters \(n \in \mathbb{N}\) and \(p \in
 [0,1]\), denoted as \(X \sim B(n, p)\) if and only if
 \[
-  P(x = k) = \binom{n}{k}p^k(1-p)^{n-k}
+  P(x = k) = \binom{n}{k}p^k(1-p)^{n-k}.
 \]
 
 
@@ -154,7 +155,7 @@ probability distribution for real-valued random variables.
   parameters \(\mu, \sigma \in \mathbb{R}\), denoted as \(X \sim N(\mu,
   \sigma)\) if and only if, its probability density function exists and is
   \[
-    f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{1}{2}\big(\frac{x-\mu}{\sigma} \big)^2}
+    f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{1}{2}\big(\frac{x-\mu}{\sigma} \big)^2}.
   \]
 
   The parameter \(\mu\) is the mean or expectation of the distribution and
@@ -166,11 +167,11 @@ The simplest case of a normal distribution is known as \emph{standard normal
   distribution}, denoted as \(Z\). It is a special case where \(\mu = 0\) and \(\sigma = 1\), then
 its density function is
 \[
-  f(x) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}x^2}
+  f(x) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}x^2}.
 \]
 
 One of the properties of the normal distribution is that if \(X \sim N(\mu, \sigma)\), \(a,b \in \mathbb{R}\) and \(f:\mathbb{R} \to \mathbb{R}\) be defined
-as \(f(x) = ax + b\), then \(f(X) \sim N(\mu + b, a^2 \sigma)\)
+as \(f(x) = ax + b\), then \(f(X) \sim N(\mu + b, a^2 \sigma)\).
 
 \subsection{Multi-Variate Normal Distribution}
 
@@ -187,31 +188,31 @@ We say that a random vector \(\bm{X} = (X_1,\dots,X_p)\) follows a \emph{multi-v
 \bm{\Sigma})\) if and only if its probability density function is
 
 \[
-  f(\bm{x}) = \frac{1}{\sqrt{det(2\pi \bm{\Sigma})}}e^{-\frac{1}{2}(\bm{x} - \bm{\mu})^T\bm{\Sigma}^{-1}(\bm{x}-\bm{\mu})}
+  f(\bm{x}) = \frac{1}{\sqrt{det(2\pi \bm{\Sigma})}}e^{-\frac{1}{2}(\bm{x} - \bm{\mu})^T\bm{\Sigma}^{-1}(\bm{x}-\bm{\mu})} .
 \]
 
 Where \(\bm{\mu}\) is the mean vector of the distribution, and \(\bm{\Sigma}\)
 the covariance matrix. The inverse matrix \(\bm{\sigma}^{-1}\) is called \emph{precision}.
 It also satisfies that
 \[
-\bm{\mu} = \mathbb{E}[\bm{X}] \hspace{2cm} \bSigma = \E{}{(\bx - \bmu)(\bx - \bmu)^T}
+\bm{\mu} = \mathbb{E}[\bm{X}], \quad \bSigma = \E{}{(\bx - \bmu)(\bx - \bmu)^T}.
 \]
 
 As \(\bSigma\) is a real symmetric matrix, it can be eigendecomposed
 \[
-  \bSigma = \bm{E}\bm{\Delta}\bm{E}^T
+  \bSigma = \bm{E}\bm{\Delta}\bm{E}^T,
 \]
 where \(\bm{E}^T\bm{E} = \bm{I}\) and \(\bm{\Delta} =
 diag(\lambda_1,\dots,\lambda_n)\).
 
 Using the transformation
 \[
-  \bm{y} = \bm{\Delta}^{\frac{1}{2}}\bm{E}^T(\bx - \bmu)
+  \bm{y} = \bm{\Delta}^{\frac{1}{2}}\bm{E}^T(\bx - \bmu),
 \]
 we get that
 
 \[
-  (\bx - \bmu)^T\bSigma(\bx - \bmu) = \bm{y}^T\bm{y}
+  (\bx - \bmu)^T\bSigma(\bx - \bmu) = \bm{y}^T\bm{y}.
 \]
 
 Using this, the multi-variate Normal Distribution reduces to a product of \(n\)
@@ -231,15 +232,15 @@ interval \([0,1]\) follows a \emph{Beta distribution} of parameters \(\alpha,
 density function is
 
 \[
-  f(x) = \frac{1}{B(\alpha, \beta)}x^{\alpha - 1}(1-x)^{\beta -1}
+  f(x) = \frac{1}{B(\alpha, \beta)}x^{\alpha - 1}(1-x)^{\beta -1},
 \]
 where \(B(\alpha, \beta)\) is the \emph{beta function} defined as
 \[
-  B(\alpha, \beta) = \int_0^1 x^{\alpha - 1}(1-x)^{\beta -1} dx
+  B(\alpha, \beta) = \int_0^1 x^{\alpha - 1}(1-x)^{\beta -1} dx.
 \]
 \end{definition}
 
-The mean is given by \(\E{}{X} = \frac{\alpha}{\alpha + \beta}\)
+The mean is given by \(\E{}{X} = \frac{\alpha}{\alpha + \beta}\).
 
 \subsection{Dirichlet Distribution}
 
@@ -253,41 +254,41 @@ a multi-variate generalization of the Beta Distribution.
     Distribution} with parameters \(\bm{\alpha} = (\alpha_{1}, \dots, \alpha_{K})\), if and
   only if its density function is defined as
   \[
-    f(\bx) = \frac{1}{B(\bm{\alpha})}\prod_{k = 1}^{K}x_{k}^{\alpha_{k}-1}
+    f(\bx) = \frac{1}{B(\bm{\alpha})}\prod_{k = 1}^{K}x_{k}^{\alpha_{k}-1},
   \]
   and it satisfies that
   \[
-    \sum_{k=1}^{K} x_{k} = 1 \text{ and } x_{k} > 0 \ \forall k=1,\dots,K
+    \sum_{k=1}^{K} x_{k} = 1 \text{ and } x_{k} > 0 \ \forall k=1,\dots,K.
   \]
 \end{definition}
 
 Where the normalization constant is the multi-variate beta function
 \[
-  B(\bm{\alpha}) = \frac{\prod_{k} \Gamma (\alpha_{k})}{\Gamma \big( \sum_{k}\alpha_{k} \big)}
+  B(\bm{\alpha}) = \frac{\prod_{k} \Gamma (\alpha_{k})}{\Gamma \big( \sum_{k}\alpha_{k} \big)}.
 \]
 
 
 \begin{proposition}\label{prop:dirichlet_marginal}
   Let
   \((X_{0},\dots, X_{n}) \sim \text{Dirichlet}(\alpha_{0}, \dots, \alpha_{n})\),
-  then \(X_{0} \sim \text{Beta}(\alpha_{0}, \alpha_{1}+\dots+\alpha_{n})\)
+  then \(X_{0} \sim \text{Beta}(\alpha_{0}, \alpha_{1}+\dots+\alpha_{n})\).
 \end{proposition}
 \begin{proof}
   Following [\cite{farrow}], we can write the joint probability as
   \[
-    f(x_{1},\dots,x_{n}) = f_{1}(x_{1})f_{2}(x_{2}\mid x_{1})\dots f_{n-1}(x_{n-1}\mid x_{1},\dots, x_{n-2})
+    f(x_{1},\dots,x_{n}) = f_{1}(x_{1})f_{2}(x_{2}\mid x_{1})\dots f_{n-1}(x_{n-1}\mid x_{1},\dots, x_{n-2}).
   \]
   We do not need the last term because it is fixed given the others. In fact, let \(A = \sum_{i} \alpha_{i}\), we can write it as
   \[
    \Bigg( \frac{\Gamma(A)}{\Gamma(\alpha_{1}) \Gamma(A - \alpha_{1})}x_{1}^{\alpha_{1}-1}(1 - x_{1})^{A - \alpha_{1} -1}\Bigg)\Bigg( \frac{\Gamma(A - \alpha_{1})}{\Gamma(\alpha_{2}) \Gamma(A - \alpha_{1} - \alpha_{2})}\frac{ x_{2}^{\alpha_{2}-1}(1-x_{1}- x_{2})^{A - \alpha_{2}- \alpha_{1} - 1} }{(1-\alpha_{1})^{A - \alpha_{1} - 1} }\Bigg )
  \]
  \[
-   \dots \Big(\frac{\Gamma(A - \alpha_{1} - \dots - \alpha_{n-2})}{\Gamma(\alpha_{n-1}) \Gamma(A - \alpha_{1}- \dots - \alpha_{n-1})}  \frac{ x_{n-1}^{\alpha_{n}-1} x_{n}^{\alpha_{n}-1}}{(1-x_{1}- \dots - x_{n-2})^{\alpha_{n-1}+\alpha_{n}-1}}\Big)
+   \dots \Big(\frac{\Gamma(A - \alpha_{1} - \dots - \alpha_{n-2})}{\Gamma(\alpha_{n-1}) \Gamma(A - \alpha_{1}- \dots - \alpha_{n-1})}  \frac{ x_{n-1}^{\alpha_{n}-1} x_{n}^{\alpha_{n}-1}}{(1-x_{1}- \dots - x_{n-2})^{\alpha_{n-1}+\alpha_{n}-1}}\Big).
  \]
 
  From this, we get that
  \[
-   f_{1}(x_{1}) =  \frac{\Gamma(A)}{\Gamma(\alpha_{1}) \Gamma(A - \alpha_{1})}x_{1}^{\alpha_{1}-1}(1 - x_{1})^{A - \alpha_{1} -1} \implies X_{1} \sim \text{Beta}(\alpha_{1}, A- \alpha_{1})
+   f_{1}(x_{1}) =  \frac{\Gamma(A)}{\Gamma(\alpha_{1}) \Gamma(A - \alpha_{1})}x_{1}^{\alpha_{1}-1}(1 - x_{1})^{A - \alpha_{1} -1} \implies X_{1} \sim \text{Beta}(\alpha_{1}, A- \alpha_{1}).
  \]
 
  Making the decomposition over any other \(X_{j}\), results on
@@ -298,12 +299,16 @@ Where the normalization constant is the multi-variate beta function
 
 \begin{definition}
   Let \(P\) and \(Q\) be two probability distributions over the same set of
-  random variables \(\bm{X}\), the \emph{Kullback-Leibler divergence}
-  \(KL(Q|P)\) measures the `difference' between both distributions as
+  random variables \(\bX\), the \emph{Kullback-Leibler divergence}
+  \(\KL{Q}{P}\) measures the ``difference'' between both distributions as
   \[
-    KL(Q|P) = \mathbb{E}[\log Q(x) - \log P(x)]_Q
+    \KL{Q}{P} = \E{Q}{\log Q(x) - \log P(x)}.
   \]
 \end{definition}
+
+\begin{remark}
+  A random variable can not have two different distributions, in this case it must be understood that one or both distributions are ``guessed'' and we want to calculate the differences between them. For example, consider \(P\) the real distribution of the variable and \(Q\) an approximation.
+\end{remark}
 
 \begin{proposition}
 The Kullback-Leibler divergence is always non-negative.
@@ -311,18 +316,18 @@ The Kullback-Leibler divergence is always non-negative.
 \begin{proof}
   As the logarithm is bounded by \(x - 1\), we can bound \(\log{\frac{P(x)}{Q(x)}}\)
   \[
-    \log{x} \leq x - 1 \implies \frac{P(x)}{Q(x)} - 1 \geq \log{\frac{P(x)}{Q(x)}}
+    \log{x} \leq x - 1 \implies \frac{P(x)}{Q(x)} - 1 \geq \log{\frac{P(x)}{Q(x)}}.
   \]
 
   Since probabilities are non-negative, we can multiply by \(Q(x)\)
   \[
-    P(x) - Q(x) \geq Q(x) \log{P(x)} - Q(x) \log{Q(x)}
+    P(x) - Q(x) \geq Q(x) \log{P(x)} - Q(x) \log{Q(x)}.
   \]
   Now we integrate (sum in case of discrete variables) both sides
 
   \[
-    0 \geq \mathbb{E}[\log{P(x)} - \log{Q(x)}]_Q \implies \mathbb{E}[\log{Q(x)}
-    - \log{P(x)}]_Q \geq 0
+    0 \geq \E{Q}{\log{P(x)} - \log{Q(x)}} \implies \E{Q}{\log{Q(x)}
+    - \log{P(x)}} \geq 0.
   \]
 \end{proof}
 As a result, the Kullback-Leibler divergence is \(0\) if and only if the two
