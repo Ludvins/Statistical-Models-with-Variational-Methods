@@ -1,7 +1,6 @@
 .auctex-auto/
 *.sty
 *.bbl
-*.png
 *.aux
 *.blg
 *.log
