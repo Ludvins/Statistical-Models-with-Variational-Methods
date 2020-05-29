@@ -1,9 +1,35 @@
 
-Firstly, we discuss two conditionally conjugate models. For these model we discussed in Section~\ref{sec:cavi_ccm} how CAVI algorithm updates in each iteration.
+% Firstly, we discuss two conditionally conjugate models. For this model we discussed in
+% Section~\ref{sec:cavi_ccm} how CAVI algorithm updates in each iteration.
+
+We are now in a situation where we can show the Bayesian network of a LVM (figure~\ref{fig:lvm}). Two central problems using these type of models are \emph{Gaussian mixtures} and \emph{latent Dirichlet allocation}.
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1cm and 0.5cm,
+    mynode/.style={draw,circle,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (theta) {\(\bm{\theta}\)};
+    \node[mynode, below left=of theta] (zn) {\(Z_{n}\)};
+    \node[mynode, below right=of theta] (xn) {\(X_{n}\)};
+    \plate{} {(zn)(xn)} {\(n = 1\dots N\)}; %
+    \path (theta) edge[-latex] (zn)
+    (theta) edge[-latex] (xn)
+    (zn) edge[-latex] (xn)
+    ;
+
+  \end{tikzpicture}
+  \caption{Bayesian network of a Latent Variable Model}
+  \label{fig:lvm}
+\end{figure}
+
+
 
 \section{Gaussian Mixture}
 
-A Gaussian mixture model is a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. We will discuss another mixture example with the EM algorithm in Section~\ref{sec:mixture_em}.
+A Gaussian mixture model (figure~\ref{fig:gaussian_mixture}) is a probabilistic model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters. We will discuss another mixture example with the EM algorithm in Section~\ref{sec:mixture_em}.
 
 \pgfmathdeclarefunction{gauss}{2}{%
   \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
@@ -25,63 +51,64 @@ A Gaussian mixture model is a probabilistic model that assumes all the data poin
 \end{figure}
 
 
-The following elements are being considered:
+The following elements are being considered (using~\cite{bishop2006pattern} notation):
 \begin{itemize}\setlength\itemsep{1em}
   \item \(K\) mixture components and \(N\) observations.
-  \item \(\mu_{0}, \lambda, v, \sigma_{0}^{2}\) shared hyper-parameters.
-  \item \(\bm{\phi} = \{\phi_{1},\dots,\phi_{K}\}\) mixture weights, i.e, prior probability of a particular component \(k\).
-  \item \(\btheta = \{(\mu_{1}, \sigma^{2}_{1}),\dots,(\mu_{K},\sigma^{2}_{K})\}\) parameter of distribution of observation associated with component. Mean and variance of component \(k\) are \((\mu_{k}, \sigma_{k}^{2})\).
-  \item A set of i.i.d real valued random variables \(\{X_{1},\dots, X_{N}\}\) and a corresponding set of observations \(\bx = \{x_{1},\dots, x_{n}\}\).
-  \item The cluster assignment latent variables \(\{Z_{1}, \dots, Z_{N}\}\), where each \(z_{n}\) is a indicator vector.
+  \item A set of i.i.d real valued random variables \(\bX = \{X_{1},\dots, X_{N}\}\) and a corresponding set of observations \(\bx = \{x_{1},\dots, x_{n}\}\).
+  \item The cluster assignment latent variables \(\bZ = \{Z_{1}, \dots, Z_{N}\}\), where each \(z_{n}\) is a indicator vector.
+  \item We choose a Dirichlet distribution over the mixing coefficients \(\bm{\pi}\)
+    \[
+    \bm{\pi} \sim \text{Symmetric-Dirichlet}(\alpha_{0}) \implies P(\bm{\pi}) \propto \prod_{k=1}^{K}\pi_{k}^{\alpha_{0}-1}
+    \]
+    The hyper-parameter \(\alpha_{0}\) is the effective prior of each mixture component. Then \(\bm{\pi} = \{\pi_{1},\dots,\pi_{K}\}\) are the mixture weights, i.e, prior probability of a particular component \(k\).
+    \[
+    P(\bz\mid \bm{\pi}) = \prod_{n=1}^{N}\prod_{k=1}^{K}\pi_{k}^{z_{n,k}} \implies (Z_{n} \mid \bm{\pi}) \sim \text{Categorical}(\bm{\pi})
+    \]
+  \item \(\bm{\mu} = \{\mu_{1},\dots,\mu_{K}\}\) and \(\bm{\Lambda} = \{\Lambda_{1},\dots,\Lambda_{K}\}\) are the distribution parameters of each observation full conditional
+    \[
+    (\bm{X} \mid \bm{Z}, \bm{\mu}, \bm{\Lambda}) \sim \prod_{n=1}^{N}\prod_{k=1}^{K}\mathcal{N}(\mu_{k} \mid \Lambda_{k})^{z_{n,k}}
+    \]
+
+  \item The prior governing \(\bm{\mu}\) and \(\bm{\Lambda}\) is an independent Gaussian, Inverse-Gamma distribution with hyper parameters \(m_{0}, \beta_{0}, w_{0}\) and \(v_{0}\):
+    \[
+    P(\bm{\mu}, \bm{\Lambda}) = P(\bm{\mu} \mid \bm{\Lambda})P(\bm{\Lambda}) \text{ where }
+    \begin{cases}
+      (\bm{\mu}\mid\bm{\Lambda}) &\sim \displaystyle\prod_{k=1}^{K}\mathcal{N}(m_{0}, \beta_{0}\Lambda_{k})\\
+      \bm{\Lambda} &\sim \displaystyle\prod_{k=1}^{K}\text{Inverse-Gamma}(w_{0}, v_{0})
+      \end{cases}
+    \]
 \end{itemize}
-
-The \textbf{full conditional distributions} are (skipping the conditionals for the sake of clarity):
-\[
-  \begin{aligned}
-    \bm{\phi} &\sim \text{Symmetric-Dirichlet}_{K}(\beta)\\[5pt]
-    \mu_{k} &\sim \mathcal{N}(\mu_{0}, \lambda \sigma^{2}_{k})\\[5pt]
-    \sigma_{k}^{2} &\sim \text{Inverse-Gamma}(v, \sigma_{0}^{2})\\[5pt]
-    X_{n} &\sim \mathcal{N}(\mu_{z_{n}}, \sigma_{z_{n}}^{2})\\[5pt]
-    Z_{n} & \sim \text{Categorical}(\bm{\phi})
-  \end{aligned}
-\]
-
-The known variables are \(\bx, \mu_{0}, \lambda, v, \sigma_{0}^{2}\) and \(\beta\), which corresponds to the observed data and the hyper-parameters.
 
 The joint probability factorizes as
 \[
-  P(\bm{x}, \bm{z}, \bm{\phi}, \bm{\mu}, \bm{\sigma}) = P(\bm{x}\mid \bm{z}, \bm{\mu}, \bm{\sigma})P(\bm{z}\mid \bm{\phi})P(\bm{\phi})P(\bm{\mu}\mid \bm{\sigma})P(\bm{\sigma}).
+  P(\bm{x}, \bm{z}, \bm{\pi}, \bm{\mu}, \bm{\Lambda}) = P(\bm{x}\mid \bm{z}, \bm{\mu}, \bm{\Lambda})P(\bm{z}\mid \bm{\pi})P(\bm{\pi})P(\bm{\mu}\mid \bm{\Lambda})P(\bm{\Lambda}).
 \]
 
-\cite{bishop2006pattern} Chapter 10.2 gives the explicit update of the CAVI algorithm for this model.
+\cite{bishop2006pattern} uses a Gaussian-Wishart prior for \(\bm{\mu}\) and \(\bm{\Lambda}\) and gives the explicit update for the CAVI algorithm.
 
 \begin{figure}[h!]
   \centering
   \begin{tikzpicture}[
-    node distance=1.5cm and 1.5cm,
+    node distance=0.8cm and 1.5cm,
     mynode/.style={draw,circle,text width=0.5cm,align=center},
     param/.style={draw,text width=0.5cm,align=center}
     ]
 
-    \node[mynode] (mu) {\(\mu_{k}\)};
-    \node[mynode, right=of mu] (sigma) {\(\sigma_{k}^{2}\) };
+    \node[mynode] (mu) {\(\bm{\mu}\)};
+    \node[mynode, right=of mu] (sigma) {\(\bm{\Lambda}\) };
 
 
     \node[mynode, below =of sigma] (z) {\(Z_{n}\)};
-    \node[mynode, left =of z] (phi) {\(\bm{\phi}\)};
+    \node[mynode, left =of z] (phi) {\(\bm{\pi}\)};
     \node[mynode, right =of z] (x) {\(X_{n}\)};
 
-    \node[param, above=of mu] (lambda) {\(\lambda\)};
-    \node[param, left=of lambda] (mu0) {\(\mu_{0}\)};
-    \node[param, above=of sigma] (v) {\(v\)};
-    \node[param, right=of v] (sigma0) {\(\sigma_{0}^{2}\)};
-    \node[param, left=of phi] (beta) {\(\beta\)};
+    \node[param, above=of mu] (lambda) {\(m_{0}\)};
+    \node[param, left=of lambda] (mu0) {\(\beta_{0}\)};
+    \node[param, above=of sigma] (v) {\(v_{0}\)};
+    \node[param, right=of v] (sigma0) {\(w_{0}\)};
+    \node[param, left=of phi] (beta) {\(\alpha_{0}\)};
 
-
-    \plate{} {(z)(x)} {\(n = 1\dots N\)}; %
-
-    \plate{} {(mu)(sigma)} {\(k = 1\dots K\)}; %
-
+    \plate{} {(z)(x)} {\(n=1,\dots,N\)}; %
 
     \path (mu) edge[-latex] (x)
     (sigma) edge[-latex] (x)
@@ -96,37 +123,62 @@ The joint probability factorizes as
     ;
 
   \end{tikzpicture}
-  \caption{Gaussian mixture model. Squares represent hyper-parameters}
+  \caption{Gaussian mixture model. Squares represent hyper-parameters.}
   \label{fig:gaussian_mixture}
 \end{figure}
 
 
 \section{Latent Dirichlet allocation}
 
-\emph{Latent Dirichlet allocation} or \emph{LDA} is a statistical model in natural language processing that allows set of observations to be explained by unobserved groups that explain why some parts of the data are similar.
+\emph{Latent Dirichlet allocation} or \emph{LDA} is a conditionally conjugate model (figure~\ref{fig:lda}) in natural language processing that allows set of observations to be explained by unobserved groups that explain why some parts of the data are similar.
 
 For example, observations may be words in a document, which is a mixture of a small number of topics and each word's presence is attributable to one of the document's topics. Learning corresponds to extract information as the set of topics, their associated word probabilities, the topic of each word, and the particular topic mixture of each document.
 
-The considered elements are (using~\cite{hoffman2013stochastic} notation):
+The considered elements are (using~\cite{hoffman2013stochastic} and \cite{blei2003latent} notation):
 \begin{itemize}\setlength\itemsep{1em}
   \item \(K\) number of topics, \(V\) number of words in the vocabulary, \(M\) number of documents, \(N_{d}\) number of words in document \(d\) and \(N\) total number of words.
-  \item \(\bm{\beta} = \{\beta_{1}, \dots, \beta_{K}\}\), where a topic \(\beta_{k}\) is a distribution over the vocabulary. Each topic is a vector of length \(V\) that sums one (\(V-1\) simplex). Let \(\eta\) be an hyper-parameter, then
+  \item \(\bm{\beta} = \{\beta_{1}, \dots, \beta_{K}\}\), where a topic \(\beta_{k}\) the distribution of words in topic \(k\). Each component \(\beta_{k,n}\) is the probability of the \(n^{th}\) word in topic \(k\).
 
-  \item Each document is associated with a vector of topic proportions \(\theta_{d}\), which is a \(K-1\) simplex. Note \(\bm{\theta} = \{\theta_{1},\dots,\theta_{K}\}\).  Let \(\alpha\) be another hyper-parameter
+  \item Each document \(d\) is associated with a vector of topic proportions \(\theta_{d}\), which is a \(K-1\) simplex. Then each component \(\theta_{d,k}\) is the probability of topic \(k\) in document \(d\). Note \(\bm{\theta} = \{\theta_{1},\dots,\theta_{K}\}\).
   \item Each word in each document is assumed to be related with a single topic. The variable \(Z_{d,n}\) indexes the topic of the \(n^{th}\) word in the \(d^{th}\) document.
 \end{itemize}
 
-The \textbf{full conditionals distributions} of the variables are (skipping the conditionals for the sake of clarity):
+LDA model assumes that each document is generated with the following generative process:
+\begin{enumerate}
+  \item Draw topics from a Dirichlet distribution, for each \(k=1,\dots,K\):
     \[
-    \begin{aligned}
-      \beta_{k} &\sim \text{Symmetric-Dirichlet}_{V}(\eta) \quad \forall k=1,\dots,K \\[5pt]
-      \theta_{d} &\sim \text{Symmetric-Dirichlet}_{K}(\alpha) \quad \forall d=1,\dots,D\\[5pt]
-      Z_{d,n} &\sim \text{Multinomial}(\theta_{d}),\\[5pt]
-      W_{d,n}  &\sim \text{Multinomial}(\beta_{Z_{d,n}}) \quad \forall n=1,\dots,N_{d}, \quad d=1,\dots,D
-    \end{aligned}
+    P(\beta_{k}) = \frac{1}{B(\eta)} \prod_{v=1}^{V}\beta_{k,v}^{\eta - 1} \implies \beta_{k} \sim \text{Symmetric-Dirichlet}_{V}(\eta)
     \]
+  \item For each document \(d = 1,\dots,D\):
+    \begin{enumerate}
+      \item Draw topic proportions,
+        \[
+        P(\theta_{d}) = \frac{1}{B(\alpha)} \prod_{k=1}^{K}\theta_{d,k}^{\alpha-1} \implies \theta_{d} \sim \text{Symmetric-Dirichlet}_{K}(\alpha)
+        \]
+      \item For each word in the document \(n = 1,\dots,N_{d}\):
+        \begin{enumerate}
+          \item Draw  a topic,
+            \[
+            P(z_{d,n} \mid \theta_{d}) = \prod_{k=1}^{K}\theta_{d,k}^{\mathbb{I}[z_{d,n}=k]} \implies  (Z_{d,n} \mid \theta_{d}) \sim \text{Categorical}(\theta_d).
+            \]
+          \item Draw a word form the topic
+            \[
+            P(w_{d,n}\mid z_{d,n}, \bm{\beta}) = \prod_{v=1}^{V}\beta_{z_{d,n},v}^{\mathbb{I}[w_{d,n}=v]} \implies (W_{d,n} \mid Z_{d,n},\bm{\beta}) \sim \text{Categorical}(\beta_{Z_{d,n}})
+            \]
+        \end{enumerate}
+    \end{enumerate}
+\end{enumerate}
 
-\begin{figure}[H]
+The joint probability distribution is then
+\[
+  \begin{aligned}
+    P(\btheta, \bz, \bm{w}, \bm{\beta})
+    &= P(\bm{\beta})\prod_{d=1}^{D}P(\theta_{d}\mid \alpha)\prod_{n=1}^{N_{d}}P(z_{d,n}\mid \theta_{d})P(w_{d,n} \mid z_{d,n}, \bm{\beta})\\
+    &= \Big( \prod_{k=1}^{K}P(\beta_{k}) \Big)\prod_{d=1}^{D}P(\theta_{d})\prod_{n=1}^{N_{d}}P(z_{d,n}\mid \theta_{d})P(w_{d,n} \mid z_{d,n}, \bm{\beta})
+  \end{aligned}
+\]
+
+\begin{figure}[h!]
   \centering
   \begin{tikzpicture}[
     node distance=1.5cm and 1.5cm,
@@ -160,60 +212,96 @@ The \textbf{full conditionals distributions} of the variables are (skipping the 
     ;
 
   \end{tikzpicture}
-  \caption{Latent Dirichlet Allocation model. Squares represent hyper-parameters}
-  \label{fig:lda}
+  \caption{Latent Dirichlet Allocation model. Squares represent hyper-parameters}\label{fig:lda}
 \end{figure}
 
 
+We start setting the complete conditional distribution of the local hidden variables. They only depend on other variables in the local context (same document) and the global variables
+\[
+  \begin{aligned}
+    P(z_{d,n} \mid w_{d,n}, \theta_{d}, \bm{\beta}) &= \frac{P(z_{d,n}, w_{d,n}, \theta_{d}, \bm{\beta})}{\int_{z_{n,d}}P(z_{d,n}, w_{d,n}, \theta_{d}, \bm{\beta})} = \frac{P(z_{d,n}\mid \theta_{d})P(w_{d,n}\mid z_{d,n},\bm{\beta})}{ \int_{z_{d,n}} P(z_{d,n}\mid \theta_{d})P(w_{d,n}\mid z_{d,n},\bm{\beta}) }\\
+    &= \frac{ \prod_{k=1}^{K} \theta_{d,k}^{\mathbb{I}[z_{d,n}=k]} \prod_{v=1}^{V}\beta_{z_{d,n},v}^{\mathbb{I}[w_{d,n}=v]}}{ \int_{z_{d,n}}  \prod_{k=1}^{K} \theta_{d,k}^{\mathbb{I}[z_{d,n}=k]} \prod_{v=1}^{V}\beta_{z_{d,n},v}^{\mathbb{I}[w_{d,n}=v]}} = \frac{\theta_{d, z_{d,n}}\beta_{z_{d,n},w_{d,n}}}{ \sum_{k=1}^{K} \theta_{d, k}\beta_{k,w_{d,n}}}
+  \end{aligned}
+\]
+
+Naming \(\gamma_{d,n} = \theta_{d,z_{d,n}}\beta_{z_{d,n}w_{d,n}}\) and \(\bm{\gamma} = \{\gamma_{d,n}\}_{d=1,\dots,D \ n=1,\dots,N_{d}}\), we get
+\[
+  (Z_{d,n} \mid w_{d,n}, \theta_{d}, \bm{\beta}) \sim Categorical(\bm{\gamma}).
+\]
+
+% Seeing the multinomial distribution as a member of the exponential family, the parameter function is \(\log (\theta_{d}) + \log(\beta_{,n})\). The parameter update for the variational distribution is
+% \[
+%   \E{Q()}{}
+% \]
+
+On the other hand, the complete conditional of the topic proportions \(\theta_{d}\) is only affected by the topic appearances, since \(z_{d,n}\) is an indicator vector, the \(k^{th}\) element of the parameter to this Dirichlet is the sum of the hyperparameter \(\alpha\) and the number of words assigned to topic \(k\) in document \(d\):
+\[
+  \begin{aligned}
+    P(\theta_{d} \mid \bm{z_{d}},\bm{w_{d}}, \bm{\beta}) &= \frac{P(\theta_{d}, \bm{z_{d}}, \bm{w_{d}}, \bm{\beta})}{\int_{\theta_{d}} P(\theta_{d}, \bm{z_{d}}, \bm{w_{d}}, \bm{\beta})} = \frac{ P(\theta_{d})\prod_{n=1}^{N_{d}}P(z_{d,n}\mid \theta_{d}) }{ \int_{\theta_{d}}  P(\theta_{d})\prod_{n=1}^{N_{d}}P(z_{d,n}\mid \theta_{d})  }\\
+    &\propto \prod_{k=1}^{K}\theta_{d,k}^{\alpha-1} \prod_{n=1}^{N_{d}}\theta_{d,k}^{\mathbb{I}[z_{d,n}=k]} = \prod_{k=1}^{K}\theta_{d,k}^{\alpha -1 + \sum_{n=1}^{N_{d}} \mathbb{I}[z_{d,n}=k] }.
+  \end{aligned}
+\]
+The complete conditional depends only on the topic assignments
+\[
+  (\theta_{d} \mid z_{d}) \sim \text{Dirichlet}_{K}\Big(\alpha + \sum_{n=1}^{N_{d}} \mathbb{I}[z_{d,n}=1],\dots, \alpha + \sum_{n=1}^{N_{d}} \mathbb{I}[z_{d,n}=K]\Big).
+\]
+In words, the probability of a topic in document \(d\) is updated with the number of times that topic appears in the document. The complete conditional of a topic depends on the words and topics assignments of the entire collection
+
+Using a similar reasoning, the words distribution in a topic \(k\), \(\beta_{k}\), is updated with the number of appearances in all documents of the given topic.
+\[
+  (\beta_{k} \mid \bm{w}, \bz) \sim \text{Dirichlet}_{V}\Big(\eta + \sum_{d=1}^{D}\sum_{n=1}^{N_{d}}\mathbb{I}[z_{d,n} = k]\mathbb{I}[w_{d,n} = 1], \dots, \eta + \sum_{d=1}^{D}\sum_{n=1}^{N_{d}}\mathbb{I}[z_{d,n} = k]\mathbb{I}[w_{d,n} = V]\Big).
+\]
 
 \section{From PCA to Variational auto-encoders}
 
-LVMs have usually been restricted to the exponential family because, in this case, inference is feasible. But recent advances in variational inference have enabled LVMs to be extended with deep neural networks. For example, \emph{Variational Auto-encoders} or \emph{VAE} (cita Kingma and Welling 2013) are the most influential models combining both concepts.
+LVMs have usually been restricted to the exponential family because, in this case, inference is feasible. But recent advances in variational inference have enabled LVMs to be extended with neural networks. For example, \emph{Variational Auto-encoders} or \emph{VAE} (\cite{kingma2013auto}) are the most influential models combining both concepts.
 
-VAEs extent the classical technique of \emph{principal components analysis} for data representation in lower-dimensional spaces. Let us begin describing the graphical model behind LVMs (figure~\ref{fig:dnn}).
+VAEs extent the classical technique of \emph{principal components analysis} for data representation in lower-dimensional spaces. Suppose we have a \(D\)-dimensional representation of a data point \(x\) and \(z\) is its latent \(K\)-dimensional representation (\(K < D\)). PCA computes an affine transformation \(\bm{W}\), represented by a \(K \times D\) matrix.
 
-\begin{figure}[H]
+
+A probabilistic view of PCA can be modeled with an LVM (\cite{tipping1999probabilistic}), with the following elements:
+
+\begin{itemize}
+  \item \(\bX = \{X_{1},\dots,X_{N}\}\) i.i.d \(\mathbb{R}^{D}\)-valued random variables and the corresponding observations \(\bx = \{x_{1},\dots, x_{N}\}\).
+  \item \(\bZ = \{Z_{1}, \dots, Z_{N}\}\) i.i.d latent \(\mathbb{R}^{K}\)-valued random variables, where \(Z_{n}\) models the \(K\)-dimensional representation of \(x_{n}\).
+  \item A global latent \(K\times D\)-dimensional random variable \(\bm{W}\).
+  \item A noise hyper-parameter \(\sigma^{2}\)
+\end{itemize}
+
+\begin{figure}[h!]
   \centering
   \begin{tikzpicture}[
     node distance=1cm and 0.5cm,
-    mynode/.style={draw,circle,text width=0.5cm,align=center}
+    mynode/.style={draw,circle,text width=0.5cm,align=center},
+    param/.style={draw,text width=0.5cm,align=center}
     ]
 
     \node[mynode] (theta) {\(\bm{W}\)};
     \node[mynode, below left=of theta] (zn) {\(Z_{n}\)};
     \node[mynode, below right=of theta] (xn) {\(X_{n}\)};
+    \node[param, right=of xn] (sigma) {\(\sigma\)};
+
     \plate{} {(zn)(xn)} {\(n = 1\dots N\)}; %
-    \path (theta) edge[-latex] (zn)
-    (theta) edge[-latex] (xn)
+    \path (theta) edge[-latex] (xn)
+    (sigma) edge[-latex] (xn)
     (zn) edge[-latex] (xn)
     ;
 
   \end{tikzpicture}
-  \caption{Bayesian network of a Latent Variable Model}
-  \label{fig:dnn}
+  \caption{Probabilistic PCA model}\label{fig:ppca}
 \end{figure}
 
 
-\emph{Principal Component Analysis} or \emph{PCA} is a classical statistical technique for dimensionality reduction. Suppose we have a \(D\)-dimensional representation of a data point \(x\) and \(z\) is its latent \(K\)-dimensional representation (\(K < D\)). PCA computes an affine transformation \(\bm{W}\), represented by a \(K \times D\) matrix.
-
-A probabilistic view of PCA can be modeled with an LVM (\cite{tipping1999probabilistic}), with the following elements:
-
-\begin{itemize}
-  \item \(\{X_{1},\dots,X_{N}\}\) i.i.d \(\mathbb{R}^{D}\)-valued random variables and the corresponding observations \(\V = \{x_{1},\dots, x_{N}\}\).
-  \item \(\{Z_{1}, \dots, Z_{N}\}\) i.i.d latent \(\mathbb{R}^{K}\)-valued random variables, where \(Z_{n}\) models the \(K\)-dimensional representation of \(x_{n}\).
-  \item A global latent \(K\times D\)-dimensional random variable \(\bm{W}\).
-\end{itemize}
 
 We assume the priors are normally distributed:
 \[
   Z_{n} \sim N_{K}(0, I) \quad \forall n =1,\dots,N \quad \text{ and } \quad \bm{W} \sim N_{K\times D}(0, I).
 \]
-
 The data points are considered generated via a projection,
 \[
-  (X_{n} \mid Z_{n}, \beta) \sim N(\bm{W}^{T}Z_{n}, \sigma^{2}I)\quad \forall n = 1,\dots, N.
+  (X_{n} \mid Z_{n}, \bm{W}) \sim N(\bm{W}^{T}Z_{n}, \sigma^{2}I)\quad \forall n = 1,\dots, N.
 \]
-Where \(\sigma^{2}\) is the noise term. This is where the probabilistic model extends the classical one, for the reason that the latter assumes the noise is infinitesimally small, i.e, \(\sigma^{2} \to 0\). The \emph{expectation-maximization algorithm} (Section~\ref{sec:em}) is commonly used to solve this variational inference problem.
+The probabilistic model extends the classical one in the way that the latter assumes the noise is infinitesimally small, i.e, \(\sigma^{2} \to 0\). The \emph{expectation-maximization algorithm} (Section~\ref{sec:em}) is commonly used to solve this variational inference problem.
 
 
 
@@ -224,14 +312,12 @@ An \emph{artificial neural network} or \emph{ANN} with \(L\) hidden layers can b
   h_{0} = r_{0}(\bm{W}^{T}_{0}x), \quad \dots, \quad h_{l} = r_{l}(\bm{W}_{l}^{T}h_{l-1}) \quad \dots \quad y = r_{L}(\bm{W}_{L}^{T}h_{L-1}).
 \]
 
-\emph{Deep neural networks} or \emph{DNNs} are ANNs where the number of hidden layers is higher. Commonly, any neural network with more that 2 hidden layers is considered deep. Given a dataset \(\{(x_{1}. y_{1}), \dots, (x_{N}, y_{N})\}\) and a loss function \(l(y,y^{*})\) that defines how well the output \(y^{*} = f_{\bm{W}}(x)\)  returned by the model matches the real output \(y\) , learning reduces to the optimization problem
+\emph{Deep neural networks} or \emph{DNNs} are ANNs where the number of hidden layers is higher. Commonly, any neural network with more that 2 hidden layers is considered deep. Given a dataset \(\{(x_{1}, y_{1}), \dots, (x_{N}, y_{N})\}\) and a loss function \(l(y,y^{*})\) that defines how well the output \(y^{*} = f_{\bm{W}}(x)\)  returned by the model matches the real output \(y\) , learning reduces to the optimization problem
 \[
   \bm{W}^{opt} = \argmin_{\bm{W}} \sum_{n=1}^{N}l(y_{n}, f_{\bm{W}}(x_{n})).
 \]
 
 This problem is usually solved by applying a variant of the stochastic gradient descent method, which involves the computation of the gradient of the loss function with respect to the parameters of the network. The algorithm for computing this gradient is known as \emph{back-propagation}, which is based on a recursive application of the chain-rule of derivates. This can be implemented using the computational graph on the network.
-
-\subsection{Computational Graphs}
 
 The main idea of a computational graph is to express a deterministic function, as is the case of a neural network, using an acyclic directed graph. It is composed of input, output and operation nodes, where model data and parameters are shown as input nodes.
 
@@ -257,8 +343,7 @@ The main idea of a computational graph is to express a deterministic function, a
     ;
 
   \end{tikzpicture}
-  \caption{Computational graph example of function \(f(x,y) = 4x + y\) }
-  \label{fig:dnn}
+  \caption{Computational graph example of function \(f(x,y) = 4x + y\) }\label{fig:cnn_cg}
 \end{figure}
 
 \subsection{Variational Auto Encoders}
@@ -266,7 +351,19 @@ The main idea of a computational graph is to express a deterministic function, a
 \emph{Variational auto encoders} extend the classical PCA where the relation between the low dimensional space and the observed data is governed by a DNN instead of a linear transformation.
 It can be seen as a non-linear probabilistic PCA model.
 
-The model is quite similar to the one presented for the PCA, the difference comes from the conditional distribution of \(X\), that depends on \(Z\) through a DNN parameterized by \(\beta_{0}, \beta_{1}, \alpha_{0}, \alpha_{1}\).
+The model is quite similar to the one presented for the PCA, the difference comes from the conditional distribution of \(X\), that depends on \(Z\) through a fully-connected ANN with a single hidden layer.
+
+The prior of the latent variable is a centered Gaussian
 \[
-  h_{n} = relu(\beta_{0}^{T}z_{n} + \alpha_{0}) \quad \mu_{n} = \beta_{1}^{T}h_{n} + \alpha_{1} \quad X_{n} \sim N(\mu_{n}, \sigma^{2}I)
+  Z_{n} \mid N(0,I) \quad \forall n \in 1,\dots,N
+\]
+
+Using four hyper-parameters \(\alpha_{0}, \alpha_{1}, \beta_{0}\) and \(\beta_{1}\), we define the ANN with
+\[
+  h(z) = relu(\beta_{0}^{T}z + \alpha_{0}) \quad \mu(z_{n}) = \beta_{1}^{T}h(z) + \alpha_{1}.
+\]
+
+The data-points are then generated as
+\[
+  (X_{n}\mid Z_{n}) \sim N(\mu_{n}, \sigma^{2}I) \quad \forall n \in 1,\dots,N
 \]

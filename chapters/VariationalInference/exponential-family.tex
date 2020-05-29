@@ -87,35 +87,21 @@ An important property of the exponential family is that they have \emph{conjugat
 the prior distribution, they are called \emph{conjugate distributions}, and
 the prior is called a \emph{conjugate prior} of the likelihood distribution.
 
-Consider our case of study where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family, now using a exponential family distribution for the marginal \(P(z_{n} \mid \theta_{n})\), where \( \theta_{n} = (\bm{z}_{\backslash n}, \V)\) so the notation is cleaner:
-\[
-  P(z_{n} \mid \theta_{n}) = h(z_{n})\exp \Big( {\eta_{n}(\theta_{n})}^{T}z_{n} - \psi(\theta_{n}) \Big).
-\]
-Notice that \( (\bm{z}_{\backslash n}, \V) \) are the model parameters for the exponential family.
 
-The update of the CAVI algorithm  is then given by
-  \begin{align}
-    Q(z_{n}) &\propto \exp{\E{Q(\bm{z}_{\backslash n})}{\log P(z_{n} \mid \theta_{n})}} = h(z_{n})\exp \Big(\E{Q_{\bm{z}_{\backslash n}}}{ {\eta_{n}(\theta_{n})}}^{T}z_{n} - \E{Q_{\bm{z}_{\backslash n}}}{ \psi(\theta_{n})}\Big) \nonumber \\
-    &\propto  h(z_{n})\exp \Big(\E{Q_{\bm{z}_{\backslash n}}}{ {\eta_{n}(\theta_{n})}}^{T}z_{n}\Big) = h(z_{n})e^{v_{n}^{T}z_{n} }, \label{eq:exponential_update}
-  \end{align}
 
-where
-\[
-  v_{n} = \E{Q_{\bm{z}_{\backslash n}}}{\eta_{n}(\theta_{n})} =  \E{Q_{\bm{z}_{\backslash n}}}{\eta_{n}(\bm{z}_{\backslash n}, \V)}.
-\]
-
-Summarizing, the factor is in the exponential family with the same base measure \(h\) and updating it is equivalent to setting the parameter \(\eta\) to the expected one of the complete conditional \(\E{}{\eta_{n}(\theta_{n})}\). This expression facilitates deriving CAVI algorithm for many complex models.
-
-\section{Latent Variable Models}
+\section{Latent Variable and Conditionally conjugate models}
 
 One important case of exponential family are \emph{latent variable models} or \emph{LVMs}. In this models, the following assumptions are made:
 \begin{enumerate}\itemsep0.5em
-  \item There is a random variable \(X\) and a set of i.i.d observations \(\V = (x_{1}, \dots, x_{N})\).
+  \item There set of i.i.d random variables \(\{X_{1},\dots,X_{N}\}\) and a set of observations \(\bx = (x_{1}, \dots, x_{N})\).
   \item Both global \(\btheta\) and local parameters \(\bm{Z} = \{Z_{1}, \dots, Z_{n}\}\) govern the data (both seen as latent variables). We refer to \emph{global latent variables} when they affect the whole distribution and \emph{local latent variables} when they affect only to a subset, in this case each \(Z_{i}\) affects only \(x_{i}\). Given this, the joint probability is
     \[
-    P(\V, \btheta, \bz) = P(\btheta)\prod_{n=1}^{N}P(z_{n}, x_{n} \mid \btheta).
+    P(\bx, \btheta, \bz) = P(\btheta)\prod_{n=1}^{N}P(z_{n}, x_{n} \mid \btheta).
     \]
-
+  \item The \(n^{th}\) observation \(x_{n}\) and the \(n^{th}\) local hidden variable \(z_{n}\) are conditionally independent, given the global variables \(\btheta\), of all other observations and local hidden variables,
+    \[
+    P(x_{n},z_{n} \mid \btheta, \bx_{\backslash n}, \bz_{\backslash n}) = P(x_{n}, z_{n} \mid \btheta).
+    \]
 \end{enumerate}
 
 \begin{remark}
@@ -124,54 +110,69 @@ One important case of exponential family are \emph{latent variable models} or \e
 \end{remark}
 
 One important case of LVMs and exponential family models are \emph{Conditionally conjugate models}, where the following assumptions are made.
-\begin{enumerate}
-  \item The prior for the global latent variable \(P(\btheta)\) is in the exponential family with an hyper-parameter \(\alpha = [\alpha_{1}, \alpha_{2}]\) and statistics that concatenate the global latent variable and its log normalizer \([\btheta, -\psi(\btheta)]\),
+\begin{enumerate}[itemsep=2ex]
+  \item The prior for the global latent variable \(P(\btheta)\) is in the exponential family with an hyper-parameter \(\alpha = [\alpha_{1}, \alpha_{2}]\), where \(\alpha_{1}\) is a vector and \(\alpha_{2}\) is a scalar, and statistics that concatenate the global latent variable and its log normalizer \([\btheta, -\psi(\btheta)]\),
     \[
     P(\btheta) = h(\btheta) \exp \Big( \alpha^{T}[\btheta, -\psi(\btheta)] - \psi(\alpha)\Big).
     \]
   \item Each local term \(P(z_{n},x_{n} \mid \btheta)\) is in the exponential family of the form
     \[
-    P(z_{n},x_{n} \mid \btheta) = h(z_{n}, x_{n}) \exp \Big( \btheta^{T} T(z_{n}, x_{n}) - \psi(\btheta) \Big),
+    P(z_{n},x_{n} \mid \btheta) = h(z_{n}, x_{n}) \exp \Big( \btheta^{T} T(z_{n}, x_{n}) - \psi(\btheta) \Big).
     \]
-
-  \item The complete conditional of a local latent variable is also in the exponential family
+  \item The complete conditional of a local latent variable verifies
     \[
-    P(z_{n}\mid x_{n} , \btheta) =  h(z_{n})\exp \Big( {\eta(\btheta, x_{n})}^{T}z_{n} - \psi(\btheta, x_{n}) \Big).
+    P(z_{n} \mid \btheta, \bx, \bz_{\backslash n}) = P(z_{n} \mid x_{n}, \btheta)
     \]
-
+    and is also in the exponential family
+    \[
+    P(z_{n}\mid x_{n} , \btheta) =  h(z_{n})\exp \Big( {\eta(\btheta, x_{n})}^{T}T(z_{n}) - \psi(\btheta, x_{n}) \Big).
+    \]
 
 \end{enumerate}
 
-
-
 As conjugacy holds, the posterior \(P(\btheta \mid \V, \bz)\) is in the same family with parameter
 \[
-  \bar{\alpha} = [\alpha_{1} + \sum_{n=1}^{N} T(z_{i}, x_{i}), \alpha_{2}+ N1_{v}]^{T}.
+  \bar{\alpha} = [\alpha_{1} + \sum_{n=1}^{N} T(z_{i}, x_{i}), \alpha_{2}+ N]^{T}.
 \]
 This can be calculated as follows,
 \[
   \begin{aligned}
-    P(\btheta \mid \V, \bz) &= \frac{P(\V, \bz \mid \btheta) P(\btheta)}{P(\V, \bz)} \propto  P(\V, \bz \mid \btheta) P(\btheta) = P(\btheta) \prod_{n=1}^{N}h(x_{n}, z_{n})\exp \Big( \btheta^{T}T(z_{n}, x_{n})  - \psi(\btheta) \Big)\\
+    P(\btheta \mid \bx, \bz) &= \frac{P(\bx, \bz \mid \btheta) P(\btheta)}{P(\bx, \bz)} \propto  P(\bx, \bz \mid \btheta) P(\btheta) = P(\btheta) \prod_{n=1}^{N}h(x_{n}, z_{n})\exp \Big( \btheta^{T}T(z_{n}, x_{n})  - \psi(\btheta) \Big)\\
     &\propto  h(\btheta) \exp \Big( \alpha^{T}[\btheta, -\psi(\btheta)]\Big)  \prod_{n=1}^{N}h(x_{n}, z_{n})\exp \Big( \btheta^{T}T(z_{n}, x_{n})  - \psi(\btheta) \Big)\\
     &\propto h(\btheta) \exp \Big(   \alpha^{T}[\btheta, -\psi(\btheta)] + \sum_{n=1}^{N}  \btheta^{T}T(z_{n}, x_{n})  - \psi(\btheta)  \Big)\\
     &\propto h(\btheta) \exp \Big(   \alpha_{1}^{T}\btheta  - \alpha_{2}^{T}\psi(\btheta) - N\psi(\btheta) + \sum_{n=1}^{N}  T(z_{n}, x_{n})^{T}\btheta  \Big)\\
-    &\propto h(\btheta) \exp \Big(   \big(\alpha_{1} + \sum_{n=1}^{N}  T(z_{n}, x_{n})\big)^{T} \btheta  - (\alpha_{2} + N1_{v})^{T}\psi(\btheta) \Big).
+    &\propto h(\btheta) \exp \Big(   \big(\alpha_{1} + \sum_{n=1}^{N}  T(z_{n}, x_{n})\big)^{T} \btheta  - (\alpha_{2} + N)^{T}\psi(\btheta) \Big).
   \end{aligned}
 \]
 
-It is worth mentioning that the local variable \(z_{n}\) is conditionally independent of other local variables \(\bz_{\backslash n}\)  and other data \(\bx_{\backslash n}\), i.e
-\[
-  P(z_{n} \mid x_{n}, \btheta, \bx_{\backslash n}, \bz_{\backslash n}) = P(z_{n} \mid x_{n}, \btheta).
-\]
-Which is supposed in the exponential family. For example in a Gaussian mixture, the complete conditional of the local variable is a categorical distribution.
-
+The inverse reasoning can be done, therefore if the complete conditional of the global hidden variable is in the exponential family with hyper-parameter \(\bar{\alpha}\), the prior is in the same family with the corresponding hyper-parameter \(\alpha\).
 
 \section{CAVI in Conditionally conjugate models} \label{sec:cavi_ccm}
 
-Our variational distribution is in the mean-field family with \(Q(\btheta \mid \lambda)\) where \(\lambda\) is called the \emph{global variational parameter}, and the posterior on each local variable is \(Q(z_{n} \mid \gamma_{n})\), where \(\gamma_{n}\) is called a \emph{local variational parameter}.
-As we already have seen, this distributions are in the exponential family as:
+Set aside the conditionally conjugate models and consider the following situation where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family, using a exponential family distribution for the marginal \(P(z_{n} \mid \bm{z}_{\backslash n}, \bx)\), where \(\bm{z}_{\backslash n}\) indicates the rest of hidden variables in the full model.
 \[
-  Q(z_{n} \mid \gamma_{n}) \propto h(z_{n})e^{{\gamma_{n}}^{T}z_{n}},
+  P(z_{n} \mid \bm{z}_{\backslash n}, \bx) = h(z_{n})\exp \Big( {\eta_{n}(\bm{z}_{\backslash n}, \bx)}^{T}T(z_{n}) - \psi(\bm{z}_{\backslash n}, \bx) \Big).
+\]
+Notice that \( (\bm{z}_{\backslash n}, \bx) \) are the parameters for the exponential family.
+
+The update of the CAVI algorithm  is then given by
+  \begin{align}
+    Q(z_{n}) &\propto \exp{\E{Q(\bm{z}_{\backslash n})}{\log P(z_{n} \mid \bm{z}_{\backslash n}, \bx)}} \nonumber\\
+    &= h(z_{n})\exp \Big(\E{Q_{\bm{z}_{\backslash n}}}{ {\eta_{n}(\bm{z}_{\backslash n}, \bx)}}^{T}T(z_{n}) - \E{Q_{\bm{z}_{\backslash n}}}{ \psi(\bm{z}_{\backslash n}, \bx)}\Big) \nonumber \\
+    &\propto  h(z_{n})\exp \Big(\E{Q_{\bm{z}_{\backslash n}}}{ {\eta_{n}(\bm{z}_{\backslash n}, \bx)}}^{T}T(z_{n})\Big) = h(z_{n})e^{v_{n}^{T}T(z_{n}) }, \label{eq:exponential_update}
+  \end{align}
+
+where
+\[
+  v_{n} = \E{Q_{\bm{z}_{\backslash n}}}{\eta_{n}(\bm{z}_{\backslash n}, \bx)}.
+\]
+
+Summarizing, the factor is in the exponential family with the same base measure \(h\) and updating it is equivalent to setting the parameter \(\eta\) to the expected one of the complete conditional \(\E{}{\eta_{n}(\bx, \bm{z}_{\backslash n})}\). This expression facilitates deriving CAVI algorithm for many complex models.
+
+Going back to the conditionally conjugate models, we set both the local and global hidden variable update. Our variational distribution is in the mean-field family with \(Q(\btheta \mid \lambda)\) where \(\lambda\) is called the \emph{global variational parameter}, and the posterior on each local variable is \(Q(z_{n} \mid \gamma_{n})\), where \(\gamma_{n}\) is called a \emph{local variational parameter}.
+As we already have seen, this distributions are in the exponential family:
+\[
+  Q(z_{n} \mid \gamma_{n}) \propto h(z_{n})e^{{\gamma_{n}}^{T}T(z_{n})},
 \]
 \[
   Q(\btheta \mid \lambda) = h(\btheta) \exp \Big( {\lambda}^{T}[\btheta, -\psi(\theta)] - \psi(\lambda) \Big).
@@ -183,15 +184,17 @@ The local variational parameter update is
 \[
   \gamma_{n}^{new} = \E{Q(\btheta \mid \lambda)}{\eta(\btheta, x_{n})},
 \]
-as we saw in~\ref{eq:exponential_update}, where we take the expectation of the natural parameter of the complete conditional. And the global variational parameter update is calculated as
+following the steps done in~\ref{eq:exponential_update}, where we take the expectation of the natural parameter of the complete conditional. In this case, the local hidden variable conditional does not depend on the other local hidden variables, neither other data-points.
+
+The global variational parameter update is calculated as
 \[
   \begin{aligned}
-    Q^{new}(\btheta \mid \lambda) &\propto \exp \E{Q(\bz)}{\log P(\btheta \mid \bz , \V)} \propto h(\btheta) \exp \E{Q(\bz)}{\big[  \lambda_{1} + \sum_{n=1}^{N}T(x_{n}, z_{n}), \lambda_{2} + N \big]^{T}\big[ \btheta, \psi(\btheta) \big]}\\
+    Q^{new}(\btheta \mid \lambda) &\propto \exp \E{Q(\bz)}{\log P(\btheta \mid \bz , \bx)} \propto h(\btheta) \exp \E{Q(\bz)}{\big[  \lambda_{1} + \sum_{n=1}^{N}T(x_{n}, z_{n}), \lambda_{2} + N \big]^{T}\big[ \btheta, \psi(\btheta) \big]}\\
     &\propto h(\btheta) \exp \Bigg( {\Big[  \lambda_{1} + \sum_{n=1}^{N}\E{Q(\bz)}{T(x_{n}, z_{n})}, \lambda_{2} + N \Big]}^{T}\Big[ \btheta, - \psi(\btheta) \Big]\Bigg)\\
     &= Q(\btheta, \lambda^{new}).
   \end{aligned}
 \]
-The, the parameter updated is
+Then, the parameter updated is
 \[
   \lambda^{new} = \Bigg[ \lambda_{1} + \sum_{n=1}^{N} \E{Q(z_{n}\mid \gamma_{n})}{T(x_{n},z_{n})}, \lambda_{2} + N \Bigg].
 \]
@@ -207,8 +210,8 @@ We can compute the ELBO at each iteration up to a constant that does not depend 
 
 % \[
 %   \begin{aligned}
-%     ELBO(Q(\btheta, \bz)) &= \E{Q(\btheta, \bz)}{\log{P(\btheta, \bz, \V)}} - \E{Q(\btheta, \bz)}{\log{Q(\btheta, \bz)}}\\
-%     &= \E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\log P(\btheta, \bz, \V)}}- \E{Q(\btheta, \bz)}{\log{Q(\btheta, \bz)}}\\
+%     ELBO(Q(\btheta, \bz)) &= \E{Q(\btheta, \bz)}{\log{P(\btheta, \bz, \bx)}} - \E{Q(\btheta, \bz)}{\log{Q(\btheta, \bz)}}\\
+%     &= \E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\log P(\btheta, \bz, \bx)}}- \E{Q(\btheta, \bz)}{\log{Q(\btheta, \bz)}}\\
 %     &=  \E{Q(\btheta \mid \lambda)}{\log P(\btheta)} + \E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\sum_{n=1}^{N} \log P(z_{n}, x_{n} \mid \btheta)}} - \E{Q(\btheta, \bz)}{\log{Q(\btheta, \bz)}}\\
 %   \end{aligned}
 % \]
@@ -235,7 +238,7 @@ We can compute the ELBO at each iteration up to a constant that does not depend 
 
 % \[
 %   \begin{aligned}
-%     &\E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\log P(\btheta, \bz, \V)}} =  \E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\log P(\btheta) + \sum_{n=1}^{N} \log P(z_{n}, x_{n} \mid \btheta)}}\\
+%     &\E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\log P(\btheta, \bz, \bx)}} =  \E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\log P(\btheta) + \sum_{n=1}^{N} \log P(z_{n}, x_{n} \mid \btheta)}}\\
 %     &= \E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\log P(\btheta)}} + \E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\sum_{n=1}^{N} \log P(z_{n}, x_{n} \mid \btheta)}}\\
 %     &= {\Big( \alpha_{1} + \sum_{n=1}^{N} \E{Q(z_{n}\mid \gamma_{n})}{T(x_{n},z_{n})}\Big)}^{T}\E{Q(\btheta \mid \lambda)}{\btheta} - (\alpha_{2} + N) \E{Q(\btheta \mid \lambda)}{\eta(\btheta)}
 %   \end{aligned}

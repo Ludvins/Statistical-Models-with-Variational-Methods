@@ -33,7 +33,7 @@ where \(P\) factorizes over \(G\). It is a probabilistic graphical model
 that represents conditional dependencies of a set of variables \(X_1,\dots, X_n\).
 \end{definition}
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \begin{tikzpicture}[
     node distance=1.5cm and 1.5cm,
@@ -114,7 +114,7 @@ are \emph{d-separated} by \(\bm{Z}\) if and only if they are not
 d-connected by \(\bm{Z}\) in \(G\)
 \end{definition}
 
-\begin{figure}[h]
+\begin{figure}[h!]
 \centering
 \begin{tikzpicture}[
   node distance=1cm and 0.5cm,
@@ -165,6 +165,7 @@ P(s,r,g) = P(s|r)P(g|s,r)P(r)
 The following DAG illustrates the Bayesian Network among with the probability
 tables we are using.
 
+\begin{figure}[h!]
 \begin{tikzpicture}[
   node distance=0.6cm and 0cm,
   mynode/.style={draw,ellipse,text width=2cm,align=center}
@@ -213,6 +214,7 @@ T & T & 0.99 & 0.01 \\
 \end{tabular}
 };
 \end{tikzpicture}
+\end{figure}
 
 This model can answer questions about the presence of a cause given the presence
 of an effect. For example, What is the probability that it has being raining
@@ -240,7 +242,7 @@ introduce the \emph{plate notation}. Suppose we have the situation that figure
 \ref{fig:plate_notation} shows on the left. The we can collapse all \(B_i\)
 variables in a box, indicating there number of variables inside it.
 
-\begin{figure}[ht!]
+\begin{figure}[h!]
 \centering
 \begin{tikzpicture}[
   node distance=1cm and 0.5cm,
@@ -268,6 +270,5 @@ variables in a box, indicating there number of variables inside it.
 ;
 
 \end{tikzpicture}
-\caption{Plate notation example. Standard notation on the left and plate on the right}
-\label{fig:plate_notation}
+\caption{Plate notation example. Standard notation on the left and plate on the right}\label{fig:plate_notation}
 \end{figure}
