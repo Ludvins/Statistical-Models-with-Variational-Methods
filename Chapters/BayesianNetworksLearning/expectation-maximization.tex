@@ -72,8 +72,7 @@ This suggest the following iterative procedure to optimize the parameter \(\thet
     \(\theta = \argmax_{\theta}\sum_{n=1}^{N}\E{Q(h \mid v_{n})}{\log{P(h, v_{n} \mid \theta)}}\)\;
   }
   \KwRet{\(\theta\)}\;
-  \caption{Expectation Maximization Algorithm}
-  \label{alg:em}
+  \caption{Expectation Maximization Algorithm}\label{alg:em}
 \end{algorithm}
 
 \subsection{EM increases the marginal likelihood}
@@ -232,9 +231,8 @@ The same argument is valid for \(\theta_{B}\).
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.7\textwidth]{chapters/BayesianNetworksLearning/mixture}
-  \caption{EM algorithm step in Mixture \cite{do2008expectation}}
-  \label{fig:mixture}
+  \includegraphics[width=0.7\textwidth]{Chapters/BayesianNetworksLearning/mixture}
+  \caption{EM algorithm step in Mixture \cite{do2008expectation}}\label{fig:mixture}
 \end{figure}
 
 We are know using the figure \ref{fig:mixture} to set the example in a numerical context. We are following the numbers in the diagram.
