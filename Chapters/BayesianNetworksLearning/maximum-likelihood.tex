@@ -1,7 +1,7 @@
 
 In this section we will introduce two concepts, Maximum Likelihood and Maximum a
 Posteriori, showing that \emph{training} a model's parameter to maximize the
-Maximum Likelihood equals to take the empirical distribution as it.
+Maximum Likelihood equals to take the empirical distribution.
 
 Let \(\{X_{1},\dots, X_{N}\}\) be a set of real i.i.d random variables and \(\V = \{x_{1}, \dots, x_{N}\}\) be the set of observations and \(\theta\) the considered parameters of the model.
 
@@ -76,26 +76,26 @@ Notice the term \(\E{Q}{\log(Q(x))}\) is a constant and the log likelihood under
 
  For a Belief Network we know there is the following constraint
  \[
-   P(x_{1}, \dots, x_{m} \mid \theta) = \prod_{i = 1}^K P(x_i  \mid  pa(x_i), \theta)
+   P(x_{1}, \dots, x_{N} \mid \theta) = \prod_{i = 1}^N P(x_i  \mid  pa(x_i), \theta)
  \]
  We now want to minimize the Kullback-Leibler divergence between the empirical
  distribution \(Q(x)\) and \(P(x \mid \theta)\) in order to get the Maximum Likelihood.
  \[
    \begin{aligned}
-   \KL{Q}{P} &= - \E{Q}{\sum_{i = 1}^K\log{P(x_i \mid pa(x_i), \theta)}} +
-   \E{Q}{\sum_{i = 1}^K\log{Q(x_i \mid pa(x_i))}}
+   \KL{Q}{P} &= - \E{Q}{\sum_{i = 1}^N\log{P(x_i \mid pa(x_i), \theta)}} +
+   \E{Q}{\sum_{i = 1}^N\log{Q(x_i \mid pa(x_i))}}
    \\ &= - \sum_{i =
-     1}^K \E{Q}{\log{P(x_i \mid pa(x_i), \theta)}} + \sum_{i =
-     1}^K \E{Q}{\log{Q(x_i \mid pa(x_i))}}
+     1}^N \E{Q}{\log{P(x_i \mid pa(x_i), \theta)}} + \sum_{i =
+     1}^N \E{Q}{\log{Q(x_i \mid pa(x_i))}}
    \end{aligned}
  \]
 
- Notice the expectation is over the full distribution \(Q(x_{1},\dots, x_{k})\), we can use proposition \ref{prop:expectation_over_marginal} on \(\log{P(x_i \mid pa(x_i), \theta)}\) and \(Q(x_{i}, pa(x_{i}))\).
+ Notice the expectation is over the full distribution \(Q(x_{1},\dots, x_{N})\), we can use proposition~\ref{prop:expectation_over_marginal} on \(\log{P(x_i \mid pa(x_i), \theta)}\) and \(Q(x_{i}, pa(x_{i}))\).
 
  \[
    \begin{aligned}
-     \KL{Q}{P} &= \sum_{i = 1}^K \E{Q(x_i,pa(x_i))}{\log{Q(x_i \mid pa(x_i))}} - \E{Q(x_i,pa(x_i))}{\log{P(x_i \mid pa(x_i), \theta)}}\\
-     &= \sum_{i = 1}^K \E{Q(x_i,pa(x_i))}{\KL{Q(x_i \mid pa(x_i))}{P(x_i \mid pa(x_i), \theta)}}
+     \KL{Q}{P} &= \sum_{i = 1}^N \E{Q(x_i,pa(x_i))}{\log{Q(x_i \mid pa(x_i))}} - \E{Q(x_i,pa(x_i))}{\log{P(x_i \mid pa(x_i), \theta)}}\\
+     &= \sum_{i = 1}^N \E{Q(x_i,pa(x_i))}{\KL{Q(x_i \mid pa(x_i))}{P(x_i \mid pa(x_i), \theta)}}
    \end{aligned}
  \]
 

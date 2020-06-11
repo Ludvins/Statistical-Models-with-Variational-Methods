@@ -346,10 +346,34 @@ The main idea of a computational graph is to express a deterministic function, a
   \caption{Computational graph example of function \(f(x,y) = 4x + y\) }\label{fig:cnn_cg}
 \end{figure}
 
-\subsection{Variational Auto Encoders}
+\subsection{Non-linear PCA}
 
-\emph{Variational auto encoders} extend the classical PCA where the relation between the low dimensional space and the observed data is governed by a DNN instead of a linear transformation.
+\textit{Non-linear PCA} or NLPCA, extends the classical PCA where the relation between the low dimensional space and the observed data is governed by a DNN instead of a linear transformation.
 It can be seen as a non-linear probabilistic PCA model.
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1cm and 0.5cm,
+    mynode/.style={draw,circle,text width=0.5cm,align=center},
+    param/.style={draw,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (theta) {\(\bm{W}\)};
+    \node[mynode, below left=of theta] (zn) {\(Z_{n}\)};
+    \node[mynode, below right=of theta] (xn) {\(X_{n}\)};
+    \node[param, right=of xn] (sigma) {\(\sigma\)};
+
+    \plate{} {(zn)(xn)} {\(n = 1\dots N\)}; %
+    \path (theta) edge[-latex] (xn)
+    (sigma) edge[-latex] (xn)
+    (zn) edge[-latex] (xn)
+    ;
+
+  \end{tikzpicture}
+  \caption{Non-linear PCA model}\label{fig:ppca}
+\end{figure}
+
 
 The model is quite similar to the one presented for the PCA, the difference comes from the conditional distribution of \(X\), that depends on \(Z\) through a fully-connected ANN with a single hidden layer.
 
@@ -358,12 +382,21 @@ The prior of the latent variable is a centered Gaussian
   Z_{n} \mid N(0,I) \quad \forall n \in 1,\dots,N
 \]
 
-Using four hyper-parameters \(\alpha_{0}, \alpha_{1}, \beta_{0}\) and \(\beta_{1}\), we define the ANN with
+Let \(D\) be the dimension of the data \(X\) and \(K\) the dimension of the hidden variable \(Z\).Let \(f\) a single hidden layer ANN with input dimension \(Z\) and output dimension \(D\). Where the output is the mean value of the normal distribution under \(X\).
+
+As we are considering a single hidden layer, let \(\bm{W}_{0}\) and \(\bm{W}_{1}\) be the matrixes governing that ANN and \(r_{0}, r_{1}\) the activation functions, the ANN \(f\) is
 \[
-  h(z) = relu(\beta_{0}^{T}z + \alpha_{0}) \quad \mu(z_{n}) = \beta_{1}^{T}h(z) + \alpha_{1}.
+  f(z_{n}) = r_{1}(\bm{W_{1}}(r_{0}(\bm{W}_{0}(z_{n})))),
 \]
 
-The data-points are then generated as
+and the data-points are then generated as
 \[
-  (X_{n}\mid Z_{n}) \sim N(\mu_{n}, \sigma^{2}I) \quad \forall n \in 1,\dots,N
+  (X_{n}\mid Z_{n}) \sim N(f(Z_{n}), I) \quad \forall n \in 1,\dots,N.
 \]
+Where no noise is being considered this time.
+
+\subsection{Variational Auto-encoder}
+
+Similarly to the models PCA and NLPCA, a \emph{variational autoencoder} or VAE, allows to perform dimensionality reduction. However a VAE will contain a neural network in the \(P\)  model (decoder) and another one in the variational model \(Q\) (encoder).
+
+The \(P\) follows the same structure as in the nonlinear PCA. On the other hand, the  distribution \(Q\) is defined with a reverse ANN, with input dimension \(D\) and output dimension \(K\).

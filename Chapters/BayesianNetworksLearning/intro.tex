@@ -1,10 +1,7 @@
 
-In Machine Learning and related fields, the distributions are not fully specified
-and need to be learned from the data.
+In this chapter we are focusing on Bayesian Learning training, both Bayesian and Variational inference are considered. Firstly, the network structure is assumed and no hidden variables are considered. As all variables are visible, we are denoting \(\mathcal{V}\) known data and \(\theta\) the set of parameters of the data distributions.
 
-From now on, \(\mathcal{V}\) will denote the known data and \(\theta\) the set
-of parameters of the data distributions. The main task is to determine this set
-of parameters using the information given by the data. No latent or hidden variables are being considered right now.
+The main task is to determine this set of parameters using the information given by the data.
 
 The goal now is to determine the posterior \(P(\theta \mid \V)\) using a prior belief \(P(\theta)\) and the likelihood function \(P(\V \mid \theta)\).  
 \[
@@ -20,12 +17,12 @@ We are using the following example to illustrate the situation, in it we will tr
   Our objective is to estimate the probability \(\theta\) that the coin will be
   head \(P(v_n = 1  \mid  \theta)\), for this we have the i.i.d random variables \(v_1,\dots,v_n\)
   and \(\theta\), and we require a model \(P(v_1,\dots,v_n,\theta)\). We have a
-  Belief Network shown in figure \ref{fig:learning_coin}
+  Belief Network shown in figure~\ref{fig:learning_coin}
   \[
     P(\V,\theta) = P(\theta)\prod_{n=1}^N P(v_n \mid \theta)
   \]
 
-\begin{figure}[H]
+\begin{figure}[h!]
 \centering
 \begin{tikzpicture}[
   node distance=1cm and 0.5cm,
@@ -129,7 +126,7 @@ then, repeating the same as before we get that
 \]
 
 So both the prior and posterior are Beta distributions, then the Beta
-distribution is called ``conjugate'' of the Binomial distribution.
+distribution is conjugate of the Binomial distribution.
 
 \section{Utility}
 

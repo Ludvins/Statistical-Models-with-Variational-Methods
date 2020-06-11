@@ -67,22 +67,22 @@ Our main concern now is given three variables \(X, Y, Z\) to measure \(X \bigCI 
 \begin{definition}
   Given two random variables \(X, Y\), we define their \emph{mutual information} as the Kullback-Leibler divergence of their joint distribution and the product of their marginals and
   \[
-    MI(X;Y) = \KL{P_{X,Y}}{P_{X}P_{Y}}
+    MI(X;Y) = \KL{P_{X,Y}}{P_{X}P_{Y}}.
   \]
 \end{definition}
 
 \begin{definition}
   Given three random variables \(X, Y, Z\) we define the \emph{conditional mutual information} of \(X\) and \(Y\) over \(Z\) as
   \[
-    MI(X;Y\mid Z) = \E{Z}{\KL{P_{X,Y \mid Z}}{P_{X\mid Z} P_{Y \mid Z}}}
+    MI(X;Y\mid Z) = \E{Z}{\KL{P_{X,Y \mid Z}}{P_{X\mid Z} P_{Y \mid Z}}}.
   \]
 \end{definition}
 Where \(MI(X;Y \mid Z) \geq 0\) and \(MI(X;Y \mid Z) = 0 \iff P_{X,Y \mid Z} = P_{X\mid Z} P_{Y \mid Z} \iff X\bigCI Y \mid Z\). We can estimate this using the empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\), therefore a threshold must be established.
 
 A Bayesian approach would be comparing the model likelihood under independence and dependence hypothesis. That is computing the model likelihood for the below joint distributions assuming local and global parameter independence
 \[
-  P_{indep}(x,y,z) = P(x\mid z, \theta_{1})P(y \mid z, \theta_{2})P(z \mid \theta_{3})P(\theta_{1})P(\theta_{2})P(\theta_{3})
+  P_{indep}(x,y,z) = P(x\mid z, \theta_{1})P(y \mid z, \theta_{2})P(z \mid \theta_{3})P(\theta_{1})P(\theta_{2})P(\theta_{3}),
 \]
 \[
-P_{dep}(x,y,z) = P(x,y,z \mid \theta)P(\theta)
+P_{dep}(x,y,z) = P(x,y,z \mid \theta)P(\theta).
 \]
