@@ -1,5 +1,4 @@
 
-
 \begin{definition}
 A \emph{potential} \(\phi\) is a non-negative function. It is worth to mention
 that a probability distribution is a special case of a potential.
@@ -50,9 +49,8 @@ In figure \ref{fig:mn_example} we can see an example of the factorization, witho
     conditionally independent given all other variables.
   \item Local Markov property. A variable is conditionally independent over all
     other variables given it's neighbors. That is,
-        \[
-      P(x_i | x_{\backslash i}) = p(x_i | ne(x_i)) \footnote{\(X_{\backslash i} =
-        \{X_j \ | \ j \neq i\} \subset \bm{X} \) }
+    \[
+      P(x_i \mid x_{\backslash i}) = p(x_i \mid ne(x_i))
     \]
   \item Global Markov property. Any two subsets of variables are conditionally
     independent given a separating subset (any path from one set to the other
@@ -70,6 +68,4 @@ In figure \ref{fig:mn_example} we can see an example of the factorization, witho
     Let \(G\) be an undirected graph and \(P\) a probability distribution over a
     set of random variables \(\bm{X}\). The pair \((G, P)\) is called a Markov
     Random Field if and only if it follows the local Markov Property.
-
-
   \end{definition}

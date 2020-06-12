@@ -1,12 +1,11 @@
-Consider we have \(N\) variables with the corresponding distribution
-\(P(x_1,\dots,x_N)\). Let \(\mathcal{E}\) be a set of indexes such as \texttt{evidence}
+Consider we have \(N\) variables \( X_1,dots,X_N \) with the corresponding distribution \(P(x_1,\dots,x_N)\). Let \(\mathcal{E}\) be a set of indexes such as \texttt{evidence}
 \(=\{X_e = x_e \ | \ e \in \mathcal{E}\}\). Inference could be made by brute
 force:
 
 \[
 P(X_i = x_i \ | \ \texttt{evidence}) = \frac{ \int_{ j \not \in
 \mathcal{E}, j \neq i } P(\texttt{evidence}, x_j, X_i = x_i)}{ \int_{ j
-\not \in \mathcal{E} } P(\texttt{evidence}, x_j)}
+\not \in \mathcal{E} } P(\texttt{evidence}, x_j)}.
 \]
 
 Let us suppose all these variables are binary, this calculation will require
@@ -14,8 +13,8 @@ Let us suppose all these variables are binary, this calculation will require
 x_N)\) take \(O(2^N)\) space.
 
 This is unpractical when taking into account millions of variables. The
-underlying idea of belief networks is to specify which variables are independent
-of others, factoring the joint probability distribution.
+underlying idea of bayesian networks is to specify which variables are independent
+of others, factorizing the joint probability distribution.
 
 \begin{definition}
 Let \(G=(V,E)\) be a graph where \(V = \{X_1,\dots,X_n\}\) is a set of random
@@ -23,7 +22,7 @@ variables. We say that the joint
 probability \(P(x_1, \dots, x_n)\) \emph{factorizes} according to \(G\) if and
 only if
 \[
-P(x_1,\dots,x_N) = \prod_{i=1}^{N}P(x_i | pa(x_i))
+P(x_1,\dots,x_N) = \prod_{i=1}^{N}P(x_i \mid pa(x_i)).
 \]
 \end{definition}
 
@@ -51,49 +50,53 @@ that represents conditional dependencies of a set of variables \(X_1,\dots, X_n\
     ;
 
     \end{tikzpicture}
-    \captionof{figure}{Bayesian Network factorizing \(P(x_1, x_2, x_3, x_4) = P(x_1 | x_4)P(x_2| x_3, x_4)P(x_3)P(x_4)\)}
+    \captionof{figure}{Bayesian Network factorizing \(P(x_1, x_2, x_3, x_4) = P(x_1 \mid x_4)P(x_2\mid x_3, x_4)P(x_3)P(x_4)\)}
     \label{fig:bn_example}
 \end{figure}
 
+Given this definition, the representation of any Bayesian network is a directed acyclic graph.
 
 Any probability distribution can be written as a Bayesian Network, even though
-it may end up been a fully-connected DAG.
-To set the specification of the Belief Network, we need to define all elements of the probability
-tables \(P(x_i|pa(x_i))\). When the number of variables is large, this is still
+it may end up been a fully-connected "cascase" DAG, which means that each variable \( X_n \) is a parent of any \( X_m \) with \( m > n \). Using four variables:
+\[
+   P(x_1, x_2, x_3, x_4) = P(x_1)P(x_2 \mid x_1)P(x_3 \mid x_2, x_1)P(x_4 \mid x_3,x_2,x_1).
+\]
+To set the specification of the Belief network, we need to define all elements of the probability
+tables \(P(x_i\mid pa(x_i))\). When the number of variables is large, this is still
 intractable so the tables are generally parameterized in a low dimensional
 manner.
 
 Bayesian Networks are good for encoding conditional independence over the
-variables, but aren't for encoding dependence. For example, with the following
+variables, but are not for encoding dependence. For example, with the following
 network
 \[
-P(x,y) = P(y\mid x)P(x)
+P(x,y) = P(y\mid x)P(x).
 \]
 
-represented as \(x \to y\) in a DAG (a Bayesian network can be defined giving the graph or the joint probability equally).
+represented as \(x \to y\) in a DAG (a Bayesian network can be defined giving the graph or the joint probability).
 It may appear to encode dependence between both variables but the
-conditional \(P(y|x)\) could happen to equal \(P(y)\), giving \(P(x,y) = P(x)P(y)\).
+conditional \(P(y\mid x)\) could happen to equal \(P(y)\), giving \(P(x,y) = P(x)P(y)\).
 
 How could we check if two variables are conditionally independent given a
-Bayesian Network? For example in figure \ref{fig:relations}, \(X_1 \bigCI
+Bayesian network? For example in figure \ref{fig:relations}, \(X_1 \bigCI
 X_2 \mid X_4\) as\footnote{Continuous variable notation is used}:
 \[
 \begin{aligned}
 P(x_2 | x_4) &= \frac{1}{P(x_4)}\int_{x_1,x_3}P(x_1, x_2, x_3, x_4)
 = \frac{1}{P(x_4)}\int_{x_1,x_3}P(x_1|x_4)P(x_2|x_3,x_4)P(x_3)P(x_4)\\
-                 &= \int_{x_3}P(x_2|x_3, x_4)P(x_3)
+                 &= \int_{x_3}P(x_2|x_3, x_4)P(x_3),
 \end{aligned}
 \]
 \[
 \begin{aligned}
 P(x_1, x_2 | x_4) &= \frac{1}{P(x_4)}\int_{x_3}P(x_1, x_2, x_3, x_4)
 = \frac{1}{P(x_4)}\int_{x_3}P(x_1|x_4)P(x_2|x_3,x_4)P(x_3)P(x_4)\\
-                 &= P(x_1|x_4)\int_{x_3}P(x_2|x_3, x_4)P(x_3) = P(x_1|x_4)P(x_2|x_4)
+                 &= P(x_1|x_4)\int_{x_3}P(x_2|x_3, x_4)P(x_3) = P(x_1|x_4)P(x_2|x_4).
 \end{aligned}
 \]
 
 Now we are going to define two central concepts to determine conditional
-independence in any Bayesian Network, these are \emph{d-connection} and \emph{d-separation}.
+independence in any Bayesian network, these are \emph{d-connection} and \emph{d-separation}.
 
 \begin{definition}
 Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\)
@@ -138,18 +141,18 @@ d-connected by \(\bm{Z}\) in \(G\)
 \label{fig:d-sep}
 \end{figure}
 
-For example, in figure \ref{fig:d-sep} \(d\) d-separates \(a\) and \(c\) (\(b\)
-is a collider in the path that isn't in \(\{d\}\)),
+For example, in figure \ref{fig:d-sep} \(d\) d-separates \(a\) and \(c\) (\(e\)
+is a collider in the path that is not in \(\{d\}\)),
 and \(\{d,e\}\) d-connect them.
 
 \begin{theorem}[\cite{pearl_and_detcher}]\label{th:d-separation}
 Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\)
 are disjoint sets of vertices. If  \(\bm{X}\) and \(\bm{Y}\)
 are d-separated by \(\bm{Z}\), then they are independent conditional
-on \(\bm{Z}\) in all probability distributions that G can represent.
+on \(\bm{Z}\) in all probability distributions that factorize over \( G \) .
 \end{theorem}
 
-The Bayes Ball algorithm [\cite{bayes_ball}] provides a linear time complexity
+The Bayes Ball algorithm (\cite{bayes_ball}) provides a linear time complexity
 algorithm that computes conditional independent using this theorem.
 
 
@@ -162,13 +165,13 @@ The joint probability function is:
 P(s,r,g) = P(s|r)P(g|s,r)P(r)
 \]
 
-The following DAG illustrates the Bayesian Network among with the probability
+The following DAG illustrates the Bayesian network among with the probability
 tables we are using.
 
 \begin{figure}[h!]
 \begin{tikzpicture}[
   node distance=0.6cm and 0cm,
-  mynode/.style={draw,ellipse,text width=2cm,align=center}
+  mynode/.style={draw,ellipse,text width=1.7cm,align=center}
 ]
 \node[mynode] (sp) {Sprinkler};
 \node[mynode,below right=of sp] (gw) {Grass wet};
@@ -236,9 +239,8 @@ P(G=T, R=T, S=T) &= P(S=T|R=T)P(G=T|R=T,S=T)P(R=T) \\
 \end{exampleth}
 
 
-In some situations our Belief Networks will contain a number of nodes that are
-essentially the same but repeated a number of times, for this, we are going to
-introduce the \emph{plate notation}. Suppose we have the situation that figure
+In some situations our Bayesian networks will contain a number of nodes that are
+essentially the same but repeated a number of times, in this cases we are using the \emph{plate notation}. Suppose we have the situation that figure
 \ref{fig:plate_notation} shows on the left. The we can collapse all \(B_i\)
 variables in a box, indicating there number of variables inside it.
 
