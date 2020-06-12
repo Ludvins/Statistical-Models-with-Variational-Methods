@@ -8,7 +8,7 @@ The \emph{mean-field variational family} \(\mathcal{Q}\) is defined as the famil
 
 where \(\bm{z} = \{z_{1},\dots,z_{N}\}\) is the considered set of variables. The mean-field family is commonly used to model the family of distributions over the latent variables in our optimization problem. Notice that each \emph{factor} \(Q_{n}\) can be different and this family does not depend on the observed data.
 
-The mean-field family can capture any marginal of the latent variables but not correlation between them, as it assumes they are independent. For example, consider a two dimensional Gaussian distribution where a high percentage of the density is inside the blue ellipse shown in the next figure. Any mean-field approximation would factorize as a product of two Gaussian distributions, condensing its density in a circle as shown in purple.
+The mean-field family can capture any marginal of the latent variables but not correlation between them, as it assumes they are independent. For example, consider a two dimensional Gaussian distribution where a high percentage of the density is inside the blue ellipse shown in the following figure. Any mean-field approximation would factorize as a product of two Gaussian distributions, condensing its density in a circle as shown in purple.
 
 \begin{figure}[h!]
 \centering
@@ -45,7 +45,7 @@ In this section, we describe a widely used algorithm to solve the optimization p
   \While{Convergence stop criteria}{
     \For{\(n \in 1,\dots,N\)}{
       \(\bm{z}_{\backslash n} = (z_{1},\dots,z_{n-1},z_{n+1},\dots,z_{M})\)\;
-      Set \(Q_{n}(z_{n}) \propto \exp{\E{Q(\bm{z}_{\backslash n})}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)}}}\)\;
+      Set \(Q_{n}(z_{n}) \propto \exp{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)}}}\)\;
     }
     Compute \(ELBO(Q)\)\;
   }
@@ -54,25 +54,24 @@ In this section, we describe a widely used algorithm to solve the optimization p
   \label{alg:cavi}
 \end{algorithm}
 
-Let us see the main idea behind this iterative process, consider the \(n^{th}\) variable \(z_{n}\) and the denote \(\bm{z}_{\backslash n} = (z_{1},\dots,z_{n-1},z_{n+1},\dots,z_{N})\), the full set of variables without the focused one. Let the other factors \(Q_{m}, m\neq n\) be fixed. Under this assumptions, the ELBO has the form
+Consider the set \(\bz = \{z_1,\dots,z_N\}\) comes from a set of i.i.d variables \(\bZ = \{Z_1,\dots,Z_N\}\), and fix the \(n^{th}\) variable \(Z_{n}\), let \(\backslash n\) denote the full set of indexes without the \(n^{th}\), then \(\bm{Z}_{\backslash n}\) is the full set of variables without the focused one. Let the factors \(Q_{m}, m\neq n\) be fixed. Under this assumptions, the ELBO has the form
 \[
   \begin{aligned}
-    ELBO(Q) &= \E{Q_{n}}{\E{Q_{\bm{z}_{\backslash n}}}{\log{P(\bx, \bm{z})}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
-    &= \E{Q_{n}}{\E{Q_{\bm{z}_{\backslash n}}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)} + \log{P(\bm{z}_{\backslash n}, \bx)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
-    &=  \E{Q_{n}}{\E{Q_{\bm{z}_{\backslash n}}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
-    &= - \KL{Q_{n}(z_{z})}{  \exp{\E{Q(\bm{z}_{\backslash n})}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)}}} } + \text{ const.}.
+    ELBO(Q) &= \E{Q_{n}}{\E{Q_{\backslash n}}{\log{P(\bx, \bm{z})}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
+    &= \E{Q_{n}}{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)} + \log{P(\bm{z}_{\backslash n}, \bx)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
+    &=  \E{Q_{n}}{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
+    &= - \KL{Q_{n}(z_{n})}{  \exp{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)}}} } + \text{ const.}.
   \end{aligned}
 \]
-Minimizing the ELBO corresponds to setting the new distribution \(Q_{n}^{new}\) as:
+Minimizing the ELBO is equivalent to maximize the given Kullback-Leibler divergence, which corresponds to updating \(Q_{n}^{new}\) as:
 \[
-  Q_{n}^{new}(z_{n}) \propto \exp{\E{Q(\bm{z}_{\backslash n})}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)}}}.
+  Q_{n}^{new}(z_{n}) \propto \exp{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)}}}.
 \]
 
 Notice that the proportionality restriction is enough to fully determine the distribution as its integral is normalized. Equivalently, the distribution is proportional to
 \[
-    Q_{n}^{new}(z_{n}) \propto \exp{\E{Q(\bm{z}_{\backslash n})}{\log{P(z_{n}, \bm{z}_{\backslash n}, \V)}}}.
+    Q_{n}^{new}(z_{n}) \propto \exp{\E{Q_{\backslash n}}{\log{P(z_{n}, \bm{z}_{\backslash n}, \V)}}}.
 \]
-
 
 As the ELBO is generally a non-convex function and the CAVI algorithm converges to a local optimum, the initialization values of the algorithm play an important role on its performance.
 The convergence criteria is usually a threshold for the ELBO.

@@ -1,7 +1,7 @@
 
 \emph{Statistical inference} is the process of using data analysis to deduce properties of an underlying distribution.
 
-The following elements are being considered: a random variable \(X\) with its corresponding set of observations \(\bx = (x_{1},\dots, x_{N})\) and a \emph{hidden or latent variable} \(Z\), which means that it is unobserved and the values \(\bz = (z_{1}, \dots, z_{N})\) are unknown. The samples are governed by the joint distribution \(P(\V, z)\). Where \(z\) represents a vector with length \(N\) with a possible configuration of the unknown values, then, it is not fixed as \(\bx\).
+The following elements are being considered: a random variable \(X\) with its corresponding set of observations \(\bx = (x_{1},\dots, x_{N})\) and a \emph{hidden or latent variable} \(Z\), which means that it is unobserved and the values \(\bz = (z_{1}, \dots, z_{N})\) are unknown. The samples are governed by the joint distribution \(P(\bx, \bz)\). Where \(\bz\) represents a vector with length \(N\) with a possible configuration of the unknown values, then, it is not fixed as \(\bx\).
 
 In \emph{classical inference} the conditional is calculated as
 \[
@@ -9,11 +9,11 @@ In \emph{classical inference} the conditional is calculated as
 \]
 but for many models this integral is computationally hard to solve.
 
-By comparison, \emph{Bayesian inference} is a method of statistical inference in which Bayes' theorem is used, it derives the posterior probability \(P(\bz \mid \bx)\) as a consequence of two antecedents: a prior probability \(P(\bz)\) and a \emph{likelihood function} \(P(\bx \mid bz)\)  derived from a statistical model for the observed data.
+By comparison, \emph{Bayesian inference} is a method of statistical inference in which Bayes' theorem is used, it derives the posterior probability \(P(\bz \mid \bx)\) as a consequence of two antecedents: a \emph{prior probability} \(P(\bz)\) and a \emph{likelihood function} \(P(\bx \mid \bz)\)  derived from a statistical model for the observed data.
 
 Other methods as \emph{Markov chain Monte Carlo (MCMC)} and \emph{variational Bayesian inference} try a different approach when solving the given inference problem.
 
-On one hand, \emph{Variational Bayesian inference} or \emph{variational inference}, is a machine learning method whose main goal is to approximate probability distributions (\cite{jordan1999introduction}, \cite{wainwright}). On the other hand, \emph{MCMC} approximates the posterior distribution using a Markov chain. Let us introduce briefly the main idea behind this method, we need to introduce two concepts: \emph{Markov chain} and \emph{MCMC}.
+On one hand, \emph{variational Bayesian inference} or \emph{variational inference}, is a machine learning method whose main goal is to approximate probability distributions (\cite{jordan1999introduction}, \cite{wainwright}). On the other hand, \emph{MCMC} approximates the posterior distribution using a Markov chain. Let us briefly introduce the main idea behind this method, we need to introduce two concepts: \emph{Markov chain} and \emph{MCMC}.
 
 A \emph{Markov Chain} is formally defined as a stochastic process, i.e, a family of random variables, that satisfies the \emph{Markov property} also known as the memoryless property: \textit{the conditional probability distribution of future states of the process (conditional on both present and past values) depends only on the present state}. To fully understand it, imagine a system with a number of possible states \(S_{1},\dots,S_{5}\) and the probabilities of going from one state to another as in the following diagram.
 
@@ -49,16 +49,16 @@ Consider a sequence of random variables \(X_{t}\) that symbolize the current sta
 We need two concepts to define the process of MCMC:
 \begin{itemize}
   \item \textbf{Ergodic Markov chain}. A Markov chain where it exists a number \(N \in \mathbb{N}\) such that any state can be reached from any other state in any number of steps less or equal than \(N\).
-  \item \textbf{Stationary Distribution}. The probability distribution to which the process converges over time.
+  \item \textbf{Stationary Distribution}. The probability distribution to which the process converges over time. 
 \end{itemize}
 
-In MCMC, an ergodic Markov chain over the latent variable whose stationary distribution is the posterior \(P(\bz \mid \bx)\), samples are taken from the chain to approximate the posterior with them.
+In MCMC, we consider an ergodic Markov chain over the latent variable \(\bZ\) whose stationary distribution is the posterior \(P(\bz \mid \bx)\), samples are taken from the chain to approximate the posterior with them.
 
-Instead, \emph{variational inference} changes the inference problem with an optimization one. We fix a family of distributions \(\mathcal{Q}\) over the latent variable \(\bZ\) and find the element that minimizes its Kullback-Leibler divergence with the posterior \(P(\bz \mid \bx)\).
+Instead, \emph{variational inference} exchanges the inference problem with an optimization one. We fix a family of distributions \(\mathcal{Q}\) over the latent variable \(\bZ\) and find the element that minimizes its Kullback-Leibler divergence with the posterior \(P(\bz \mid \bx)\).
 \[
   Q^{opt} = \argmin_{Q \in \mathcal{Q}} \KL{Q(\bz)}{P(\bz \mid \bx)}.
 \]
-Compared to \emph{Markov Chain Monte Carlo (MCMC)}, variational inference tends to be faster and scale easier to large data.
+Compared to \emph{Markov Chain Monte Carlo (MCMC)}, variational inference tends to be faster and scale easier to large data (\cite{blei2017variational}), it has beein applied to different problems such as computer vision, computational neuroscience and document analysis.
 
 We can further analyze the Kullback-Leibler divergence we want to minimize, it may be decomposed the following way:
 \[
@@ -68,12 +68,12 @@ We can further analyze the Kullback-Leibler divergence we want to minimize, it m
   \end{aligned}
 \]
 
-Given that the Kullback-Leibler divergence cannot be computed (as \(P(z \mid \V)\) is unknown), we can optimize an equivalent objective: we already saw that the divergence is always positive so we have the following lower bound to the evidence, defined as \emph{evidence lower bound} or \emph{ELBO}.
+Although the Kullback-Leibler divergence cannot be computed as long as \(P(z \mid \V)\) is unknown, we can optimize an equivalent objective: we can use its positiveness to set the following lower bound to the evidence, defined as \emph{evidence lower bound} or \emph{ELBO}.
 \[
   \log{P(\bx)} \geq  - \E{Q(\bz)}{\log{Q(\bz)}} + \E{Q(\bz)}{\log{P(\bx, \bz)}}  = \text{ELBO}(Q).
 \]
 
-So that minimizing the Kullback-Leibler divergence is equivalent to maximize the ELBO. We can rewrite this bound as
+Minimizing the Kullback-Leibler divergence is equivalent to maximize the ELBO. We can rewrite this bound as
 \[
   \begin{aligned}
     \text{ELBO}(Q) &= \E{Q(\bz)}{\log{P(\bz)}} + \E{Q(\bz)}{\log{P(\bx \mid \bz)}} - \E{Q(\bz)}{\log{Q(\bz)}}\\
@@ -82,4 +82,4 @@ So that minimizing the Kullback-Leibler divergence is equivalent to maximize the
 \]
 where it is expressed as the sum of the log likelihood of the observations and the Kullback-Leibler divergence between the prior \(P(\bz)\) and \(Q(\bz)\).
 
-The \emph{Expectation Maximization algorithm} is designed to optimize this lower bound in order to solve the optimization problem we are focusing. We will go deep into this algorithm in Section~\ref{sec:em}.
+The \emph{Expectation Maximization algorithm} is designed to optimize this lower bound in order to solve the optimization problem we are focusing. We will go deeper into this algorithm in Section~\ref{sec:em}.
