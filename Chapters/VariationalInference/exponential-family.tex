@@ -88,7 +88,7 @@ the prior distribution, they are called \emph{conjugate distributions}, and
 the prior is called a \emph{conjugate prior} of the likelihood distribution.
 
 
-\section{Latent Variable and Conditionally conjugate models}
+\section{Latent variable and conditionally conjugate models}
 
 One important case of exponential family are \emph{latent variable models} or \emph{LVMs}. In this models, the following assumptions are made:
 \begin{enumerate}\itemsep0.5em
@@ -146,7 +146,7 @@ This can be demostrated as follows,
 
 As the inverse reasoning can be done, if the complete conditional of the global hidden variable is in the exponential family with hyper-parameter \(\bar{\alpha}\), the prior is in the same family with the corresponding hyper-parameter \(\alpha\).
 
-\section{CAVI in Conditionally conjugate models} \label{sec:cavi_ccm}
+\section{CAVI in conditionally conjugate models} \label{sec:cavi_ccm}
 
 Set aside the conditionally conjugate models and consider the following situation where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family, using a exponential family distribution for the marginal \(P(z_{n} \mid \bm{z}_{\backslash n}, \bx)\):
 \[

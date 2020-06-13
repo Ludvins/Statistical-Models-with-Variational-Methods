@@ -111,7 +111,7 @@ going to be used from now on.
 
 \section{Discrete Distributions}
 
-\subsection{Bernoulli Distribution}
+\subsection*{Bernoulli Distribution}
 
 The Bernoulli distribution describes a discrete binary variable \(X\) that takes
 the value 1 with probability \(p\) and the value 0 with probability \(1-p\).
@@ -125,14 +125,14 @@ the value 1 with probability \(p\) and the value 0 with probability \(1-p\).
 \right.
 \]
 
-\subsection{Categorical Distribution}
+\subsection*{Categorical Distribution}
 
 A generalization of the Bernoulli Distribution when the variable can take more than two states is the \emph{Categorical Distribution}. Let \(Dom(X) = \{1,\dots,N\}\), then \(X\) follows a categorical distribution of parameters \(\theta = (\theta_{1},\dots, \theta_{N})\) if and only if
 \[
   P(x \mid \theta) = \prod_{i=1}^{N}\theta_{i}^{\mathbb{I}[x = i]} \text{ and } \sum_{i = 1}^{N}\theta_{i} = 1.
 \]
 
-\subsection{Binomial Distribution}
+\subsection*{Binomial Distribution}
 
 The binomial distribution describes the number of successes in a sequence of
 independent Bernoulli Trials. A discrete binary random variable \(X\) follows a
@@ -143,7 +143,7 @@ independent Bernoulli Trials. A discrete binary random variable \(X\) follows a
 \]
 
 
-\subsection{Multinomial Distribution}
+\subsection*{Multinomial Distribution}
 The multinomial distribution is a generalization of the binomial distribution which describes the result of a sequence of independent trials in a categorical distribution. A discrete random variable \(X\) follows a \emph{multinomial distribution} of parameters \(n \in \mathbb{N}\), \(\bm{p} = (p_{1},\dots,p_{K})\) such that \(\sum p_{k} = 1\)  if and only if
 \[
   P(\bx =x_{1},\dots,x_{K}) =
@@ -155,7 +155,7 @@ The multinomial distribution is a generalization of the binomial distribution wh
 
 \section{Continuous Distributions}
 
-\subsection{Uni-Variate Normal Distribution}
+\subsection*{Uni-Variate Normal Distribution}
 
 The \emph{normal} or \emph{Gaussian distribution} is a type of continuous
 probability distribution for real-valued random variables.
@@ -183,7 +183,7 @@ its density function is
 One of the properties of the normal distribution is that if \(X \sim N(\mu, \sigma)\), \(a,b \in \mathbb{R}\) and \(f:\mathbb{R} \to \mathbb{R}\) be defined
 as \(f(x) = ax + b\), then \(f(X) \sim N(\mu + b, a^2 \sigma)\).
 
-\subsection{Multi-Variate Normal Distribution}
+\subsection*{Multi-Variate Normal Distribution}
 
 This distribution plays a fundamental role in this project so we will discuss
 its properties in more detail.
@@ -230,7 +230,7 @@ uni-variate standard normal distributions.
 
 \end{definition}
 
-\subsection{Gamma Distribution}
+\subsection*{Gamma Distribution}
 
 Another continuous distribution that we are going to use is the \emph{Gamma
   distribution}.
@@ -260,7 +260,7 @@ The \emph{inverse gamma distribution} is defined by the density function
 \end{definition}
 
 
-\subsection{Beta Distribution}
+\subsection*{Beta Distribution}
 
 \begin{definition}
 We say that a continuous random variable \(X\) defined on the
@@ -279,7 +279,7 @@ where \(B(\alpha, \beta)\) is the \emph{beta function} defined as
 
 The mean is given by \(\E{}{X} = \frac{\alpha}{\alpha + \beta}\).
 
-\subsection{Dirichlet Distribution}
+\subsection*{Dirichlet Distribution}
 
 The Dirichlet distribution is a family of continuous multi-variate probability
 distributions parameterized by a vector \(\bm{\alpha}\) of positive reals. It is

@@ -3,11 +3,11 @@ So far, we have assumed the Bayesian Network was an hypothesis of the problem, h
 
 Even considering complete data (no missing observations), there are some problems that need to be taken into account.
 \begin{itemize}
-  \item The number of Belief networks is exponential over the number of
+  \item The number of Bayesian networks is exponential over the number of
     variables so a brute force algorithm would not be viable.
-  \item Testing dependencies requires a large amount of data. So a threshold
+  \item Testing dependencies requires a large amount of data. Therefore a threshold
     must be set to measure when a dependence is significant.
-  \item A Belief Network or a Markov Network may not be enough to represent
+  \item A Bayesian network or a Markov network may not be enough to represent
     the data due to the existence of unobserved variables.
 \end{itemize}
 
@@ -34,7 +34,7 @@ Even considering complete data (no missing observations), there are some problem
 
 \section{PC Algorithm}
 
-An approach to learn the structure is the PC algorithm, it begins with a
+An approach to learn the structure is the PC algorithm, it starts with a
 complete graph \(G\) and tries to remove as many links as possible studying the
 independence of the variables.
 
@@ -43,7 +43,7 @@ a subset \(S_{XY} \subset ne(X)\), verifying
 \(Y \notin S_{XY}\). If \(X \bigCI Y \mid S\), then the link is removed and
 \(S_{XY}\) is stored.
 
-The main idea behind this is that a set of independencies is
+The main idea behind the algorithm is that a set of independencies is
 faithful to a graph if there is no link between two nodes \(X\) and \(Y\) if
 and only if there exists a subset of \(ne(X)\) such that they are independent
 given this subset.
@@ -62,10 +62,10 @@ using any configuration that doesn't create a collider in \(S_{XZ}\).
 
 \section{Independence Learning}
 
-Our main concern now is given three variables \(X, Y, Z\) to measure \(X \bigCI Y \mid Z\). One approach is to measure the empirical \emph{conditional mutual information} of the variables.
+Our main concern now is, given three variables \(X, Y\) and \( Z \),  measure \(X \bigCI Y \mid Z\). One approach is to measure the empirical \emph{conditional mutual information} of the variables.
 
 \begin{definition}
-  Given two random variables \(X, Y\), we define their \emph{mutual information} as the Kullback-Leibler divergence of their joint distribution and the product of their marginals and
+  Given two random variables \(X, Y\), we define their \emph{mutual information} as the Kullback-Leibler divergence of their joint distribution and the product of their marginals,
   \[
     MI(X;Y) = \KL{P_{X,Y}}{P_{X}P_{Y}}.
   \]
@@ -79,7 +79,7 @@ Our main concern now is given three variables \(X, Y, Z\) to measure \(X \bigCI 
 \end{definition}
 Where \(MI(X;Y \mid Z) \geq 0\) and \(MI(X;Y \mid Z) = 0 \iff P_{X,Y \mid Z} = P_{X\mid Z} P_{Y \mid Z} \iff X\bigCI Y \mid Z\). We can estimate this using the empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\), therefore a threshold must be established.
 
-A Bayesian approach would be comparing the model likelihood under independence and dependence hypothesis. That is computing the model likelihood for the below joint distributions assuming local and global parameter independence
+A Bayesian approach would consist on comparing the model likelihood under independence and dependence hypothesis. That is, computing the model likelihood for the below joint distributions assuming both local and global parameter independence
 \[
   P_{indep}(x,y,z) = P(x\mid z, \theta_{1})P(y \mid z, \theta_{2})P(z \mid \theta_{3})P(\theta_{1})P(\theta_{2})P(\theta_{3}),
 \]

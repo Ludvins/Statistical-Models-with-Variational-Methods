@@ -68,9 +68,9 @@ We can further analyze the Kullback-Leibler divergence we want to minimize, it m
   \end{aligned}
 \]
 
-Although the Kullback-Leibler divergence cannot be computed as long as \(P(z \mid \V)\) is unknown, we can optimize an equivalent objective: we can use its positiveness to set the following lower bound to the evidence, defined as \emph{evidence lower bound} or \emph{ELBO}.
+Although the Kullback-Leibler divergence cannot be computed as long as \(P(\bz \mid \bx)\) is unknown, we can optimize an equivalent objective: we can use its positiveness to set the following lower bound to the evidence, defined as \emph{evidence lower bound} or \emph{ELBO}.
 \[
-  \log{P(\bx)} \geq  - \E{Q(\bz)}{\log{Q(\bz)}} + \E{Q(\bz)}{\log{P(\bx, \bz)}}  = \text{ELBO}(Q).
+  \log{P(\bx)} \geq  - \underbrace{\E{Q(\bz)}{\log{Q(\bz)}}}_{Entropy} + \underbrace{\E{Q(\bz)}{\log{P(\bx, \bz)}}}_{Energy}  = \text{ELBO}(Q).\footnote{Energy and Entropy  terms come from a statistical physics terminology}
 \]
 
 Minimizing the Kullback-Leibler divergence is equivalent to maximize the ELBO. We can rewrite this bound as
