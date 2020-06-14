@@ -338,17 +338,14 @@ When the vector parameter \(\bm{\alpha}\) is filled with the same value \(\alpha
 \section{Kullback-Leibler Divergence}
 
 \begin{definition}
-  Let \(P\) and \(Q\) be two probability distributions over the same set of
-  random variables \(\bX\), the \emph{Kullback-Leibler divergence}
+  Let \(P\) and \(Q\) be two probability distributions over the same probability space \( \mathcal{X} \), the \emph{Kullback-Leibler divergence}
   \(\KL{Q}{P}\) measures the ``difference'' between both distributions as
   \[
     \KL{Q}{P} = \E{Q}{\log Q(x) - \log P(x)}.
   \]
-\end{definition}
 
-\begin{remark}
-  A random variable can not have two different distributions, in this case it must be understood that one or both distributions are ``guessed'' and we want to calculate the differences between them. For example, consider \(P\) the real distribution of the variable and \(Q\) an approximation.
-\end{remark}
+  The Kullback-Leibler divergence is defined if and only if for all \( x \in \mathcal{X} \) such that \( P(x) = 0 \), then \( Q(x) = 0 \). In meassure terms, \( Q \) is absolutely continuous with respect to \( P \). 
+\end{definition}
 
 \begin{proposition}
 The Kullback-Leibler divergence is always non-negative.
