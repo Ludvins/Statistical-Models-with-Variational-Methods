@@ -359,9 +359,9 @@ The Kullback-Leibler divergence is always non-negative.
     \log{x} \leq x - 1 \implies \frac{P(x)}{Q(x)} - 1 \geq \log{\frac{P(x)}{Q(x)}}.
   \]
 
-  Since probabilities are non-negative, we can multiply by \(Q(x)\)
+  Since probabilities are non-negative, we can multiply by \(Q(x)\) in the last inequality
   \[
-    P(x) - Q(x) \geq Q(x) \log{P(x)} - Q(x) \log{Q(x)}.
+    P(x) - Q(x) \geq Q(x) \frac{\log P(x)}{\log Q(x)} = Q(x) \log{P(x)} - Q(x) \log{Q(x)}.
   \]
   Now we integrate (sum in case of discrete variables) both sides
 

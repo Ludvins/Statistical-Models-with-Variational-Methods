@@ -47,7 +47,7 @@ In this section, we describe a widely used algorithm to solve the optimization p
       \(\bm{z}_{\backslash n} = (z_{1},\dots,z_{n-1},z_{n+1},\dots,z_{M})\)\;
       Set \(Q_{n}(z_{n}) \propto \exp{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)}}}\)\;
     }
-    Compute \(ELBO(Q)\)\;
+    Compute \(ELBO(Q)\)\tcp*{Used for convergence criteria.}
   }
   \KwRet{\(Q\)}\;
   \caption{Coordinate Ascent Variational Inference}
@@ -57,12 +57,21 @@ In this section, we describe a widely used algorithm to solve the optimization p
 Consider the set \(\bz = \{z_1,\dots,z_N\}\) comes from a set of i.i.d variables \(\bZ = \{Z_1,\dots,Z_N\}\), and fix the \(n^{th}\) variable \(Z_{n}\), let \(\backslash n\) denote the full set of indexes without the \(n^{th}\), then \(\bm{Z}_{\backslash n}\) is the full set of variables without the focused one. Let the factors \(Q_{m}, m\neq n\) be fixed. Under this assumptions, the ELBO has the form
 \[
   \begin{aligned}
-    ELBO(Q) &= \E{Q_{n}}{\E{Q_{\backslash n}}{\log{P(\bx, \bm{z})}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
-    &= \E{Q_{n}}{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)} + \log{P(\bm{z}_{\backslash n}, \bx)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
-    &=  \E{Q_{n}}{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
-    &= - \KL{Q_{n}(z_{n})}{  \exp{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)}}} } + \text{ const.}.
+    ELBO(Q) &= \E{Q}{\log{P(\bx, \bz)}} - \E{Q}{\log{Q(\bz)}}\\
+    &\stackrel{1}{=} \E{Q_{n}}{\E{Q_{\backslash n}}{\log{P(\bx, \bm{z})}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
+    &\stackrel{2}{=} \E{Q_{n}}{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)} + \log{P(\bm{z}_{\backslash n}, \bx)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
+    &\stackrel{3}{=}  \E{Q_{n}}{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)}}} - \E{Q_{n}}{\log{Q_{n}(z_{n})}} + \text{ const. }\\
+    &\stackrel{4}{=} - \KL{Q_{n}(z_{n})}{  \exp{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \bx)}}} } + \text{ const.}.
   \end{aligned}
 \]
+
+\begin{enumerate}
+  \item The expectations in the ELBO formula are separated. The logarithm factorizes as \(\log Q(z) = \sum_{n=1}^N \log Q_n(z_n)\).  The constant term comes from \( \E{Q_{\backslash n}}{\log Q_{\backslash n}(z_{\backslash n})} \).
+  \item \( P \) is separated as \( P(\bz, \bx) = P(z_n \mid \bz_{\backslash n}, \bx)P(\bz_{\backslash n}, \bx) \implies \log P(\bz, \bx) = \log P(z_n \mid \bz_{\backslash n}, \bx) + \log P(\bz_{\backslash n}, \bx)\).
+  \item \( \E{Q_{n}}{\E{Q_{\backslash n}}{\log{P(\bm{z}_{\backslash n}, \bx)}}} = \E{Q_{\backslash n}}{\log{P(\bm{z}_{\backslash n}, \bx)}}\) is constant.
+  \item Applied Kullback-Leibler definition.
+\end{enumerate}
+
 Minimizing the ELBO is equivalent to maximize the given Kullback-Leibler divergence, which corresponds to updating \(Q_{n}^{new}\) as:
 \[
   Q_{n}^{new}(z_{n}) \propto \exp{\E{Q_{\backslash n}}{\log{P(z_{n} \mid \bm{z}_{\backslash n}, \V)}}}.
