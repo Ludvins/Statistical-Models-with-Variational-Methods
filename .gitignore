@@ -9,3 +9,4 @@
 *.pdf
 *.ipynb_checkpoints
 main.synctex.gz
+_minted-main
