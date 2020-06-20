@@ -1,0 +1,23 @@
+
+We are now in a situation where we can show the Bayesian network of a LVM (figure~\ref{fig:lvm}). Two central problems using these type of models are \emph{Gaussian mixtures} and \emph{latent Dirichlet allocation}.
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1cm and 0.5cm,
+    mynode/.style={draw,circle,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (theta) {\(\bm{\theta}\)};
+    \node[mynode, below left=of theta] (zn) {\(Z_{n}\)};
+    \node[mynode, below right=of theta] (xn) {\(X_{n}\)};
+    \plate{} {(zn)(xn)} {\(n = 1\dots N\)}; %
+    \path (theta) edge[-latex] (zn)
+    (theta) edge[-latex] (xn)
+    (zn) edge[-latex] (xn)
+    ;
+
+  \end{tikzpicture}
+  \caption{Bayesian network of a Latent Variable Model}
+  \label{fig:lvm}
+\end{figure}

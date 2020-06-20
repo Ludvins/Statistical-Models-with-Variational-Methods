@@ -1,0 +1,121 @@
+
+\emph{Latent Dirichlet allocation} or \emph{LDA} is a conditionally conjugate model (figure~\ref{fig:lda}) in natural language processing that allows set of observations to be explained by unobserved groups that explain why some parts of the data are similar.
+
+For example, observations may be words in a document, which is a mixture of a small number of topics and each word's presence is attributable to one of the document's topics. Learning corresponds to extract information as the set of topics, their associated word probabilities, the topic of each word, and the particular topic mixture of each document.
+
+The considered elements are (using~\cite{hoffman2013stochastic} and \cite{blei2003latent} notation):
+\begin{itemize}\setlength\itemsep{1em}
+  \item \(K\) number of topics, \(V\) number of words in the vocabulary, \(M\) number of documents, \(N_{d}\) number of words in document \(d\) and \(N\) total number of words.
+  \item \(\bm{\beta} = \{\beta_{1}, \dots, \beta_{K}\}\), where \(\beta_{k}\) is the distribution of words in topic \(k\). Each component \(\beta_{k,n}\) is the probability of the \(n^{th}\) word in topic \(k\).
+
+  \item Each document \(d\) is associated with a vector of topic proportions \(\theta_{d}\), which is a \(K-1\) simplex. Then each component \(\theta_{d,k}\) is the probability of topic \(k\) in document \(d\). Denote \(\bm{\theta} = \{\theta_{1},\dots,\theta_{K}\}\).
+  \item Each word in each document is assumed to be related with a single topic. The variable \(Z_{d,n}\) indexes the topic of the \(n^{th}\) word in the \(d^{th}\) document.
+\end{itemize}
+
+LDA model assumes that each document is generated with the following generative process:
+\begin{enumerate}
+  \item Draw topics from a Dirichlet distribution, for each \(k=1,\dots,K\):
+    \[
+    P(\beta_{k}) = \frac{1}{B(\eta)} \prod_{v=1}^{V}\beta_{k,v}^{\eta - 1} \implies \beta_{k} \sim \text{Symmetric-Dirichlet}_{V}(\eta)
+    \]
+  \item For each document \(d = 1,\dots,D\):
+    \begin{enumerate}
+      \item Draw topic proportions,
+        \[
+        P(\theta_{d}) = \frac{1}{B(\alpha)} \prod_{k=1}^{K}\theta_{d,k}^{\alpha-1} \implies \theta_{d} \sim \text{Symmetric-Dirichlet}_{K}(\alpha)
+        \]
+      \item For each word in the document \(n = 1,\dots,N_{d}\):
+        \begin{enumerate}
+          \item Draw  a topic,
+            \[
+            P(z_{d,n} \mid \theta_{d}) = \prod_{k=1}^{K}\theta_{d,k}^{\mathbb{I}[z_{d,n}=k]} \implies  (Z_{d,n} \mid \theta_{d}) \sim \text{Categorical}(\theta_d).
+            \]
+          \item Draw a word form the topic
+            \[
+            P(w_{d,n}\mid z_{d,n}, \bm{\beta}) = \prod_{v=1}^{V}\beta_{z_{d,n},v}^{\mathbb{I}[w_{d,n}=v]} \implies (W_{d,n} \mid Z_{d,n},\bm{\beta}) \sim \text{Categorical}(\beta_{Z_{d,n}})
+            \]
+        \end{enumerate}
+    \end{enumerate}
+\end{enumerate}
+
+The joint probability distribution is then
+\[
+  \begin{aligned}
+    P(\btheta, \bz, \bm{w}, \bm{\beta})
+    &= P(\bm{\beta})\prod_{d=1}^{D}P(\theta_{d}\mid \alpha)\prod_{n=1}^{N_{d}}P(z_{d,n}\mid \theta_{d})P(w_{d,n} \mid z_{d,n}, \bm{\beta})\\
+    &= \Big( \prod_{k=1}^{K}P(\beta_{k}) \Big)\prod_{d=1}^{D}P(\theta_{d})\prod_{n=1}^{N_{d}}P(z_{d,n}\mid \theta_{d})P(w_{d,n} \mid z_{d,n}, \bm{\beta})
+  \end{aligned}
+\]
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.5cm and 1.5cm,
+    mynode/.style={draw,circle,text width=0.7cm,align=center},
+    param/.style={draw,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (w) {\(W_{d,n}\)};
+    \node[mynode, left=of w] (z) {\(Z_{d,n}\) };
+
+    \node[mynode, left=of z] (theta) {\(\theta_{d}\)};
+    \node[mynode, right=of w] (beta) {\(\beta_{k}\)};
+
+
+    \node[param, left=of theta] (alpha) {\(\alpha\)};
+    \node[param, right=of beta] (eta) {\(\eta\)};
+
+
+    \plate{plate1} {(z)(w)} {\(n = 1\dots N_{d}\)}; %
+
+    \plate{} {(plate1)(theta)} {\(d = 1\dots D\)}; %
+
+    \plate{} {(beta)}{\(k=1,\dots,K\) };
+
+    \path (z) edge[-latex] (w)
+    (theta) edge[-latex] (z)
+    (alpha) edge[-latex] (theta)
+
+    (beta) edge[-latex] (w)
+    (eta) edge[-latex] (beta)
+    ;
+
+  \end{tikzpicture}
+  \caption{Latent Dirichlet Allocation model. Squares represent hyper-parameters}\label{fig:lda}
+\end{figure}
+
+We can compute the posterior distributions for this model, starting with the complete conditional distribution of the local hidden variables. They only depend on other variables in the local context (same document) and the global variables
+\[
+  \begin{aligned}
+    P(z_{d,n} \mid w_{d,n}, \theta_{d}, \bm{\beta}) &= \frac{P(z_{d,n}, w_{d,n}, \theta_{d}, \bm{\beta})}{\int_{z_{n,d}}P(z_{d,n}, w_{d,n}, \theta_{d}, \bm{\beta})} = \frac{P(z_{d,n}\mid \theta_{d})P(w_{d,n}\mid z_{d,n},\bm{\beta})}{ \int_{z_{d,n}} P(z_{d,n}\mid \theta_{d})P(w_{d,n}\mid z_{d,n},\bm{\beta}) }\\
+    &= \frac{ \prod_{k=1}^{K} \theta_{d,k}^{\mathbb{I}[z_{d,n}=k]} \prod_{v=1}^{V}\beta_{z_{d,n},v}^{\mathbb{I}[w_{d,n}=v]}}{ \int_{z_{d,n}}  \prod_{k=1}^{K} \theta_{d,k}^{\mathbb{I}[z_{d,n}=k]} \prod_{v=1}^{V}\beta_{z_{d,n},v}^{\mathbb{I}[w_{d,n}=v]}} = \frac{\theta_{d, z_{d,n}}\beta_{z_{d,n},w_{d,n}}}{ \sum_{k=1}^{K} \theta_{d, k}\beta_{k,w_{d,n}}}
+  \end{aligned}
+\]
+
+Naming 
+\[
+  \gamma_{d,n} = \frac{\theta_{d,z_{d,n}}\beta_{z_{d,n}w_{d,n}}}{\sum_{k=1}^K \theta_{d,k}\beta_{k,w_{d,n}}}
+\] 
+
+and \(\bm{\gamma} = \{\gamma_{d,n}\}_{d=1,\dots,D \ n=1,\dots,N_{d}}\), we get
+\[
+  (Z_{d,n} \mid w_{d,n}, \theta_{d}, \bm{\beta}) \sim Categorical(\bm{\gamma}).
+\]
+
+On the other hand, the complete conditional of the topic proportions \(\theta_{d}\) is only affected by the topic appearances, since \(z_{d,n}\) is an indicator vector, the \(k^{th}\) element of the parameter to this Dirichlet is the sum of the hyperparameter \(\alpha\) and the number of words assigned to topic \(k\) in document \(d\):
+\[
+  \begin{aligned}
+    P(\theta_{d} \mid \bm{z_{d}},\bm{w_{d}}, \bm{\beta}) &= \frac{P(\theta_{d}, \bm{z_{d}}, \bm{w_{d}}, \bm{\beta})}{\int_{\theta_{d}} P(\theta_{d}, \bm{z_{d}}, \bm{w_{d}}, \bm{\beta})} = \frac{ P(\theta_{d})\prod_{n=1}^{N_{d}}P(z_{d,n}\mid \theta_{d}) }{ \int_{\theta_{d}}  P(\theta_{d})\prod_{n=1}^{N_{d}}P(z_{d,n}\mid \theta_{d})  }\\
+    &\propto \prod_{k=1}^{K}\theta_{d,k}^{\alpha-1} \prod_{n=1}^{N_{d}}\theta_{d,k}^{\mathbb{I}[z_{d,n}=k]} = \prod_{k=1}^{K}\theta_{d,k}^{\alpha -1 + \sum_{n=1}^{N_{d}} \mathbb{I}[z_{d,n}=k] }.
+  \end{aligned}
+\]
+The complete conditional depends only on the topic assignments
+\[
+  (\theta_{d} \mid z_{d}) \sim \text{Dirichlet}_{K}\Big(\alpha + \sum_{n=1}^{N_{d}} \mathbb{I}[z_{d,n}=1],\dots, \alpha + \sum_{n=1}^{N_{d}} \mathbb{I}[z_{d,n}=K]\Big).
+\]
+In words, the probability of a topic in document \(d\) is updated with the number of times that topic appears in the document. The complete conditional of a topic depends on the words and topics assignments of the entire collection
+
+Using a similar reasoning, the words distribution in a topic \(k\), \(\beta_{k}\), is updated with the number of appearances in all documents of the given topic.
+\[
+  (\beta_{k} \mid \bm{w}, \bz) \sim \text{Dirichlet}_{V}\Big(\eta + \sum_{d=1}^{D}\sum_{n=1}^{N_{d}}\mathbb{I}[z_{d,n} = k]\mathbb{I}[w_{d,n} = 1], \dots, \eta + \sum_{d=1}^{D}\sum_{n=1}^{N_{d}}\mathbb{I}[z_{d,n} = k]\mathbb{I}[w_{d,n} = V]\Big).
+\]

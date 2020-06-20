@@ -10,3 +10,4 @@
 *.ipynb_checkpoints
 main.synctex.gz
 _minted-main
+.vscode/settings.json

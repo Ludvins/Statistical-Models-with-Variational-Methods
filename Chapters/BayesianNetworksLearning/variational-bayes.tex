@@ -53,9 +53,25 @@ The procedure is then split in two steps to keep the structure of the EM algorit
     \]
 \end{itemize}
 
+For fixed \( Q(\theta) \), the contribution from \( Q(h) \) to the Kullback-Leibler divergence is, as we derived in the CAVI algorithm, 
+\[
+  \begin{aligned}
+  \KL{Q(h)Q(\theta)}{P(h,\theta \mid v)} &= \E{Q(h)}{\log Q(h)} - \E{Q(h)Q(\theta)}{\log P(v,h,\theta)} + \text{const.} \\
+  &= - \KL{Q(h)}{\exp \E{Q(\theta)}{P(h, v, \theta)}} + \text{const.}
+  \end{aligned}
+\]
+Therefore, the update is proportional to 
+\[
+   Q^{new}(h) \propto \exp \E{Q(\theta)}{\log P(v,h,\theta)} \propto \exp \E{Q(\theta)}{\log P(v,h \mid \theta)}.
+\]
+Following a similar argument, 
+\[
+  Q^{new}(\theta) \propto \exp \E{Q(h)}{\log P(v,h,\theta)} \propto \exp \E{Q(h)}{\log P(v,h \mid \theta)}.
+\]
+
 As in the case of the EM algorithm, each iterations guarantees an increase in the lower bound of the marginal likelihood, but increasing the marginal likelihood itself is not guaranteed.
 
-When using an i.i.d dataset \(\bm{V}, \bm{H}\), we may assume that \(Q(\bm{H})\) is in the mean-field family:
+When using an i.i.d dataset \(\V, \mathcal{H}\), we may assume that \(Q(\mathcal{H})\) is in the mean-field family:
 \[
   Q(h_{1}, \dots, h_{N}) = \prod_{n=1}^{N}Q(h_{n}).
 \]
@@ -107,6 +123,6 @@ Then, as  he E-step of the EM algorithm consisted on minimizing the Kullback-Lei
 \section{Comparison}
 Variational Bayes is often compared with expectation maximization as their numerical procedure is quite similar. Their main differences are the following:
 
-EM computes point estimates of posterior distribution of those random variables that can be categorized as "parameters", but only estimates the posterior distribution of the latent variables. On the other hand, VB computes a posterios distribution for all the variables.
+EM computes point estimates of posterior distribution of those random variables that can be categorized as "parameters", but only estimates the posterior distribution of the latent variables. On the other hand, VB computes a posterior distribution for all the variables.
 
 For example, in a gaussian mixture, EM would directly estimate optimum values for the mean and variance of each gaussian and VB would fit a distribution to these parameters.
