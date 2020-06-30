@@ -1,0 +1,59 @@
+
+\begin{figure}
+  \centering
+  \begin{tabular}{ |c|c|c|c|c| }
+    \hline
+    Distribution & Parameter set \(\btheta\) & Base measure \(h\) & Parameter function \(\bm{\eta}\) & Statistics \(\bm{T}\) \\
+    \hline
+    Bernoulli & \(p\)  & \(1\)  & \(\log{\frac{p}{1 - p}}\) & \(x\) \\
+    Binomial & \(p\)  & \(\binom{n}{x}\) & \(\log{\frac{p}{1 - p}}\) & \(x\)  \\[10pt]
+    Categorical & \(p_{1},\dots,p_{K}\) & \(1\) &
+                                                  \(\begin{pmatrix}
+                                                    \log p_{1}\\
+                                                    \vdots\\
+                                                    \log p_{K}
+                                                  \end{pmatrix}\)
+                 &
+                                                  \(\begin{pmatrix}
+                                                    [x=1]\\
+                                                    \vdots\\
+                                                    [x=k]
+                                                  \end{pmatrix}\)\\[30pt]
+    Gaussian & \(\mu, \sigma^{2}\) & \(\frac{1}{\sqrt{2\pi}}\) &
+                                     \(\begin{pmatrix}
+                                       \frac{\mu}{\sigma^2}\\
+                                       -\frac{1}{2\sigma^{2}}
+                                     \end{pmatrix}\)
+                 &
+                   \(\begin{pmatrix}
+                     x\\
+                     x^{2}
+                   \end{pmatrix}\) \\[30pt]
+    Beta & \(\alpha, \beta\) & \(\frac{1}{x(1-x)}\)
+                                                               &
+                                                                 \(\begin{pmatrix}
+                                                                   \alpha \\
+                                                                   \beta
+                                                                 \end{pmatrix}\)
+                 &
+                   \(\begin{pmatrix}
+                     \log x \\
+                     \log (1-x)
+                   \end{pmatrix}\) \\[30pt]
+    Dirichlet & \(\alpha_{1},\dots,\alpha_{K}\) & \(1\) &
+                                                  \(\begin{pmatrix}
+                                                    \alpha_{1} - 1\\
+                                                    \vdots\\
+                                                    \alpha_{K} - 1
+                                                  \end{pmatrix}\)
+                 &
+                                                  \(\begin{pmatrix}
+                                                    \log x_{1}\\
+                                                    \vdots\\
+                                                    \log x_{K}
+                                                  \end{pmatrix}\)\\
+    \hline
+  \end{tabular}
+  \caption{Some distributions in the exponential family}
+  \label{tab:ef}
+\end{figure}

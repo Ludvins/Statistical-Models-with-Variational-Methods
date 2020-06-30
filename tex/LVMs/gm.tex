@@ -1,0 +1,56 @@
+
+One of the most studied models is the Gaussian Mixture we reviewed in Chapter~\ref{ch:gm}, its elements were
+
+\begin{itemize}\setlength\itemsep{1em}
+  \item A corresponding set of observations \(\bx = \{x_{1},\dots, x_{n}\}\).
+  \item The cluster assignment latent variables \(\bZ = \{Z_{1}, \dots, Z_{N}\}\).
+  \item The mixture weights \(\bm{\pi} = \{\pi_{1},\dots,\pi_{K}\}\) , i.e, prior probability of a particular component \(k\).
+  \item Each normal distribution \(\mathcal{N}(\mu_{k}, \Lambda_{k})\).
+\end{itemize}
+
+The joint probability factorizes as
+\[
+  P(\bm{x}, \bm{z}, \bm{\pi}, \bm{\mu}, \bm{\Lambda}) = P(\bm{x}\mid \bm{z}, \bm{\mu}, \bm{\Lambda})P(\bm{z}\mid \bm{\pi})P(\bm{\pi})P(\bm{\mu}\mid \bm{\Lambda})P(\bm{\Lambda}).
+\]
+
+We are now in situation to give the explicit Bayesian network for this model:
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.8cm and 1.5cm,
+    mynode/.style={draw,circle,text width=0.5cm,align=center},
+    param/.style={draw,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (mu) {\(\bm{\mu}\)};
+    \node[mynode, right=of mu] (sigma) {\(\bm{\Lambda}\) };
+
+
+    \node[mynode, below =of sigma] (z) {\(Z_{n}\)};
+    \node[mynode, left =of z] (phi) {\(\bm{\pi}\)};
+    \node[mynode, right =of z] (x) {\(X_{n}\)};
+
+    \node[param, above=of mu] (lambda) {\(m_{0}\)};
+    \node[param, left=of lambda] (mu0) {\(\beta_{0}\)};
+    \node[param, above=of sigma] (v) {\(v_{0}\)};
+    \node[param, right=of v] (sigma0) {\(w_{0}\)};
+    \node[param, left=of phi] (beta) {\(\alpha_{0}\)};
+
+    \plate{} {(z)(x)} {\(n=1,\dots,N\)}; %
+
+    \path (mu) edge[-latex] (x)
+    (sigma) edge[-latex] (x)
+    (sigma) edge[-latex] (mu)
+    (z) edge[-latex] (x)
+    (beta) edge[-latex] (phi)
+    (phi) edge[-latex] (z)
+    (mu0) edge[-latex] (mu)
+    (lambda) edge[-latex] (mu)
+    (v) edge[-latex] (sigma)
+    (sigma0) edge[-latex] (sigma)
+    ;
+
+  \end{tikzpicture}
+  \caption{Gaussian mixture model. Squares represent hyper-parameters.}\label{fig:gaussian_mixture}
+\end{figure}

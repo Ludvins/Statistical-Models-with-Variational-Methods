@@ -1,0 +1,120 @@
+\section{The mean-field variational family}
+
+The \emph{mean-field variational family} \(\mathcal{Q}\) is defined as the family of distributions where the variables are mutually independent, i.e, any \(Q \in \mathcal{Q}\) verifies
+\[
+  Q(\bz) = \prod_{m=1}^{M}Q_{m}(z_{m}),
+\]
+
+where \(\bZ = \{Z_{1},\dots,Z_{M}\}\) is the considered set of variables. The mean-field family is commonly used to model the family of distributions over the latent variables in our optimization problem. Notice that each \emph{factor} \(Q_{m}\) can be different and this family does not depend on the observed data.
+
+The mean-field family can capture any marginal of the latent variables but not correlation between them, as it assumes they are independent. For example, consider a two dimensional Gaussian distribution where a high percentage of the density is inside the blue ellipse shown in the following figure. Any mean-field approximation would factorize as a product of two Gaussian distributions, condensing its density in a circle as shown in purple.
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+  \pgfplotsset{ticks=none}
+    \begin{axis}[
+        axis lines = middle,
+        xmin=-11, xmax=11, ymin=-11, ymax=11,
+        axis equal,
+        xlabel = $z_{1}$,
+        ylabel = {$z_{2}$},
+        yticklabels={,,},
+        ]
+        \filldraw[rotate around={45:(110,110)}, color=blue!50, fill=blue!20, very thick, opacity=0.7] (110,110) ellipse (70 and 20);
+        % \addlegendentry{Exact Posterior}
+        \filldraw[color=purple!50, fill=purple!20, very thick, opacity=0.7]  (110,110) circle (25);
+        % \addlegendentry{Mean-field Approximation}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Mean-field family distribution (purple) approximating a Gaussian distribution (blue)}
+\end{figure}
+
+Notice the parametric form of each factor \(Q_{m}\) is not specified and the appropriate configuration depends on the variable. For example, a continuous variable might have a Gaussian factor and a categorical variable have a categorical factor.
+
+\section{CAVI Algorithm }
+
+In this section, we describe a widely used algorithm to solve the optimization problem we discussed in the previous section using the mean-field family. It is \emph{coordinate ascent variational inference} or \emph{CAVI} (also known as \emph{Variational Bayes}) and its procedure is to iteratively optimize each factor of the mean-field family distribution, while fixing the others. With this, the ELBO reaches a local optimum.
+
+CAVI might be seen as a generalization of the EM algorithm, where model parameters are considered random hidden variables.
+
+ \begin{algorithm}[t]
+  \SetAlgoLined\KwData{A distribution \(P(\bx , \bm{z})\) with a dataset \(\bx\).}
+  \KwResult{A distribution of the mean-field family \(Q(\bm{z}) = \prod_{m=1}^{M}Q_{m}(z_{m})\)}
+  Initialize \(Q(\bm{z})\)\;
+  \While{Convergence stop criteria}{
+    \For{\(m \in 1,\dots,M\)}{
+      \(\bm{z}_{\backslash m} = (z_{1},\dots,z_{m-1},z_{m+1},\dots,z_{M})\)\;
+      Set \(Q_{m}(z_{m}) \propto \exp{\E{Q_{\backslash m}}{\log{P(z_{m} \mid \bm{z}_{\backslash m}, \bx)}}}\)\;
+    }
+    Compute \(ELBO(Q)\)\tcp*{Used for convergence criteria.}
+  }
+  \KwRet{\(Q\)}\;
+  \caption{Coordinate Ascent Variational Inference}\label{alg:cavi}
+\end{algorithm}
+
+
+Let \(\bx\) be the given observations of the observed variables. CAVI iterates fixing all hidden variable but one at a time and maximizing its contribution to the ELBO. Consider the \(m^{th}\) variable \(Z_{m}\), denoting by \(\backslash m\) full set of indexes without the \(m^{th}\), then \(\bm{Z}_{\backslash m}\) is the full set of variables without the focused one. Let the factors \(Q_{n}, n\neq m\) be fixed.
+
+The contribution of \(Z_{m}\) to the ELBO is (summarizing other factors in the constant term):
+\[
+  \begin{aligned}
+    ELBO(Q) &= \E{Q}{\log{P(\bx, \bz)}} - \E{Q}{\log{Q(\bz)}}\\
+    &\stackrel{1}{=} \E{Q_{m}}{\E{Q_{\backslash m}}{\log{P(\bx, \bm{z})}}} - \E{Q_{m}}{\log{Q_{m}(z_{m})}} + \text{ const. }\\
+    &\stackrel{2}{=} \E{Q_{m}}{\E{Q_{\backslash m}}{\log{P(z_{m} \mid \bm{z}_{\backslash m}, \bx)} + \log{P(\bm{z}_{\backslash m}, \bx)}}} - \E{Q_{m}}{\log{Q_{m}(z_{m})}} + \text{ const. }\\
+    &\stackrel{3}{=}  \E{Q_{m}}{\E{Q_{\backslash m}}{\log{P(z_{m} \mid \bm{z}_{\backslash m}, \bx)}}} - \E{Q_{m}}{\log{Q_{m}(z_{m})}} + \text{ const. }\\
+    &\stackrel{4}{=} - \KL{Q_{m}(z_{m})}{  \exp{\E{Q_{\backslash m}}{\log{P(z_{m} \mid \bm{z}_{\backslash m}, \bx)}}} } + \text{ const.}.
+  \end{aligned}
+\]
+
+\begin{enumerate}
+  \item The expectations in the ELBO formula are separated. The logarithm factorizes as \(\log Q(z) = \sum_{m=1}^M \log Q_m(z_m)\).  The constant term comes from \( \E{Q_{\backslash m}}{\log Q_{\backslash m}(z_{\backslash m})} \).
+  \item \( P \) is separated as \( P(\bz, \bx) = P(z_m \mid \bz_{\backslash m}, \bx)P(\bz_{\backslash m}, \bx) \implies \log P(\bz, \bx) = \log P(z_m \mid \bz_{\backslash m}, \bx) + \log P(\bz_{\backslash m}, \bx)\).
+  \item \( \E{Q_{m}}{\E{Q_{\backslash m}}{\log{P(\bm{z}_{\backslash m}, \bx)}}} = \E{Q_{\backslash m}}{\log{P(\bm{z}_{\backslash m}, \bx)}}\) is constant.
+  \item Applied Kullback-Leibler definition.
+\end{enumerate}
+
+Maximizing the ELBO is equivalent to minimize the given Kullback-Leibler divergence and this divergence is zero when \(Q_{m}^{new}\) is:
+\[
+  Q_{m}^{new}(z_{m}) \propto \exp{\E{Q_{\backslash m}}{\log{P(z_{m} \mid \bm{z}_{\backslash m}, \bx)}}}.
+\]
+
+Notice that the proportionality restriction is enough to fully determine the distribution as its integral is normalized. Equivalently, the distribution is proportional to
+\begin{equation}\label{eq:cavi_update}
+    Q_{m}^{new}(z_{m}) \propto \exp{\E{Q_{\backslash m}}{\log{P(z_{m}, \bm{z}_{\backslash m}, \bx)}}}.
+\end{equation}
+
+As the ELBO is generally a non-convex function and the CAVI algorithm converges to a local optimum, the initialization values of the algorithm play an important role on its performance. The convergence criteria is usually a threshold for the ELBO.
+
+\section{CAVI as an EM generalization}
+
+As CAVI considers parameters as hidden variables, we need to specify a variational distribution for them. We are choosing the distribution that summarizes the information in the optimal point, let \(\btheta_{opt}\) be the optimal value of \(\btheta\):
+\[
+  Q(\btheta) = \delta(\btheta - \btheta_{opt}).
+\]
+The variational distribution factorizes as
+\[
+  Q(\bz, \btheta) = Q(\bz)Q(\btheta).
+\]
+The lower bound takes the form
+\[
+  \begin{aligned}
+    \log{P(\bx \mid \btheta)} &\geq \E{Q(\bz, \btheta)}{\log{P(\bx, \bz, \theta)}} - \E{Q(\bz, \btheta)}{\log{Q(\bz, \btheta)}} \\
+    &= \E{Q(\bz)}{\E{Q(\btheta)}{\log{P(\bx, \bz, \btheta)}}} - \E{Q(\bz)}{\log{Q(\bz)}} - \E{Q(\btheta)}{\log{Q(\btheta)}} \\
+    &= \E{Q(\bz)}{\log{P(\bx, \bz, \btheta_{opt})}} - \E{Q(\bz)}{\log{Q(\bz)}} + \text{ const. }
+  \end{aligned}
+\]
+The CAVI update can be seen as an iterative two step process. Firstly, given a fixed \(Q(\bz)\), as the distribution class of \(Q(\btheta)\) is fixed, optimizing it is equivalent to find the optimal parameter \(\btheta_{opt}\). 
+\[
+  \begin{aligned}
+    \btheta_{opt} &= \argmax_{\btheta} \Big( \E{Q(\bz)}{\log{P(\bx,\bz,\btheta)}} \Big)\\
+    &=  \argmax_{\btheta} \Big( \E{Q(\bz)}{\log{P(\bx, \bz \mid \btheta)P(\btheta)}} \Big) \\
+    &= \argmax_{\btheta} \Big( \E{Q(\bz)}{\log{P(\bx, \bz \mid \btheta)}} + \log{P(\btheta)} \Big). \\
+  \end{aligned}
+\]
+
+If we take a flat prior, this term is equivalent to the M-step. Secondly, given a fixed parameter \(\btheta\), the update is
+\[
+  Q(\bz) \propto \exp \E{Q(\btheta)}{\log P(\bz \mid \bx, \btheta)} =  P(\bz \mid \bx, \btheta_{opt}),
+\]
+which is the E-step of the EM algorithm.

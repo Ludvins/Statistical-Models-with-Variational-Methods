@@ -11,3 +11,9 @@
 main.synctex.gz
 _minted-main
 .vscode/settings.json
+*.bcf
+*.glo
+*.ist
+*.nlo
+*.run.xml
+*.sbl

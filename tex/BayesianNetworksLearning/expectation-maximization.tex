@@ -1,0 +1,49 @@
+
+Let \(\bX = (\bm{V}, \bm{H}) = \{X_{1}, \dots , X_{M}\}\) be the set of variables partitioned in visible and hidden. Let \(\{\bv^{1},,\dots,\bv^{N},\}\) be the set of observations and \( \{\bh_1,\dots, \bh_N\} \) a set of possible values of the hidden variables in each observation.
+
+As we are not using a single variable anymore, the variational distribution is now over the set of hidden variables conditioned on the visible \(Q(\bm{H} \mid \bm{V})\). As the E-step is the same as in the general case, we are focusing on the M-step, where \(Q_{old}\) is fixed.
+
+The \emph{energy term} in a Bayesian Network is
+\[
+  \sum_{n=1}^{N} \E{Q_{old}(\bh^{n} \mid \bv^{n})}{ \log{P(\bx^{n} \mid \theta)} } = \sum_{n = 1}^{N}\sum_{i = 0}^{M} \E{Q_{old}(\bh^{n} \mid \bv^{n})}{\log{P( x_{i}^{n} \mid pa(x_{i}^{n}), \theta)}}.
+\]
+
+It is useful to use the following notation that defines a conditional distribution of the hidden variable when the visible one equals \(v^{n}\).
+\[
+  Q^{n}(\bx) = Q^{n}(\bv,\bh) = Q_{old}(\bh^{n} \mid \bv^{n}) \mathbb{I}(\bv = \bv^{n}).
+\]
+We can define the mixture distribution
+\[
+  Q(\bx) = \frac{1}{N}\sum_{n = 1}^{N}Q^{n}(\bx).
+\]
+Then we have that
+\[
+  \begin{aligned}
+    \E{Q(\bx)}{\log{P(\bx \mid \theta)}} &= \int_{\bx}Q(\bx)\log{P(\bx \mid \theta)} =  \int_{\bx} \frac{1}{N}\sum_{n=1}^{N}Q^{n}(\bx)\log{P(\bx \mid \theta)} \\
+    &= \frac{1}{N} \int_{\bx}\sum_{n=1}^{N}Q_{old}(\bh^n \mid \bv^{n})\mathbb{I}[\bv = \bv^{n}]\log{P(\bx \mid \theta)}\\
+    &= \frac{1}{N}\sum_{n = 1}^{N}\E{Q_{old}(\bh^n \mid \bv^{n})} {\log{P(\bh^n, \bv^{n} \mid \theta)}}\\
+    &= \frac{1}{N}\sum_{n = 1}^{N}\E{Q_{old}(\bh^n \mid \bv^{n})} {\log{P(\bx^{n} \mid \theta)}},
+  \end{aligned}
+\]
+equals the energy term. Then, using the Belief Network structure
+\[
+  \begin{aligned}
+    \E{Q(x)}{\log{P(\bx \mid \theta)}} &= \sum_{i = 1}^{M}\E{Q(\bx)}{\log{P(x_{i} \mid pa(x_{i}, \theta))}}\\
+    &= \sum_{i = 1}^{M}\E{Q(x_{i}, pa(x_{i}))}{\log{P(x_{i} \mid pa(x_{i}, \theta))}}\\
+    &= \sum_{i = 1}^{M}\E{Q(pa(x_{i}))}{ \E{Q(x_{i}\mid pa(x_{i}))}{ \log{P(x_{i} \mid pa(x_{i}), \theta)}}}.
+\end{aligned}
+\]
+
+We add a constant to the last term so it comes with the structure of a Kullback-Leibler Divergence (notice its sign has changed)
+\[
+  \sum_{i = 1}^{M}\E{Q(pa(x_{i}))}{\E{Q(x_{i}\mid pa(x_{i}))}{\log{Q(x_{i} \mid pa(x_{i}))}}} - \E{Q(x_{i}\mid pa(x_{i}))}{\log{P(x_{i} \mid pa(x_{i}), \theta)}}=
+\]
+\[
+  = \sum_{i = 1}^{M} E_{Q(pa(x_{i}))} \Big[KL \Big( Q(x_{i}\mid pa(x_{i})) \mid P(x_{i} \mid pa(x_{i}), \theta) \Big) \Big].
+\]
+
+So maximizing the energy term is equivalent to minimize the above formula, that is, setting
+\[
+  P^{new}(x_{i} \mid pa(x_{i}), \theta) = Q(x_{i} \mid pa(x_{i})).
+\]
+So the first observation is that \(\theta\) is not needed in order to maximize the energy term due to the Belief network structure.

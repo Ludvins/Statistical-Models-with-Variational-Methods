@@ -1,0 +1,69 @@
+
+Whereas Bayesian networks are represented by an acyclic directed graph, \emph{Markov random fields} are undirected graphs that may be cyclic. Thus, this kind of graphical models can represent certain dependencies that Bayesian networks cannot, like cyclic ones. \emph{Markov random fields} are commonly used to model low-to mid-level tasks in image processing and computer vision (\cite{li2009markov}).
+
+\begin{definition}
+  Given an undirected graph \(G = (V, E)\), a set of random variables \(\bX = (X_{1}, \dots, X_{N})\) \emph{form a Markov random field over \(G\)} if they satisfy the, so called, Markov properties (\cite{barber}):
+  \begin{itemize}
+  \item \textbf{Pairwise Markov property}. Any two non-adjacent variables are
+      conditionally independent given all other variables:
+      \[
+      X_{n} \bigCI X_{m} \mid \bX_{\backslash n,m} \quad \forall n,m \in \{1,\dots,N\} \quad n \neq m.
+      \]
+    \item \textbf{Local Markov property}. A variable is conditionally independent over all
+    other variables given its neighbors:
+    \[
+      X_{n} \bigCI \bX_{\backslash ne(X_{n})} \mid \bX_{ne(X_{n})} \quad \forall n \in \{1,\dots,N\}.
+      \]
+  \item \textbf{Global Markov property}. Any two subsets of variables are conditionally
+    independent given a separating subset (any path from one set to the other
+      passes trough this one). Let \(A\) and \(B\) be two subset of indexes and \(S\) a separating subset:
+      \[
+      \bX_{A} \bigCI \bX_{B} \mid \bX_{S}.
+      \]
+  \end{itemize}
+
+  The Global Markov property is stronger than the Local Markov property, which is stronger than the Pairwise one. However, these properties are equivalent for positive distributions (\(P(x) > 0\)), this is Theorem 4.4 in~\cite{koller_friedman}.
+\end{definition}
+
+As these Markov properties can be difficult to establish, a commonly used class of Markov random fields are those who factorize as product of potentials over the graph's cliques.
+
+\begin{definition}
+A \emph{potential} \(\phi\) is a non-negative function. It is worth to mention
+that a probability distribution is a special case of a potential.
+\end{definition}
+
+Let \(\bm{X}\) be a set of random variables, \(G\) an undirected graph whose nodes are \(\bX\) and \(\bm{X}_c, c \in \{1,\dots,C\}\) be the maximal cliques of \(G\). If the joint probability distribution \(P\) can be factorized as:
+\[
+P(x_1,\dots,x_n) = \frac{1}{Z}\prod_{ c = 1 }^{C}\phi_c(\bm{X}_c).
+\]
+where \(Z\) is a constant that ensures normalization. Figure~\ref{fig:mn_example} shown an example in this class of Markov random fields.
+
+Markov random fields factorize if any of the following conditions is fulfilled:
+\begin{itemize}
+  \item The distribution is positive, this is shown in Hammersley–Clifford theorem (\cite{grimmett1973theorem}).
+  \item The graph is \emph{chordal}, which means that any cycle of four of more vertices has a chord, an edge that is not part of the cycle but connects two of its vertices.
+\end{itemize}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 1.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (1) {\(X_1\)};
+\node[mynode,right=of 1] (2) {\(X_2\)};
+\node[mynode,below=of 1] (3) {\(X_3\)};
+\node[mynode,right=of 3] (4) {\(X_4\)};
+\path (1) edge (2)
+(1) edge (3)
+(2) edge (3)
+(2) edge (4)
+(1) edge (4)
+;
+\end{tikzpicture}
+\captionof{figure}{Markov Network \(P(x_1, x_2, x_3, x_4) = \phi(x_1, x_2,
+  x_3)\phi(x_2, x_3, x_4)/Z\)}
+\label{fig:mn_example}
+\end{figure}

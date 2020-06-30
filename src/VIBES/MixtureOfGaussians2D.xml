@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ModelNetwork j:version="1.1" dataFilename="MixGaussianData2D.mat" name="MixtureOfGaussians2D.xml">
+  <nodes j:type="ArrayList">
+    <ModelNode name="x">
+      <attributes j:type="HashMap">
+        <key:LOCATION j:array="I">220,120</key:LOCATION>
+        <key:DataView j:type="SwitchableDataSetView">
+          <view j:type="ChartView"/>
+        </key:DataView>
+      </attributes>
+      <distribution j:type="MixtureNode">
+        <arrayDimension j:ref="K" j:type="BasicPlate"/>
+        <component j:type="GaussianNode"/>
+      </distribution>
+      <parentEdges j:type="ArrayList">
+        <BasicEdge>
+          <nodeA j:ref="λ" j:type="ModelNode"/>
+        </BasicEdge>
+        <BasicEdge>
+          <nodeA j:ref="μ" j:type="ModelNode"/>
+        </BasicEdge>
+        <BasicEdge>
+          <nodeA j:ref="γ" j:type="ModelNode"/>
+        </BasicEdge>
+      </parentEdges>
+      <plates j:type="ArrayList">
+        <BasicPlate j:ref="N"/>
+        <BasicPlate j:ref="d"/>
+      </plates>
+    </ModelNode>
+    <ModelNode j:name="γ">
+      <attributes j:type="HashMap">
+        <key:LOCATION j:array="I">275,40</key:LOCATION>
+        <key:DataView j:type="SwitchableDataSetView">
+          <view j:type="HintonDiagram"/>
+        </key:DataView>
+      </attributes>
+      <distribution j:type="GammaNode"/>
+      <parentEdges j:type="ArrayList">
+        <BasicEdge>
+          <nodeA j:type="ModelNode" name="10.0">
+            <distribution j:type="Constant" value="10.0"/>
+          </nodeA>
+        </BasicEdge>
+        <BasicEdge>
+          <nodeA j:type="ModelNode" name="1.0">
+            <distribution j:type="Constant" value="1.0"/>
+          </nodeA>
+        </BasicEdge>
+      </parentEdges>
+      <plates j:type="ArrayList">
+        <BasicPlate j:ref="K"/>
+        <BasicPlate j:ref="d"/>
+      </plates>
+    </ModelNode>
+    <ModelNode j:name="μ">
+      <attributes j:type="HashMap">
+        <key:LOCATION j:array="I">160,40</key:LOCATION>
+        <key:DataView j:type="SwitchableDataSetView">
+          <view j:type="HintonDiagram"/>
+        </key:DataView>
+      </attributes>
+      <distribution j:type="GaussianNode"/>
+      <parentEdges j:type="ArrayList">
+        <BasicEdge>
+          <nodeA j:type="ModelNode" name="0.0">
+            <distribution j:type="Constant" value="0.0"/>
+          </nodeA>
+        </BasicEdge>
+        <BasicEdge>
+          <nodeA j:type="ModelNode" name="0.3">
+            <distribution j:type="Constant" value="0.3"/>
+          </nodeA>
+        </BasicEdge>
+      </parentEdges>
+      <plates j:type="ArrayList">
+        <BasicPlate j:ref="K"/>
+        <BasicPlate j:ref="d"/>
+      </plates>
+    </ModelNode>
+    <ModelNode j:name="λ">
+      <attributes j:type="HashMap">
+        <key:LOCATION j:array="I">35,120</key:LOCATION>
+        <key:DataView j:type="SwitchableDataSetView">
+          <view j:type="HintonDiagram"/>
+        </key:DataView>
+      </attributes>
+      <distribution j:type="DiscreteNode">
+        <dimension j:ref="K" j:type="BasicPlate"/>
+      </distribution>
+      <parentEdges j:type="ArrayList">
+        <BasicEdge>
+          <nodeA j:ref="π" j:type="ModelNode"/>
+        </BasicEdge>
+      </parentEdges>
+      <plates j:type="ArrayList">
+        <BasicPlate j:ref="N"/>
+      </plates>
+    </ModelNode>
+    <ModelNode j:name="π">
+      <attributes j:type="HashMap">
+        <key:LOCATION j:array="I">35,45</key:LOCATION>
+        <key:DataView j:type="SwitchableDataSetView">
+          <view j:type="HintonDiagram"/>
+        </key:DataView>
+      </attributes>
+      <distribution j:type="DirichletNode">
+        <dimension j:ref="K" j:type="BasicPlate"/>
+      </distribution>
+      <parentEdges j:type="ArrayList">
+        <BasicEdge>
+          <nodeA j:type="ModelNode" name="0.1">
+            <distribution j:type="Constant" value="0.1"/>
+          </nodeA>
+        </BasicEdge>
+      </parentEdges>
+    </ModelNode>
+  </nodes>
+  <plates j:type="ArrayList">
+    <BasicPlate j:name="N" size="500">
+      <attributes j:type="HashMap">
+        <key:BOUNDS j:array="I">20,102,311,73</key:BOUNDS>
+      </attributes>
+    </BasicPlate>
+    <BasicPlate j:name="K" size="9">
+      <attributes j:type="HashMap">
+        <key:BOUNDS j:array="I">135,20,255,74</key:BOUNDS>
+      </attributes>
+    </BasicPlate>
+    <BasicPlate j:name="d" size="2">
+      <attributes j:type="HashMap">
+        <key:BOUNDS j:array="I">130,15,265,174</key:BOUNDS>
+      </attributes>
+    </BasicPlate>
+  </plates>
+</ModelNetwork>

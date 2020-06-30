@@ -1,0 +1,246 @@
+
+Given a set of variables \(\bX = (X_{1},\dots,X_{N})\), \emph{Bayesian networks} might be defined either as a probability distribution of a certain form or a DAG whose nodes represent these variables and links an independence constraint. Both ideas are present in the following definition.
+
+\begin{definition}
+  A \emph{belief network or Bayesian network} is a pair \((G,P)\) formed by a DAG \(G\) and  joint probability distribution \(P\) such that, there is a correspondence between variables and nodes such as:
+  \[
+    P(x_{1},\dots,x_{N}) = \prod_{n=1}^{N}P(x_{n}\mid pa(x_{n})).
+  \]
+\end{definition}
+
+\begin{remark}
+  A Bayesian network might be given as a distribution from which the DAG can be constructed or a DAG which represents the distribution. For example in Figure~\ref{fig:bn_example}, given the DAG one could easily define the joint distribution and conversely.
+\end{remark}
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.5cm and 1.5cm,
+    mynode/.style={draw,circle,text width=0.5cm,align=center}
+    ]
+
+    \node[mynode] (1) {\(X_1\)};
+    \node[mynode,right=of 1] (2) {\(X_2\)};
+    \node[mynode,right=of 2] (3) {\(X_3\)};
+    \node[mynode,right=of 3] (4) {\(X_4\)};
+
+    \path (4) edge[-latex][bend right] (1)
+    (3) edge[-latex] (2)
+    (4) edge[-latex][bend right] (2)
+    ;
+
+    \end{tikzpicture}
+    \captionof{figure}{Bayesian Network factorizing \(P(x_1, x_2, x_3, x_4) = P(x_1 \mid x_4)P(x_2\mid x_3, x_4)P(x_3)P(x_4)\)}\label{fig:bn_example}
+\end{figure}
+
+Any probability distribution can be written as a Bayesian Network, even though
+it may end up been a fully-connected ``cascade''\footnote{This term comes from the visual structure of the graph.} DAG, which means that each variable \( X_n \) is a parent of any \( X_m \) with \( m > n \). This is because any distribution satisfies:
+\[
+   P(x_1, \dots, x_{N}) = P(x_1) \prod_{n=2}^{N}P(x_{n} \mid x_{1},\dots, x_{n-1})
+ \]
+
+Bayesian Networks are good for encoding \emph{conditional independence} over the
+variables, but are not for encoding dependence. For example, with the following
+network
+\[
+P(x,y) = P(y\mid x)P(x).
+\]
+represented as \(x \to y\) in a DAG, it may appear to encode dependence between both variables but the conditional \(P(y\mid x)\) could happen to equal \(P(y)\), giving \(P(x,y) = P(x)P(y)\).
+
+How could we check if two variables are conditionally independent given a
+Bayesian network? For example in Figure~\ref{fig:relations}, \(X_1 \bigCI
+X_2 \mid X_4\) as
+\[
+\begin{aligned}
+P(x_2 | x_4) &= \frac{1}{P(x_4)}\int_{x_1,x_3}P(x_1, x_2, x_3, x_4)
+= \frac{1}{P(x_4)}\int_{x_1,x_3}P(x_1|x_4)P(x_2|x_3,x_4)P(x_3)P(x_4)\\
+                 &= \int_{x_3}P(x_2|x_3, x_4)P(x_3),
+\end{aligned}
+\]
+\[
+\begin{aligned}
+P(x_1, x_2 | x_4) &= \frac{1}{P(x_4)}\int_{x_3}P(x_1, x_2, x_3, x_4)
+= \frac{1}{P(x_4)}\int_{x_3}P(x_1|x_4)P(x_2|x_3,x_4)P(x_3)P(x_4)\\
+                 &= P(x_1|x_4)\int_{x_3}P(x_2|x_3, x_4)P(x_3) = P(x_1|x_4)P(x_2|x_4).
+\end{aligned}
+\]
+
+\section{D-separation and D-connection}
+
+Now we are going to define two central concepts to determine conditional
+independence in any Bayesian network, these are \emph{d-connection} and \emph{d-separation}.
+
+\begin{definition}
+Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\)
+are disjoint sets of vertices. We say that \(\bm{X} \text{ and
+} \bm{Y}\) are \emph{d-connected} by \(\bm{Z}\) if and only if there
+exists an undirected path \(U\) from any vertex in \(\bm{X}\) to any
+vertex in \(\bm{Y}\) such that:
+\begin{itemize}
+\item For any collider \(C\), itself or any it's descendants is in \(\bm{Z}\).
+\item No non-collider on \(U\) is on \(\bm{Z}\).
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\)
+are disjoint sets of vertices. \(\bm{X}\) and \(\bm{Y}\)
+are \emph{d-separated} by \(\bm{Z}\) if and only if they are not
+d-connected by \(\bm{Z}\) in \(G\)
+\end{definition}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 0.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (a) {a};
+\node[mynode, below right=of a] (d) {d};
+\node[mynode,above right=of d] (b) {b};
+\node[mynode, below right=of b] (e) {e};
+\node[mynode,above right=of e] (c) {c};
+
+\path (a) edge[-latex] (d)
+(b) edge[-latex] (d)
+(c) edge[-latex] (e)
+(b) edge[-latex] (e)
+;
+
+\end{tikzpicture}
+\caption{D-separation example}\label{fig:d-sep}
+\end{figure}
+
+For example, in Figure~\ref{fig:d-sep}, \(d\) d-separates \(a\) and \(c\) (\(e\)
+is a collider in the path that is not in \(\{d\}\)),
+and \(\{d,e\}\) d-connect them.
+
+\begin{theorem}[\cite{pearl_and_detcher}]\label{th:d-separation}
+Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\)
+are disjoint sets of vertices. If  \(\bm{X}\) and \(\bm{Y}\)
+are d-separated by \(\bm{Z}\), then they are independent conditional
+on \(\bm{Z}\) in all probability distributions that \(G\) may represent.
+\end{theorem}
+
+The Bayes Ball algorithm (\cite{bayes_ball}) provides a linear time complexity
+algorithm that computes conditional independent using this theorem.
+
+
+In cases where the Bayesian networks contains i.i.d nodes that are
+essentially the same but repeated a number of times, the \emph{plate notation} is commonly used to represent this nodes in a compacted manner (Figure~\ref{fig:plate_notation}).
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 0.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (a) {A};
+\node[mynode,below=of a] (d) {\(B_3\)};
+\node[mynode,left=of d] (c) {\(B_2\)};
+\node[mynode,left=of c] (b) {\(B_1\)};
+\node[mynode,right=of d] (e) {\(\dots\)};
+\node[mynode,right=of e] (f) {\(B_n\)};
+
+\node[mynode,right=2cm of f] (g) {\(B_i\)};
+\node[mynode, above=of g] (h) {A};
+\plate{} {(g)} {\(n\)}; %
+
+
+\path (a) edge[-latex] (b)
+(a) edge[-latex] (c)
+(a) edge[-latex] (d)
+(a) edge[-latex] (e)
+(a) edge[-latex] (f)
+(h) edge[-latex] (g)
+;
+
+\end{tikzpicture}
+\caption{Plate notation example. Standard notation on the left and plate on the right.}\label{fig:plate_notation}
+\end{figure}
+
+
+\begin{exampleth}
+In this example we are modeling three discrete random variables: Sprinkler (\(S\)),
+Rain (\(R\)) and Grass wet (\(G\)).
+
+The joint probability function is:
+\[
+P(s,r,g) = P(s|r)P(g|s,r)P(r)
+\]
+
+The following DAG illustrates the Bayesian network among with the probability
+tables we are using.
+
+\begin{figure}[ht]
+\begin{tikzpicture}[
+  node distance=0.6cm and 0cm,
+  mynode/.style={draw,ellipse,text width=1.7cm,align=center}
+]
+\node[mynode] (sp) {Sprinkler};
+\node[mynode,below right=of sp] (gw) {Grass wet};
+\node[mynode,above right=of gw] (ra) {Rain};
+\path (ra) edge[-latex] (sp)
+(sp) edge[-latex] (gw)
+(gw) edge[latex-] (ra);
+\node[left=0.5cm of sp]
+{
+\begin{tabular}{cm{1cm}m{1cm}}
+\toprule
+& \multicolumn{2}{c}{Sprinkler} \\
+Rain & \multicolumn{1}{c}{T} & \multicolumn{1}{c}{F} \\
+\cmidrule(r){1-1}\cmidrule(l){2-3}
+F & 0.4 & 0.6 \\
+T & 0.01 & 0.99 \\
+\bottomrule
+\end{tabular}
+};
+\node[right=0.5cm of ra]
+{
+\begin{tabular}{m{1cm}m{1cm}}
+\toprule
+\multicolumn{2}{c}{Rain} \\
+\multicolumn{1}{c}{T} & \multicolumn{1}{c}{F} \\
+\cmidrule{1-2}
+0.2 & 0.8 \\
+\bottomrule
+\end{tabular}
+};
+\node[below=0.5cm of gw]
+{
+\begin{tabular}{ccm{1cm}m{1cm}}
+\toprule
+& & \multicolumn{2}{c}{Grass wet} \\
+\multicolumn{2}{l}{Sprinkler Rain} & \multicolumn{1}{c}{T} & \multicolumn{1}{c}{F} \\
+\cmidrule(r){1-2}\cmidrule(l){3-4}
+F & F & 0.0 & 1.0 \\
+F & T & 0.8 & 0.2 \\
+T & F & 0.9 & 0.1 \\
+T & T & 0.99 & 0.01 \\
+\bottomrule
+\end{tabular}
+};
+\end{tikzpicture}
+\end{figure}
+
+This model can answer questions about the presence of a cause given the presence
+of an effect. For example, What is the probability that it has being raining
+given the grass is wet?
+
+\[
+P(R = T | G = T) = \frac{P(G = T, R = T)}{P(G=T)} = \frac{\sum_{s}P(G=T, R=T,
+s)}{\sum_{r,s} P(G=T, r, s)}
+\]
+
+Using the expression of the joint probability among with the tables we can
+compute every term. For example:
+\[
+\begin{aligned}
+P(G=T, R=T, S=T) &= P(S=T|R=T)P(G=T|R=T,S=T)P(R=T) \\
+&= 0.01 * 0.99 * 0.2 = 0.00198
+\end{aligned}
+\]
+\end{exampleth}
+

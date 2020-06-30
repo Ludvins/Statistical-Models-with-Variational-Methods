@@ -56,8 +56,9 @@
 \usetikzlibrary{bayesnet}
 \usetikzlibrary{shapes.geometric}
 
-
 \usepackage{caption}
+
+\usepackage[toc,page]{appendix}
 
 % Plantilla classicthesis
 \usepackage[beramono,eulerchapternumbers,linedheaders,parts,a5paper,dottedtoc,
@@ -82,8 +83,6 @@ manychapters,pdfspacing]{classicthesis}
 \usepackage{todonotes}
 \let\marginpar\oldmarginpar
 
-
-
 % Profundidad de la tabla de contenidos.
 \setcounter{secnumdepth}{3}
 
@@ -95,8 +94,8 @@ manychapters,pdfspacing]{classicthesis}
 \renewcommand{\theFancyVerbLine}{\sffamily\textcolor[rgb]{0.5,0.5,1.0}{\oldstylenums{\arabic{FancyVerbLine}}}}
 
 % Archivos de configuración.
-\input{Text/macros}  % En macros.tex se almacenan las opciones y comandos para escribir matemáticas.
-\input{Text/classicthesis-config} % En classicthesis-config.tex se almacenan las opciones propias de la plantilla.
+\input{tex/macros}  % En macros.tex se almacenan las opciones y comandos para escribir matemáticas.
+\input{tex/classicthesis-config} % En classicthesis-config.tex se almacenan las opciones propias de la plantilla.
 
 % Color institucional UGR
 % \definecolor{ugrColor}{HTML}{ed1c3e} % Versión clara.
@@ -110,12 +109,13 @@ manychapters,pdfspacing]{classicthesis}
 \title{Statistical Models with Variational Methods}
 
 % Portada
-\include{Text/titlepage}
+\include{tex/titlepage}
 \usepackage{wallpaper}
 
 \begin{document}
-\ThisULCornerWallPaper{1}{Text/ugrA4.pdf}
+\ThisULCornerWallPaper{1}{tex/ugrA4.pdf}
 \maketitle
+
 
 \chapter*{Abstract}
 
@@ -133,38 +133,60 @@ Some introduction about how important Variational methods are nowadays and what 
 \part{Basic Concepts}
 
 \chapter{Probability}
-
-\input{Chapters/BasicConcepts/probability}
+\input{tex/BasicConcepts/probability}
 
 \chapter{Distributions}
-
-\input{Chapters/BasicConcepts/distributions}
+\input{tex/BasicConcepts/distributions}
 
 \chapter{Graph Theory}
+\input{tex/BasicConcepts/graph-theory}
 
-\input{Chapters/BasicConcepts/graph-theory}
+\ctparttext{
+  \color{black}
+  \begin{center}
+    \emph{Statistical inference} is the process of using data analysis to deduce properties of an underlying distribution.
 
+    \emph{Bayesian inference} is a method of statistical inference in which Bayes' theorem is used, it derives the \emph{posterior probability} as a consequence of two antecedents: a \emph{prior probability} and a \emph{likelihood function} derived from a statistical model for the observed data.
+
+    \emph{Maximum likelihood estimation (MLE)} is a method of estimating the parameters of a probability distribution by maximizing a \emph{likelihood function}, so that under the assumed statistical model the observed data is most probable.
+  \end{center}
+}
+\part{Statistical Inference}
+
+\chapter{Introduction}
+\input{tex/Inference/introduction}
+
+\chapter{Maximum Likelihood}
+\input{tex/Inference/maximum-likelihood}
+
+\chapter{Bayesian Inference}
+\input{tex/Inference/bayesian}
 
 \ctparttext{
   \color{black}
   \begin{center}
 
+    \emph{Variational Bayesian methods} consist of intractable integrals approximation techniques arising in inference and machine learning problems. They are commonly applied in complex models consisting of \emph{observed variables}, \emph{unknown parameters} and \emph{latent variables}. The relation between these random variables might be described by a \emph{graphical model}.
+
+    \emph{Variational Bayesian inference} solves the inference problem by creating an equivalent \emph{optimization problem} and approaching its solution through machine learning techniques.
   \end{center}
 }
 \part{Variational Inference}
 
 \chapter{Introduction}
+\input{tex/VariationalInference/introduction}
 
-\input{Chapters/VariationalInference/introduction}
+\chapter{Expectation Maximization}\label{sec:em}
+\input{tex/VariationalInference/expectation-maximization}
 
 \chapter{Mean-Field Variational Inference}
-
-\input{Chapters/VariationalInference/meanfield-variational-inference.tex}
+\input{tex/VariationalInference/meanfield-variational-inference}
 
 \chapter{Exponential Family}
+\input{tex/VariationalInference/exponential-family}
 
-\input{Chapters/VariationalInference/exponential-family.tex}
-
+\chapter{Example: Gaussian Mixture}\label{ch:gm}
+\input{tex/VariationalInference/gaussian-mixture}
 
 \ctparttext{
   \color{black}
@@ -182,13 +204,14 @@ Some introduction about how important Variational methods are nowadays and what 
 }
 \part{Graphical Models}
 
-\chapter{Bayesian networks}
+\chapter{Introduction (WIP)}
+\input{tex/GraphicalModels/introduction}
 
-\input{Chapters/GraphicalModels/bayesian-networks}
+\chapter{Bayesian networks}
+\input{tex/GraphicalModels/bayesian-networks}
 
 \chapter{Markov Random Fields}
-
-\input{Chapters/GraphicalModels/markov-networks}
+\input{tex/GraphicalModels/markov-networks}
 
 \ctparttext{
   \color{black}
@@ -198,41 +221,26 @@ Some introduction about how important Variational methods are nowadays and what 
 }
 \part{Bayesian Networks Learning}
 
-\chapter{Introduction}
-
-\input{Chapters/BayesianNetworksLearning/intro}
-
 \chapter{Maximum Likelihood Training}
-
-\input{Chapters/BayesianNetworksLearning/maximum-likelihood}
+\input{tex/BayesianNetworksLearning/maximum-likelihood}
 
 \chapter{Bayesian Training}
-
-\input{Chapters/BayesianNetworksLearning/bayesian}
+\input{tex/BayesianNetworksLearning/bayesian}
 
 \chapter{Structure Learning}
-
-\input{Chapters/BayesianNetworksLearning/structure-learning}
+\input{tex/BayesianNetworksLearning/structure-learning}
 
 \chapter{Missing variables}
-
-\input{Chapters/BayesianNetworksLearning/missing-variables}
+\input{tex/BayesianNetworksLearning/missing-variables}
 
 \chapter{Variational Inference in Bayesian Networks}
+\input{tex/BayesianNetworksLearning/variational-inference}
 
-\input{Chapters/BayesianNetworksLearning/variational-inference}
+\section{Expectation Maximization}
+\input{tex/BayesianNetworksLearning/expectation-maximization}
 
-\section{Expectation Maximization}\label{sec:em}
-
-\input{Chapters/BayesianNetworksLearning/expectation-maximization}
-
-\section{Variational Bayes}
-
-\input{Chapters/BayesianNetworksLearning/variational-bayes}
-
-\chapter{Variational Message Passing}
-
-\input{Chapters/BayesianNetworksLearning/variational-message-passing}
+\section{Variational Message Passing}\label{sec:vmp}
+\input{tex/BayesianNetworksLearning/variational-message-passing}
 
 
 \ctparttext{
@@ -244,13 +252,13 @@ Some introduction about how important Variational methods are nowadays and what 
 \part{Commonly studied Latent Variable Models}
 
 \chapter{Gaussian Mixture}
-\input{Chapters/LVMs/gm}
+\input{tex/LVMs/gm}
 
 \chapter{Latent Dirichlet Allocation}
-\input{Chapters/LVMs/lda}
+\input{tex/LVMs/lda}
 
 \chapter{Probabilistic Principal Components Analysis}
-\input{Chapters/LVMs/pca-va}
+\input{tex/LVMs/pca-va}
 
 \ctparttext{
   \color{black}
@@ -261,13 +269,26 @@ Some introduction about how important Variational methods are nowadays and what 
 \part{Case study}
 
 \chapter{InferPy usage}
-
-\input{Chapters/InferPy/introduction}
+\input{tex/InferPy/introduction}
 
 \chapter{Gaussian Mixture}
+
+
+\ctparttext{
+  \color{black}
+  \begin{center}
+
+  \end{center}
+}
+\part{Annexes}
+
+\appendix
+\chapter{Distributions in the exponential family (WIP)}\label{ap:exp_fam}
+\input{tex/Appendixes/A}
+
 
 \clearpage
 \nocite{*}
 \bibliographystyle{authordate1}
-\bibliography{Text/refs}
+\bibliography{tex/refs}
 \end{document}

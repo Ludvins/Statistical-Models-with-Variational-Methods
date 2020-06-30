@@ -1,0 +1,44 @@
+
+Given a set of observations \(\bx\) and parameters \(\btheta\) that model the obtained samples via \(P(\bx \mid \btheta)\), \emph{maximum likelihood estimation} (\cite{rossi2018mathematical}) is a \emph{classical inference} method of estimating the maximum likelihood parameters, i.e, the ones that maximizes the likelihood \(P(\bx \mid \btheta)\):
+  \[
+    \btheta^{ML} = \argmax_{\btheta} P(\bx \mid \btheta).
+  \]
+  This value symbolizes the \emph{value of the parameter to which the data is most probable to be generated with}. There are several techniques for finding this value, for example, if the likelihood function is differentiable, its derivate can be used to determine the maxima.
+
+  \begin{remark}
+    Maximum likelihood estimation does not consider a probability distribution over the parameter, whereas Bayesian estimation does.
+  \end{remark}
+
+\section{Maximum Likelihood and the Empirical Distribution}
+
+Consider a set of i.i.d random variables \(\bX = (X_{1},\dots, X_{N})\) and their observations \(\bx = (x_{1},\dots,x_{N})\), we are going to show the relation between the maximum likelihood and the Kullback-Leibler divergence of the empirical distribution and our model. The empirical distribution is defined as the distribution whose probability mass function \(Q\) is
+\[
+  Q(x) = \frac{1}{N}\sum_{n = 1}^N \mathbb{I}[x = x_n].
+\]
+Where \(X\) is i.i.d with the rest of variables we are considering.
+
+\begin{proposition}
+ In case \(P(x \mid \btheta)\) is unconstrained, maximum likelihood distribution corresponds to the empirical distribution, i.e, \(P(x \mid \btheta^{ML}) = Q(x)\).
+\end{proposition}
+\begin{proof}
+The Kullback-Leibler divergence between the empirical and our considered model \(P(x \mid \btheta)\) is:
+\[
+  \KL{Q}{P} = \E{Q}{\log Q(x)} - \E{Q}{\log P(x \mid \btheta)}.
+\]
+
+Notice the term \(\E{Q}{\log Q(\bx)}\) is a constant and the log likelihood under \(Q\) takes the form
+\[
+   \E{Q}{\log P(x \mid \btheta)} = \frac{1}{N}\int_{x}\sum_{n=1}^{N}\mathbb{I}[x = x_{n}]\log{P(x \mid \btheta)} = \frac{1}{N}\sum_{n = 1}^N \log{P(x_n \mid \btheta)}.
+ \]
+ As the logarithm is
+ a strictly increasing function, maximizing the log likelihood equals to
+ maximize the likelihood itself, in conclusion, it is equivalent to
+ minimize the Kullback-Leibler divergence between the empirical distribution \( Q \)  and our distribution \( P \).
+ \[
+   \begin{aligned}
+     &\argmin_{\btheta} \KL{Q}{P} = \argmin_{\btheta} - \E{Q}{\log P(\bx \mid \btheta)} =  \argmax_{\btheta} \E{Q}{\log P(\bx \mid \btheta)} =\\
+     &\argmax_{\btheta} \frac{1}{N}\sum_{n=1}^{N}\log{P(x_{n} \mid \btheta)} =  \argmax_{\btheta} \frac{1}{N}\sum_{n=1}^{N}P(x_{n} \mid \btheta) = \argmax_{\btheta} \sum_{n=1}^{N}P(x_{n}\mid \btheta)= \btheta^{ML}.
+   \end{aligned}
+ \]
+
+\end{proof}
