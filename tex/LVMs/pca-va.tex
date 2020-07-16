@@ -26,7 +26,7 @@ A probabilistic view of PCA can be modeled with an LVM (\cite{tipping1999probabi
     \node[mynode, below right=of theta] (xn) {\(X_{n}\)};
     \node[param, right=of xn] (sigma) {\(\sigma\)};
 
-    \plate{} {(zn)(xn)} {\(n = 1\dots N\)}; %
+    \plate[inner sep=.3cm,xshift=.02cm,yshift=.2cm] {} {(zn)(xn)} {\(n = 1\dots N\)}; %
     \path (theta) edge[-latex] (xn)
     (sigma) edge[-latex] (xn)
     (zn) edge[-latex] (xn)
@@ -109,7 +109,7 @@ It can be seen as a non-linear probabilistic PCA model.
     \node[mynode, below left=of w0] (zn) {\(Z_{n}\)};
     \node[mynode, below right=of w0] (xn) {\(X_{n}\)};
 
-    \plate{} {(zn)(xn)} {\(n = 1\dots N\)}; %
+    \plate [inner sep=.3cm,xshift=.02cm,yshift=.2cm]{} {(zn)(xn)} {\(n = 1\dots N\)}; %
     \path (w0) edge[-latex] (xn)
     (w1) edge[-latex] (xn)
     (zn) edge[-latex] (xn)
@@ -140,7 +140,7 @@ and the data-points are then generated as
 \]
 Where no noise is being considered this time.
 
-\section{Variational Auto-encoder}
+\section{Variational Auto-encoder (Work in Progress)}
 
 Similarly to the models PCA and NLPCA, a \emph{variational autoencoder} or VAE, allows to perform dimensionality reduction. However a VAE will contain a neural network in the \(P\)  model (decoder) and another one in the variational model \(Q\) (encoder).
 

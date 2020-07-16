@@ -1,7 +1,7 @@
 
 
-In this section we will summarize some concepts concerning probability
-distributions among with some of the most used ones.
+In this section some concepts concerning probability
+distributions among with some of the most used ones are summarized.
 
 From now on, let \(X\) be a random variable and \(P\) its probability distribution.
 
@@ -26,7 +26,7 @@ A distribution could have more than one mode, in this case we say it is \emph{mu
   For a general variable X it is defined as \(\E{}{X} = \E{}{X^+} -
   \E{}{X^-}\). Where
   \[
-    X^+(\omega) = \max(X(\omega), 0), \quad X^-(\omega) = \min(X(\omega), 0).
+    X^+(\omega) = \max(X(\omega), 0) \quad \text{and} \quad X^-(\omega) = \min(X(\omega), 0).
   \]
 
   Suppose now that \(X\) is a real-valued random variable, in case it is also
@@ -34,7 +34,7 @@ A distribution could have more than one mode, in this case we say it is \emph{mu
   \[
     \E{}{X} =  \int_{-\infty}^{+\infty} x f(x) dx.
   \]
-  And if it is discrete, let \(x_i\) be the values \(X\) can take, the expectation takes the form
+  In case it is discrete, let \(x_i\) be the values \(X\) can take, the expectation takes the form
   \[
     \E{}{X} =  \sum_{i = 1}^{+\infty} x_i p(x_i) dx.
   \]
@@ -63,13 +63,13 @@ In the above definition, the expectation is calculated over the probability dist
 \begin{definition}
   The \emph{variance} of a distribution is defined as
   \[
-    Var(X) = \sigma^2 = \E{}{(X - \E{}{X})^2} = \E{}{X}^2 - \E{}{X^2}
+    Var(X) = \sigma^2 = \E{}{{(X - \E{}{X})}^2} = \E{}{X}^2 - \E{}{X^2}
   \]
 
   The square root of the variance \(\sigma\) is called the \emph{standard deviation}.
 \end{definition}
 
-When using a multi-variate distribution \(\bm{X} = (X_1,\dots,X_n)^T\) we can talk about the \emph{covariance
+When using a multi-variate distribution \(\bm{X} = {(X_1,\dots,X_N)}^T\) we can talk about the \emph{covariance
   matrix} \(\bSigma \) whose elements are
 
 \[
@@ -82,8 +82,8 @@ When using a multi-variate distribution \(\bm{X} = (X_1,\dots,X_n)^T\) we can ta
 
 The following result will be helpful later on.
 
-\begin{proposition} \label{prop:expectation_over_marginal}
-  Let \(\mathcal{X} = \{X_1,\dots,X_n\}\) be a set of random variables,
+\begin{proposition}\label{prop:expectation_over_marginal}
+  Let \(\bX = \{X_1,\dots,X_N\}\) be a set of random variables,
   \(\mathcal{X}_{0} \subset \mathcal{X}\) and \(P(\mathcal{X}), P(\mathcal{X}_{0})\)
   their probability distributions.
   It follows that the expectation of a function \(g\) over \(\mathcal{X}_0\), verifies
@@ -338,13 +338,13 @@ When the vector parameter \(\bm{\alpha}\) is filled with the same value \(\alpha
 \section{Kullback-Leibler Divergence}
 
 \begin{definition}
-  Let \(P\) and \(Q\) be two probability distributions over the same probability space \( \mathcal{X} \), the \emph{Kullback-Leibler divergence}
+  Let \(P\) and \(Q\) be two probability distributions over the same probability space \( \Omega \), the \emph{Kullback-Leibler divergence}
   \(\KL{Q}{P}\) measures the ``difference'' between both distributions as
   \[
     \KL{Q}{P} = \E{Q}{\log Q(x) - \log P(x)}.
   \]
 
-  The Kullback-Leibler divergence is defined if and only if for all \( x \in \mathcal{X} \) such that \( P(x) = 0 \), then \( Q(x) = 0 \). In meassure terms, \( Q \) is absolutely continuous with respect to \( P \). 
+  The Kullback-Leibler divergence is defined if and only if for all \( x \in \Omega \) such that \( P(x) = 0 \), then \( Q(x) = 0 \). In measure terms, \( Q \) is absolutely continuous with respect to \( P \).
 \end{definition}
 
 \begin{proposition}
@@ -358,7 +358,7 @@ The Kullback-Leibler divergence is always non-negative.
 
   Since probabilities are non-negative, we can multiply by \(Q(x)\) in the last inequality
   \[
-    P(x) - Q(x) \geq Q(x) \frac{\log P(x)}{\log Q(x)} = Q(x) \log{P(x)} - Q(x) \log{Q(x)}.
+    P(x) - Q(x) \geq Q(x) \log \frac{P(x)}{Q(x)} = Q(x) \log{P(x)} - Q(x) \log{Q(x)}.
   \]
   Now we integrate (sum in case of discrete variables) both sides
 

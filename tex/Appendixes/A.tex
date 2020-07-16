@@ -1,59 +1,55 @@
-
-\begin{figure}
-  \centering
-  \begin{tabular}{ |c|c|c|c|c| }
+\everymath{\displaystyle}
+\renewcommand*{\arraystretch}{1.3}
+  \begin{longtable}{|c|c|c|c|c| }
     \hline
-    Distribution & Parameter set \(\btheta\) & Base measure \(h\) & Parameter function \(\bm{\eta}\) & Statistics \(\bm{T}\) \\
+    Distribution & Parameter set \(\btheta\) & Base measure \(h\) & Parameter function \(\bm{\eta}(\btheta)\) & Statistics \(\bm{T}(x)\) \\
     \hline
-    Bernoulli & \(p\)  & \(1\)  & \(\log{\frac{p}{1 - p}}\) & \(x\) \\
-    Binomial & \(p\)  & \(\binom{n}{x}\) & \(\log{\frac{p}{1 - p}}\) & \(x\)  \\[10pt]
+    Bernoulli & \(p\)  & \(1\)  & \(\log{\frac{p}{1 - p}}\) & \(x\) \\[5pt]
+    Binomial & \(p\)  & \(\binom{n}{x}\) & \(\log{\frac{p}{1 - p}}\) & \(x\)  \\[5pt]
     Categorical & \(p_{1},\dots,p_{K}\) & \(1\) &
-                                                  \(\begin{pmatrix}
+                                                  \(\begin{bmatrix}
                                                     \log p_{1}\\
                                                     \vdots\\
                                                     \log p_{K}
-                                                  \end{pmatrix}\)
+                                                  \end{bmatrix}\)
                  &
-                                                  \(\begin{pmatrix}
+                                                  \(\begin{bmatrix}
                                                     [x=1]\\
                                                     \vdots\\
                                                     [x=k]
-                                                  \end{pmatrix}\)\\[30pt]
+                                                  \end{bmatrix}\)\\[30pt]
     Gaussian & \(\mu, \sigma^{2}\) & \(\frac{1}{\sqrt{2\pi}}\) &
-                                     \(\begin{pmatrix}
+                                     \(\begin{bmatrix}
                                        \frac{\mu}{\sigma^2}\\
                                        -\frac{1}{2\sigma^{2}}
-                                     \end{pmatrix}\)
+                                     \end{bmatrix}\)
                  &
-                   \(\begin{pmatrix}
+                   \(\begin{bmatrix}
                      x\\
                      x^{2}
-                   \end{pmatrix}\) \\[30pt]
+                   \end{bmatrix}\) \\[30pt]
     Beta & \(\alpha, \beta\) & \(\frac{1}{x(1-x)}\)
                                                                &
-                                                                 \(\begin{pmatrix}
+                                                                 \(\begin{bmatrix}
                                                                    \alpha \\
                                                                    \beta
-                                                                 \end{pmatrix}\)
+                                                                 \end{bmatrix}\)
                  &
-                   \(\begin{pmatrix}
+                   \(\begin{bmatrix}
                      \log x \\
                      \log (1-x)
-                   \end{pmatrix}\) \\[30pt]
+                   \end{bmatrix}\) \\[30pt]
     Dirichlet & \(\alpha_{1},\dots,\alpha_{K}\) & \(1\) &
-                                                  \(\begin{pmatrix}
+                                                  \(\begin{bmatrix}
                                                     \alpha_{1} - 1\\
                                                     \vdots\\
                                                     \alpha_{K} - 1
-                                                  \end{pmatrix}\)
+                                                  \end{bmatrix}\)
                  &
-                                                  \(\begin{pmatrix}
+                                                  \(\begin{bmatrix}
                                                     \log x_{1}\\
                                                     \vdots\\
                                                     \log x_{K}
-                                                  \end{pmatrix}\)\\
+                                                  \end{bmatrix}\)\\
     \hline
-  \end{tabular}
-  \caption{Some distributions in the exponential family}
-  \label{tab:ef}
-\end{figure}
+  \end{longtable}

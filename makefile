@@ -4,6 +4,7 @@
 main.pdf: main.tex tex/*/*.tex
 	pdflatex --shell-escape main.tex
 	bibtex main
+	makeglossaries main
 	pdflatex --shell-escape main.tex
 	pdflatex --shell-escape main.tex
 clean:

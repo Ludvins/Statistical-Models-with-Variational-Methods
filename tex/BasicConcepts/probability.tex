@@ -56,8 +56,6 @@ The triple \((\Omega, \mathcal{F}, P)\) is called a \emph{probability space}.
   \]
 \end{definition}
 
-
-
 \begin{theorem}
   \textbf{(Bayes' theorem)}. Let \(\alpha, \beta\) be two events of an
   experiment, given that \(P(\beta) \neq 0\). Then
@@ -65,8 +63,6 @@ The triple \((\Omega, \mathcal{F}, P)\) is called a \emph{probability space}.
   P(\alpha \mid \beta)= \frac{P(\beta \mid \alpha)P(\alpha)}{P(\beta)}.
 \]
 \end{theorem}
-
-
 
 \begin{exampleth}
 Consider a study where the relation of a disease \(d\) and an habit \(h\)
@@ -78,14 +74,14 @@ P(d \mid h) = \frac{P(d \cap h)}{P(h)} = \frac{P(h \mid d)P(d)}{P(h)} =
 \frac{ 0.9 \times 10^{-5}}{ 0.5 } = 1.8 \times 10^{-5}.
 \]
 
-If we set the probability of having habit \(h\) to a much lower value as \(P(h) =
+If the probability of having habit \(h\) is set to a much lower value as \(P(h) =
 0.001\), then the above calculation gives approximately \(1/100\). Intuitively, a smaller number of people have the habit and most of them have the
 desease. This means that the relation between having the desease and the habit
 is stronger now compared with the case where more people had the habit.
 \end{exampleth}
 
 \begin{definition}
-  We say that two events \(\alpha, \beta \in \mathcal{F}\) are
+  Two events \(\alpha, \beta \in \mathcal{F}\) are said
   \emph{independent} if knowing one of them does not give any extra information
   about the other. Mathematically,
 
@@ -93,7 +89,7 @@ is stronger now compared with the case where more people had the habit.
     P(\alpha \cap \beta) = P(\alpha)P(\beta), \quad P(\alpha \mid \beta) = P(\alpha).
   \]
 
-  Let \(\gamma \in \mathcal{F}\), we say that \(\alpha\) and \(\beta\) are
+  Let \(\gamma \in \mathcal{F}\), \(\alpha\) and \(\beta\) are said to be
   \emph{conditionally independent} on \(\gamma\), \(\alpha \bigCI \beta \mid \gamma\)
   if and only if
   \[
@@ -103,8 +99,7 @@ is stronger now compared with the case where more people had the habit.
 
 \end{definition}
 
-Now we are going to introduce the concept of \emph{random variable} and some
-properties as we have done with events.
+The concept of \emph{random variables} and their properties are described below.
 
 \begin{definition}
 A function \(f:\Omega_1 \to \Omega_2\) between two
@@ -123,11 +118,11 @@ P_X(S) = P(X \in S) = P(\{a \in \Omega \ \mid  \ X(a) \in S \}).
 \]
 \end{definition}
 
-We could make a question like ``How likely is that the value of \(X\) equals
-\(a\)?''. This is the same as asking for the probability of the set \(\{\omega
+Questions like ``How likely is that the value of \(X\) equals
+\(a\)?'' are equivalent to ask for the probability of the set \(\{\omega
 \in \Omega \ \mid  \ X(w) = a\}\).
 
-We will set the following notation that is going to be used, that is: random variables will be
+The following notation is going to be used: random variables will be
 denoted with an upper case letter like \(X\) and a set of variables with a
 bold symbol like \(\bm{X}\). The meaning of \(P(state)\) will be clear without a reference to the variable.
 Otherwise \(P(X = state)\) will be used.
@@ -180,10 +175,10 @@ where \(\I\) is the set of values \(X\) can take, and \(\delta\) is the Dirac di
   \int_{x} P(x) \#(dx) = \sum_{n \in \I}\int_{x} P(x) \delta(x-n) dx = \sum_{n \in I}P(n).
 \]
 
-Where we used that \(\int f(x)\delta(x - x_{0}) = f(x_{0})\). Given this, from now on, we will use the integration notation for both discrete and continuous variables given that the integrals will be respect to the counting measure when needed.
+Where \(\int f(x)\delta(x - x_{0}) = f(x_{0})\) was used. Given this, from now on,  integration notation  will be used for both discrete and continuous variables given that the integrals will be respect to the counting measure when needed.
 
 \begin{definition}
-  As we did for events, we can define the \emph{conditional probability} over
+  The \emph{conditional probability} might be defined over
   random variables, let \(X, Y\) be two random variables, then
   \[
     P(x \mid y) = \frac{P(x,y)}{P(y)}.
@@ -191,7 +186,7 @@ Where we used that \(\int f(x)\delta(x - x_{0}) = f(x_{0})\). Given this, from n
   It is  required that \(P(y) \neq 0\) for the conditional probability to be defined.
 \end{definition}
 
-We can also enunciate the \emph{Bayes' theorem} as
+The \emph{Bayes' theorem} may be enunciated as
 \[
   P(x,y) = \frac{P(y\mid x)P(x)}{P(y)}
 \]
@@ -227,7 +222,7 @@ or using a probability density or mass function.
 \end{definition}
 
 \begin{definition}
-We say that two random variables \(X\) and \(Y\) are \emph{independent} if knowing one of them doesn't give any extra information about the other. Mathematically,
+Two random variables \(X\) and \(Y\) are said to be \emph{independent} if knowing one of them doesn't give any extra information about the other. Mathematically,
 \[
 P(x,y) = P(x)P(y).
 \]
@@ -251,8 +246,8 @@ Both independence definitions can be made over sets of variables \(\bm{X},
 
 
 \begin{definition}
-  We say that a set of \(n\) random variables \(\{X_1,\dots,X_n\}\) defined to
-  assume values in \(I \subset \R\) are
+  A set of \(N\) random variables \(\{X_1,\dots,X_N\}\) defined to
+  assume values in \(I \subset \R\) are said
   \emph{independent and identically distributed (i.i.d)}
   if and only if they are independent, i.e,
   \[
@@ -274,6 +269,6 @@ Both independence definitions can be made over sets of variables \(\bm{X},
   (X_1,\dots,X_n)^T\) whose components are random variables that can be defined
   over different probability spaces.
 
-  Note that we use the same symbol \(\bm{X}\) for random vectors and sets of
+  Note that the same symbol \(\bm{X}\) is used for random vectors and sets of
   variables, but the meaning will be clear within the context.
 \end{definition}

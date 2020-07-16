@@ -66,11 +66,11 @@ The joint probability distribution is then
     \node[param, right=of beta] (eta) {\(\eta\)};
 
 
-    \plate{plate1} {(z)(w)} {\(n = 1\dots N_{d}\)}; %
+    \plate[inner sep=.3cm,xshift=.02cm,yshift=.2cm] {plate1} {(z)(w)} {\(n = 1\dots N_{d}\)}; %
 
-    \plate{} {(plate1)(theta)} {\(d = 1\dots D\)}; %
+    \plate [inner sep=.3cm,xshift=.02cm,yshift=.2cm]{} {(plate1)(theta)} {\(d = 1\dots D\)}; %
 
-    \plate{} {(beta)}{\(k=1,\dots,K\) };
+    \plate [inner sep=.3cm,xshift=.02cm,yshift=.2cm]{} {(beta)}{\(k=1,\dots,K\) };
 
     \path (z) edge[-latex] (w)
     (theta) edge[-latex] (z)

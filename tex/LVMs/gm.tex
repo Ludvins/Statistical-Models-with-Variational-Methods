@@ -20,6 +20,7 @@ We are now in situation to give the explicit Bayesian network for this model:
   \begin{tikzpicture}[
     node distance=0.8cm and 1.5cm,
     mynode/.style={draw,circle,text width=0.5cm,align=center},
+    hidden/.style={draw,circle,text width=0.8cm,align=center},
     param/.style={draw,text width=0.5cm,align=center}
     ]
 
@@ -37,7 +38,7 @@ We are now in situation to give the explicit Bayesian network for this model:
     \node[param, right=of v] (sigma0) {\(w_{0}\)};
     \node[param, left=of phi] (beta) {\(\alpha_{0}\)};
 
-    \plate{} {(z)(x)} {\(n=1,\dots,N\)}; %
+    \plate[inner sep=.3cm,xshift=.02cm,yshift=.2cm] {} {(z)(x)} {\(n=1,\dots,N\)}; %
 
     \path (mu) edge[-latex] (x)
     (sigma) edge[-latex] (x)

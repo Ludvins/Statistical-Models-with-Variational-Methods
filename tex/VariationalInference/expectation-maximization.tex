@@ -16,7 +16,7 @@ The EM algorithm can be viewed as two alternating maximization steps, that is, a
 \]
 Then, the EM algorithm consists on:
 \begin{itemize}
-  \item For fixed \(\btheta\), choose \(Q\) such as:
+  \item \textbf{E-step}. For fixed \(\btheta\), choose \(Q\) such as:
     \[
     Q^{new} = \argmax_{Q}ELBO(Q, \btheta),
     \]
@@ -24,7 +24,7 @@ Then, the EM algorithm consists on:
     \[
     Q^{new}(\bz) = P(\bz \mid \bx , \btheta).
     \]
-  \item For fixed \(Q\), choose \(\btheta\) such as:
+  \item \textbf{M-step}. For fixed \(Q\), choose \(\btheta\) such as:
     \[
     \btheta^{new} = \argmax_{\btheta}ELBO(Q, \btheta).
     \]
@@ -38,7 +38,9 @@ Then, the EM algorithm consists on:
   \SetAlgoLined\KwData{A dataset \(\bx\) and a distribution \(P(\bx, \bz \mid \btheta)\).}
   \KwResult{Approximation of the maximum likelihood parameter.}
   Initialize \(\btheta^{(0)}\)\;
+  \(t=1\)\;
   \While{Convergence stop criteria}{
+    \(t \leftarrow t+1\)\;
     \(Q^{(t)} = P(\bz \mid \bx, \btheta^{(t-1)})\)\;
     \(\btheta^{(t)} = \argmax_{\btheta} \E{Q^{(t)}(\bz)}{\log{P(\bx, \bz \mid \btheta)}}\)\;
   }

@@ -56,8 +56,13 @@
 \usetikzlibrary{bayesnet}
 \usetikzlibrary{shapes.geometric}
 
-\usepackage{caption}
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={4.0},
+]{doclicense}
 
+\usepackage{caption}
 \usepackage[toc,page]{appendix}
 
 % Plantilla classicthesis
@@ -108,6 +113,11 @@ manychapters,pdfspacing]{classicthesis}
 \date{\today}
 \title{Statistical Models with Variational Methods}
 
+\usepackage[toc, nopostdot,  style=super, nonumberlist, section=chapter ]{glossaries}
+\newglossary{symbols}{sym}{sbl}{List of Abbreviations and Symbols}
+\makeglossaries
+\loadglsentries{glossary}
+
 % Portada
 \include{tex/titlepage}
 \usepackage{wallpaper}
@@ -115,19 +125,24 @@ manychapters,pdfspacing]{classicthesis}
 \begin{document}
 \ThisULCornerWallPaper{1}{tex/ugrA4.pdf}
 \maketitle
-
+\newpage
+\vspace*{\fill}
+\doclicenseThis
 
 \chapter*{Abstract}
 
 Some introduction about how important Variational methods are nowadays and what this project is about.
+
 
 \tableofcontents
 
 \ctparttext{
   \color{black}
   \begin{center}
-    In this part we will introduce the underlying concepts of probability and
-    graph theory that we will need.
+    In this part he underlying concepts of probability and
+    graph theory that we will need. \emph{Probability distributions} and \emph{random variables} are defined as well as \emph{Bayes' theorem}.
+
+    Both discrete and continuous distributions are reviewed as they are used later on. In addition, graph theory principles are reviewed.
   \end{center}
 }
 \part{Basic Concepts}
@@ -161,6 +176,9 @@ Some introduction about how important Variational methods are nowadays and what 
 
 \chapter{Bayesian Inference}
 \input{tex/Inference/bayesian}
+
+\chapter{Missing variables}
+\input{tex/Inference/missing-variables}
 
 \ctparttext{
   \color{black}
@@ -204,7 +222,7 @@ Some introduction about how important Variational methods are nowadays and what 
 }
 \part{Graphical Models}
 
-\chapter{Introduction (WIP)}
+\chapter{Introduction}
 \input{tex/GraphicalModels/introduction}
 
 \chapter{Bayesian networks}
@@ -216,7 +234,7 @@ Some introduction about how important Variational methods are nowadays and what 
 \ctparttext{
   \color{black}
   \begin{center}
-
+    Some inference methods get optimized when applied among with a graphical model, in this part we focus in how methods we have already reviewed use the Bayesian network structure.
   \end{center}
 }
 \part{Bayesian Networks Learning}
@@ -224,29 +242,17 @@ Some introduction about how important Variational methods are nowadays and what 
 \chapter{Maximum Likelihood Training}
 \input{tex/BayesianNetworksLearning/maximum-likelihood}
 
-\chapter{Bayesian Training}
+\chapter{Bayesian Training (Revision Needed)}
 \input{tex/BayesianNetworksLearning/bayesian}
-
-\chapter{Structure Learning}
-\input{tex/BayesianNetworksLearning/structure-learning}
-
-\chapter{Missing variables}
-\input{tex/BayesianNetworksLearning/missing-variables}
 
 \chapter{Variational Inference in Bayesian Networks}
 \input{tex/BayesianNetworksLearning/variational-inference}
 
-\section{Expectation Maximization}
-\input{tex/BayesianNetworksLearning/expectation-maximization}
-
-\section{Variational Message Passing}\label{sec:vmp}
-\input{tex/BayesianNetworksLearning/variational-message-passing}
 
 
 \ctparttext{
   \color{black}
   \begin{center}
-
   \end{center}
 }
 \part{Commonly studied Latent Variable Models}
@@ -283,9 +289,13 @@ Some introduction about how important Variational methods are nowadays and what 
 \part{Annexes}
 
 \appendix
-\chapter{Distributions in the exponential family (WIP)}\label{ap:exp_fam}
+\chapter{Distributions in the exponential family (Work in Progress)}\label{ap:exp_fam}
 \input{tex/Appendixes/A}
 
+\addtocontents{toc}{\vspace{1\baselineskip}}
+\clearpage
+\printglossary[title={Notation}]
+\glsaddallunused
 
 \clearpage
 \nocite{*}

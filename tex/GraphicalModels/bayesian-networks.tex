@@ -65,6 +65,14 @@ P(x_1, x_2 | x_4) &= \frac{1}{P(x_4)}\int_{x_3}P(x_1, x_2, x_3, x_4)
 \end{aligned}
 \]
 
+\begin{proposition}\label{prop:bn_neig_indep}
+  Let \(X\) and \(Y\) be two different nodes of a Bayesian network such as \(Y \not \in ne(X)\), then
+  \[
+    X \bigCI Y \mid ne(X).
+  \]
+  Which means that all information about \(X\) is in its neighbors.
+\end{proposition}
+
 \section{D-separation and D-connection}
 
 Now we are going to define two central concepts to determine conditional
@@ -244,3 +252,82 @@ P(G=T, R=T, S=T) &= P(S=T|R=T)P(G=T|R=T,S=T)P(R=T) \\
 \]
 \end{exampleth}
 
+\section{Structure Learning}
+
+The Bayesian network structure is not always given and has to be learned from the data, to achieve this, there are some issues that need to be taken into account.
+\begin{itemize}\setlength{\itemsep}{0.15cm}
+  \item The number of Bayesian networks is exponential over the number of variables so a brute force algorithm would not be viable.
+  \item Testing dependencies requires a large amount of data, therefore, a threshold must be set to measure when a dependence is significant.
+  \item The presence of hidden variables might not be learned from the data.
+\end{itemize}
+
+
+\begin{algorithm}[t]
+  \SetAlgoLined\KwData{Complete undirected graph \(G\), with vertices \(V\)}
+  \KwResult{\(G\) with removed links}
+  \(i = 0\)\;
+  \While{all nodes have \(\leq i\) neighbors}{
+    \For{\(X \in V\)}{
+      \For{\(Y \in ne(x)\)}{
+        \If{\(\exists S \subset ne(X)\backslash Y\) such that \(\#S = i\) and
+          \(X \bigCI Y \mid S\)}{
+          Remove \(X-Y\) from \(G\)\;
+          \(S_{XY} = S\)\;
+        }
+      }
+    }
+    \(i = i+1\)\;
+  }
+  \caption{PC Algorithm for skeleton learning}\label{alg:pc}
+\end{algorithm}
+
+\subsection{PC Algorithm}
+
+The \emph{PC algorithm} (\cite{spirtes2000causation} Chapter 5.4.2) learns the skeleton structure given a complete graph \(G=(V,E)\) (constructed from the considered set of variables) and orients these edges using variable independence in the empirical distribution.
+
+The skeleton learning part (Algorithm~\ref{alg:pc}) iterates over subsets of neighborhoods, from smaller to bigger ones. It chooses a linked pair of variables \((X,Y) \in E\) and
+a subset \(S_{XY} \subset ne(X)\), verifying \(Y \notin S_{XY}\). If \(X \bigCI Y \mid S\), then the link is removed and \(S_{XY}\) is stored.
+
+The main idea behind the algorithm is that a set of independencies is faithful to a graph if (using Proposition~\ref{prop:bn_neig_indep}):
+\[
+  (X,Y) \not \in E \iff \exists S \subset ne(X) \ : \ X \bigCI Y \mid S.
+\]
+
+This procedure results in the skeleton of the Bayesian Network, no more edges will be removed or added. The directed graph may be constructed following two rules:
+\begin{enumerate}
+  \item For any undirected link \(X - Y - Z\), if \(Y \notin S_{XZ}\) then set
+    \(X \to Y \leftarrow Z\) (we are creating a collider for that path).
+  \item The rest of links may oriented arbitrarily not
+creating cycles or colliders.
+\end{enumerate}
+The reasoning behind is the d-separation Theorem~\ref{th:d-separation},  if \(Y \notin S_{XZ}\) then \(X \bigCD Z \mid Y\) so \(Y\) must d-connect them, to get this we set it as a collider. On the other hand, if \(Y \in S_{XZ}\) and
+\(X \bigCI Z \mid S_{XZ}\) then we want \(S_{XZ}\) to d-separate them, that is,
+using any configuration that doesn't create a collider in \(S_{XZ}\).
+
+\subsection{Independence Learning}
+
+The PC algorithms assumes there exists a procedure of testing conditional independence of variables, that is, given three variables \(X, Y\) and \( Z \),  measure \(X \bigCI Y \mid Z\). One approach is to measure the empirical \emph{conditional mutual information} of the variables.
+
+\begin{definition}
+  Given two random variables \(X, Y\), we define their \emph{mutual information} as the Kullback-Leibler divergence of their joint distribution and the product of their marginals,
+  \[
+    MI(X;Y) = \KL{P_{X,Y}}{P_{X}P_{Y}}.
+  \]
+\end{definition}
+
+\begin{definition}
+  Given three random variables \(X, Y, Z\) we define the \emph{conditional mutual information} of \(X\) and \(Y\) over \(Z\) as
+  \[
+    MI(X;Y\mid Z) = \E{Z}{\KL{P_{X,Y \mid Z}}{P_{X\mid Z} P_{Y \mid Z}}}.
+  \]
+\end{definition}
+Where \(MI(X;Y \mid Z) \geq 0\) and \(MI(X;Y \mid Z) = 0 \iff P_{X,Y \mid Z} = P_{X\mid Z} P_{Y \mid Z} \iff X\bigCI Y \mid Z\). We can estimate this using the empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\), therefore a threshold must be established.
+
+A Bayesian approach would consist on comparing the model likelihood under independence and dependence hypothesis:
+\[
+  P_{indep}(x,y,z \mid \btheta) = P(x\mid z, \btheta)P(y \mid z, \btheta)P(z \mid \btheta)P(\btheta),
+\]
+\[
+P_{dep}(x,y,z \mid \btheta) = P(x,y,z \mid \btheta)P(\btheta).
+\]
+Which means checking which assumptions is most probable to have generated the data.
