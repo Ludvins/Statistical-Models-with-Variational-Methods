@@ -17,3 +17,7 @@ _minted-main
 *.nlo
 *.run.xml
 *.sbl
+*.glg
+*.gls
+*.sym
+dataset
