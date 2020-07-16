@@ -1,0 +1,37 @@
+
+When dealing with real datasets, these might not be completed and \emph{missing information} might appear, that is, states of visible data that are missing. This differs from hidden variables in that the observation should exists but may be missing due to human errors. However, no missing information is assumed in this study. Therefore, we are just reviewing a few concepts and definitions.
+
+There are three main types of missing data:
+\begin{itemize}
+  \item \textbf{Missing completely at random (MCAR)}. If the events that lead to any particular data to be missing is independent from both the observed and the unobserved variables, and occur at random.
+  \item \textbf{Missing at random (MAR)}. When the absence is not random but can be explained with the observed variables.
+  \item \textbf{Missing not at random (MNAR)}. The missing data is related with the reason why it is missing. For example, skipping a question in a survey for being ashamed of the answer.
+\end{itemize}
+
+To express this mathematically, split the variables \(\bX\) into visible \(\bX_{vis}\) and hidden \(\bX_{hid}\), let \(M\) be a variable denoting that the state of the hidden variables is known \((0)\) or unknown \((1)\).
+So the difference between the three types resides on how \(P(M = 1 \mid \bx_{vis}, \bx_{hid}, \btheta)\) simplifies. When data is \emph{missing at random}, we assume that we can explain the missing information with the visible one, so the probability of being missing only depends on the visible data, that is
+\[
+  P(M = 1 \mid \bx_{vis}, \bx_{hid}, \btheta) = P(M = 1 \mid \bx_{vis}).
+\]
+Thus,
+\[
+  P(\bx_{vis}, M = 1 \mid \btheta) = P(M = 1 \mid \bx_{vis})P(\bx_{vis} \mid \btheta).
+\]
+
+Assuming the data is \emph{missing completely at random} is stronger, as we are supposing that there is no reason behind the missing data, so that it being missing is independent from the visible and hidden data:
+\[
+  P(M = 1 \mid \bx_{vis}, \bx_{hid}, \btheta) = P(M = 1),
+\]
+so now
+\[
+    P(\bx_{vis}, M = 1 \mid \btheta) = P(M = 1)P(\bx_{vis} \mid \btheta).
+\]
+In both cases we may simply use the marginal \(P(\bx_{vis} \mid \btheta)\) to assess parameters as \(P(\bx_{vis}, M = 1 \mid \btheta)\) does not depend on the missing variables.
+
+In case data is \emph{missing not at random}, no independence assumption is made over the probability of the data being unknown, meaning it depends on both the visible and the hidden information. Assuming that missing information is either MAR or MCAR could lead to a misunderstanding of the problem as in the following simple example.
+
+\begin{exampleth}
+  Consider a situation where data is obtained from a survey where people are asked to choose between 3 options \(A, B\) and \(C\). Assume that no one chose option \(C\) because they are ashamed of the answer, and those answers are uniform between \(A\), \(B\) and not answering.
+
+  Normalizing the missing information would lead to setting \(P(A \mid \bx) = 0.5 = P(B \mid \bx)\) and \(P(C \mid \bx) = 0\) when the reasonable result is that not answering equals to choosing \(C\) so that \(P(A \mid \bx) = P(B \mid \bx) = P(C \mid \bx) = \frac{1}{3}\)
+\end{exampleth}
