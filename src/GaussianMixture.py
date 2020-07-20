@@ -15,7 +15,7 @@ print(data.shape)
 plt.scatter(data[:, 0], data[:, 1])
 plt.show()
 
-K = 5
+K = 2
 
 mu = nodes.Gaussian(np.zeros(D), 0.01 * np.identity(D), plates=(K,))
 

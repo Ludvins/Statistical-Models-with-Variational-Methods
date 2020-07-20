@@ -14,6 +14,7 @@ import seaborn as sns
 
 sns.set()
 import warnings
+from sklearn.svm import SVC
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 from sklearn.model_selection import train_test_split
@@ -21,8 +22,13 @@ import tensorflow as tf
 from tensorflow_probability import edward2 as ed
 import inferpy as inf
 import sys
+from inferpy.data import mnist
 
 import matplotlib.cm as cm
+from bayespy import nodes
+from bayespy.inference import VB
+
+from sklearn.mixture import GaussianMixture
 
 ##########################################
 ############ Print functions #############
@@ -45,34 +51,24 @@ def print_loss_function(VI):
     plt.show()
 
 
+def print_class_pie_diagram(y, labels):
+    prop_class = y.value_counts(normalize=True)
+    figureObject, axesObject = plt.subplots()
+    axesObject.pie(prop_class * 100, labels=labels, autopct="%1.2f", startangle=180)
+    axesObject.axis("equal")
+    plt.title("Class distribution")
+    plt.show()
+
+
 def print_posterior(z, y):
     """
     Prints the model posterior in a 2D representation. The model is supposed to have the following variables:
     - z: Hidden 2-dimensoinal variable to represent.
     - x: Observed variable with dataset X.
     """
-    if z.shape[1] == 2:
-        ax = sns.scatterplot(x=z[:, 0], y=z[:, 1], hue=y, style=y, legend="full")
-    if z.shape[1] == 3:
-        # markers = ["x", "+", "-", "*", ""]
-        colors = cm.rainbow(np.linspace(0, 1, len(y.unique())))
-
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection="3d")
-        labels = y.unique()
-        n_classes = len(labels)
-
-        for c in range(0, n_classes):
-            ax.scatter(
-                z[y == labels[c], 0],
-                z[y == labels[c], 1],
-                z[y == labels[c], 2],
-                c=colors[c].reshape(1, -1),
-                label=labels[c],
-                # marker=markers[c],
-                alpha=0.9,
-            )
-    plt.legend()
+    df = pd.DataFrame(data=z)
+    df[y.name] = y
+    sns.pairplot(df, hue=y.name, palette="Set2", diag_kind="kde", height=2.5)
 
 
 def print_posterior_with_line(z, y, w):
@@ -91,6 +87,14 @@ def print_posterior_with_line(z, y, w):
     )
     ax.set_xlim(xmin, xmax)
     ax.set_ylim(ymin, ymax)
+
+
+def test_separability(X, z, y):
+    svm = SVC()
+    svm.fit(X, y)
+    print("SVM score in observed space:", svm.score(X, y))
+    svm.fit(z, y)
+    print("SVM score in hidden space:", svm.score(z, y))
 
 
 ##################################################
