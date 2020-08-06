@@ -162,7 +162,7 @@ probability distribution for real-valued random variables.
 
 \begin{definition}
   We say the real valued random variable \(X\) follows a \emph{normal distribution} of
-  parameters \(\mu, \sigma \in \mathbb{R}\), denoted as \(X \sim N(\mu,
+  parameters \(\mu, \sigma \in \mathbb{R}\), denoted as \(X \sim \mathcal{N}(\mu,
   \sigma)\) if and only if, its probability density function exists and is
   \[
     f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{1}{2}\big(\frac{x-\mu}{\sigma} \big)^2}.
@@ -180,21 +180,18 @@ its density function is
   f(x) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}x^2}.
 \]
 
-One of the properties of the normal distribution is that if \(X \sim N(\mu, \sigma)\), \(a,b \in \mathbb{R}\) and \(f:\mathbb{R} \to \mathbb{R}\) be defined
-as \(f(x) = ax + b\), then \(f(X) \sim N(\mu + b, a^2 \sigma)\).
+One of the properties of the normal distribution is that if \(X \sim \mathcal{N}(\mu, \sigma)\), \(a,b \in \mathbb{R}\) and \(f:\mathbb{R} \to \mathbb{R}\) be defined
+as \(f(x) = ax + b\), then \(f(X) \sim \mathcal{N}(\mu + b, a^2 \sigma)\).
 
 \subsection*{Multi-Variate Normal Distribution}
 
 This distribution plays a fundamental role in this project so we will discuss
-its properties in more detail.
-
-This distribution is an extension of the uni-variate one when having a
+its properties in more detail. It is an extension of the uni-variate one when having a
 multi-variate random variable.
 
 \begin{definition}
-We say that a random vector \(\bm{X} = (X_1,\dots,X_p)\) follows a \emph{multi-variate normal
-  distribution} of parameters \(\bm{\mu} \in \mathbb{R}^p\) and \(\bm{\Sigma}
-\in \mathbb{M}_n(\mathbb{R})\), denoted as \(\bm{X} \sim N(\bm{\mu},
+We say that a random vector \(\bm{X} = (X_1,\dots,X_p)\) follows a \emph{multi-variate normal or Gaussian distribution} of parameters \(\bm{\mu} \in \mathbb{R}^p\) and \(\bm{\Sigma}
+\in \mathbb{M}_n(\mathbb{R})\), denoted as \(\bm{X} \sim \mathcal{N}(\bm{\mu},
 \bm{\Sigma})\) if and only if its probability density function is
 
 \[
@@ -202,13 +199,13 @@ We say that a random vector \(\bm{X} = (X_1,\dots,X_p)\) follows a \emph{multi-v
 \]
 
 Where \(\bm{\mu}\) is the mean vector of the distribution, and \(\bm{\Sigma}\)
-the covariance matrix. The inverse matrix \(\bm{\sigma}^{-1}\) is called \emph{precision}.
+the \emph{covariance matrix}. The inverse matrix \(\bm{\Sigma}^{-1}\) is called \emph{precision matrix}.
 It also satisfies that
 \[
 \bm{\mu} = \mathbb{E}[\bm{X}], \quad \bSigma = \E{}{(\bx - \bmu)(\bx - \bmu)^T}.
 \]
 
-As \(\bSigma\) is a real symmetric matrix, it can be eigendecomposed
+As \(\bSigma\) is a real symmetric matrix, it can be eigen-decomposed as
 \[
   \bSigma = \bm{E}\bm{\Delta}\bm{E}^T,
 \]
@@ -225,8 +222,8 @@ we get that
   (\bx - \bmu)^T\bSigma(\bx - \bmu) = \bm{y}^T\bm{y}.
 \]
 
-Using this, the multi-variate Normal Distribution reduces to a product of \(n\)
-uni-variate standard normal distributions.
+Using this, the multi-variate Gaussian distribution reduces to a product of \(n\)
+uni-variate standard Gaussian distributions.
 
 \end{definition}
 
@@ -237,9 +234,7 @@ Another continuous distribution that we are going to use is the \emph{Gamma
 
 \begin{definition}
 
-  We say that a continuous random variable \(X\) defined on \(\mathbb{R}^{+}\)  follows a \emph{Gamma distribution} of parameters \(\alpha,
-\beta > 0\), denoted as \(X \sim Gamma(\alpha, \beta)\) if and only if its
-density function is
+We say that a continuous random variable \(X\) defined on \(\mathbb{R}^{+}\)  follows a \emph{Gamma distribution} of parameters \(\alpha, \beta > 0\), denoted as \(X \sim Gamma(\alpha, \beta)\) if and only if its density function is
 
 \[
   f(x) = \frac{\beta^{\alpha} x^{\alpha-1}e^{-\beta x}}{\Gamma(\alpha)},
@@ -259,6 +254,41 @@ The \emph{inverse gamma distribution} is defined by the density function
 \]
 \end{definition}
 
+\subsection*{Wishart Distribution}
+
+The Wishart distribution is a generalization of the gamma distribution to multiple dimensions. Consider \(G\) a \(p\times \nu\) matrix where each column \(G_{i} \sim \mathcal{N}_{p}(0, \bV)\) is independent from the others, with \(V\) a common vector.
+
+Then \(S = GG^{T}\) follows a Wishart distribution with \(\nu\) degrees of freedom,
+\[
+  S \sim \mathcal{W}(\nu, \bV).
+\]
+The Wishart distribution is characterized by its probability density function
+\[
+  f(x) = \frac{1}{2^{\nu p/2} |\bV|^{\nu /2} \Gamma_{p}(\frac{\nu}{2})}|x|^{(\nu-p-1)/2}e^{-(1/2)tr(\bV^{-1}x)},
+\]
+where
+\[
+  \Gamma_{p}(\frac{\nu}{2}) = \pi^{p(p-1)/4}\prod_{j=1}^{p}\Gamma \Big( \frac{n}{2}-\frac{j-1}{2} \Big).
+\]
+
+\subsection*{Gaussian-Wishart Distribution}
+
+The Gaussian-Wishart distribution is a four parameter distribution. Let \(\bmu\) follow a Gaussian distribution of mean \(\bmu_{0}\) and covariance matrix \((\bm{\lambda} \bLambda)^{-1}\)
+\[
+  \bmu \sim \mathcal{N}(\bmu_{0}, (\bm{\lambda} \bLambda)^{-1}),
+\]
+where \(\bLambda\) follows a Wishart distribution with parameters \(\nu, \bm{W}\):
+\[
+  \bLambda \sim \mathcal{W}(\nu, \bm{W}).
+\]
+Then their joint distribution is a Gaussian-Wishart distribution:
+\[
+  (\bmu, \bLambda) \sim \mathcal{N}\mathcal{W}(\bmu_{0}, \bm{\lambda}, \nu, \bm{W}).
+\]
+Their probability density function equals a product of the corresponding Gaussian and Wishart distribution:
+\[
+  f(\bmu, \bLambda) = \mathcal{N}(\bmu_{0}, (\bm{\lambda} \bLambda)^{-1})\mathcal{W}(\nu, \bm{W})\footnote{Each distribution symbolyze its density funcion.}.
+\]
 
 \subsection*{Beta Distribution}
 
