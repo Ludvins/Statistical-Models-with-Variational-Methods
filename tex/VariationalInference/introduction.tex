@@ -1,9 +1,9 @@
 
-As typical in Bayesian inference, the parameters and latent variables are grouped together as ``hidden variables''. \emph{Variational Bayesian methods} or simply \emph{variational methods} are primarily used for two purposes:
+In Bayesian inference, both parameters and latent variables are commonly clustered as ``hidden variables''. \emph{Variational Bayesian methods} or simply \emph{variational methods} are primarily used for two purposes:
 
  \begin{enumerate}  \setlength{\itemsep}{1pt}
-   \item Perform statistical inference over the unobserved variables by providing an analytical approximation to the posterior probability of them.
-   \item To derive a lower bound for the marginal likelihood of the observed data (i.e. marginal probability of the data over the unobserved variables). This is typically used for performing model selection, where a higher marginal likelihood for a given model indicates a better fit of the data by that model and hence a greater probability that the model in question was the one that generated the data.
+   \item Perform statistical inference over the unobserved variables by provide an analytical approximation to their posterior probability.
+   \item Derive and compute a lower bound for the observed data marginal likelihood, that is, the marginal probability of the observed data data over the unobserved variables. This is commonly used to perform model selection, where a model with a higher marginal likelihood has a greater probability for being the model that generated the data.
  \end{enumerate}
 
  The considered elements of a variational Bayesian model are: a set of observed variables \(\bX = \{X_{1},\dots,X_{N}\}\) among with hidden variables \(\bZ = \{Z_{1},\dots,Z_{M}\}\). Their corresponding set of observations \(\bx = (x_{1},\dots, x_{N})\),  \(\bz = (z_{1}, \dots, z_{M})\), where the latter denotes a possible configuration for the hidden variables.
@@ -64,7 +64,7 @@ In contrast, \emph{variational inference} exchanges the inference problem with a
 
 These \(Q\) distributions are typically referred as \emph{variational distributions} of the optimization problem.
 
-Compared to \emph{Markov Chain Monte Carlo (MCMC)}, variational inference tends to be faster and scale easier to large data (\cite{blei2017variational}), it has been applied to different problems such as computer vision, computational neuroscience and document analysis (\cite{blei2014build}). Monte Carlo methods are computationally very intensive, and also suffer from difficulties in diagnosing convergence (\cite{winn2005variational}).
+Compared to \emph{Markov Chain Monte Carlo (MCMC)}, variational inference tends to be faster and scale easier to large data (\cite{blei2017variational}), it has been applied to different problems such as computer vision, computational neuroscience and document analysis (\cite{blei2014build}). Monte Carlo methods are usually very intense computationally and suffer from difficulties in diagnosing convergence (\cite{winn2005variational}).
 
 Analyzing the Kullback-Leibler divergence, it may be decomposed in the following way:
 \[
@@ -81,7 +81,7 @@ Although the Kullback-Leibler divergence cannot be computed as long as \(P(\bz \
   \log{P(\bx)} \geq  - \underbrace{\E{Q(\bz)}{\log{Q(\bz)}}}_{Entropy} + \underbrace{\E{Q(\bz)}{\log{P(\bx, \bz)}}}_{Energy}  = \text{ELBO}(Q).\footnote{Energy and Entropy  terms come from a statistical physics terminology (\cite{barber})}
 \]
 
-Minimizing the Kullback-Leibler divergence is equivalent to maximize the ELBO as equality holds if and only if \(Q(\bz) = P(\bz \mid \bx)\). The ELBO may be written as
+As \(P(x)\) does not depend on \(Q\), minimizing the Kullback-Leibler divergence is equivalent to maximize the ELBO as equality holds if and only if \(Q(\bz) = P(\bz \mid \bx)\). The ELBO may be written as
 \[
   \begin{aligned}
     \text{ELBO}(Q) &= \E{Q(\bz)}{\log{P(\bz)}} + \E{Q(\bz)}{\log{P(\bx \mid \bz)}} - \E{Q(\bz)}{\log{Q(\bz)}}\\

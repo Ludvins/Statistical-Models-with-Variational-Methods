@@ -1,9 +1,9 @@
 
-The \emph{expectation maximization (EM)} algorithm (\cite{mclachlan2007algorithm, bishop2006pattern}) is a partially non-Bayesian, likelihoodist iterative method to find maximum likelihood estimates of parameters in statistical models where the model depends on latent variables.
+The \emph{expectation maximization (EM)} algorithm (\cite{dempster1977maximum,mclachlan2007algorithm, bishop2006pattern}) is a partially non-Bayesian, likelihoodist iterative method to find maximum likelihood estimates of parameters in statistical models where the model depends on latent variables.
 
-The algorithm consist of a two step iteration where the first optimizes the variational distribution element \(Q\)  and the second optimizes the set of parameters \(\btheta\). A fully Bayesian version would consider a probability distribution over the parameter, where the distinction between the two steps disappears. In that case, as many steps as latent variables (including the parameters) are needed per iteration, where each variable is optimized at a time. For \emph{graphical models} this is easy to compute as each variable's new variational distribution depends only on its \emph{Markov blanket}, so local \emph{message passing} can be used for efficient inference (Chapter~\ref{sec:vmp}).
+The algorithm consists of a two step iteration where the first optimizes the variational distribution element \(Q\)  and the second optimizes the set of parameters \(\btheta\). A fully Bayesian version would consider a probability distribution over the parameter, where the distinction between the two steps disappears. In that case, as many steps as latent variables (including the parameters) are needed per iteration, where each variable is optimized at a time. For \emph{graphical models} this is easy to compute as each variable's new variational distribution depends only on its \emph{Markov blanket}, so local \emph{message passing} can be used for efficient inference (Chapter~\ref{sec:vmp}).
 
-Using the same notation as the previous characters, EM's iterative procedure increases the ELBO for the parametric marginal \(\log P(\bx \mid \btheta)\),
+Using the same notation as in Chapter~\ref{ch:vi_intro}, EM's iterative procedure increases the ELBO for the parametric marginal \(\log P(\bx \mid \btheta)\),
 \[
   \log{P(\bx \mid \btheta)} \geq \underbrace{-\E{Q(\bz)}{\log{Q(\bz)}}}_{\text{Entropy}} + \underbrace{\E{Q(\bz)}{\log{P(\bx, \bz \mid \btheta)}}}_{\text{Energy}},
 \]
@@ -48,7 +48,7 @@ Then, the EM algorithm consists on:
   \caption{Expectation Maximization Algorithm}\label{alg:em}
 \end{algorithm}
 
-In the specific situation where \(\bx\) consists on \(N\) observations of the same variable \(X\) and each observation of \(X\) is related with a single hidden variable \(Z\), for example, a mixture distribution, the following considerations might be taken:
+In the specific situation where \(\bx\) consists on \(N\) observations of the same variable \(X\) and each observation of \(X\) is related with a single hidden variable \(Z\), for example, the case of a mixture distribution, the following considerations might be taken:
 \begin{itemize}\setlength{\itemsep}{0.2cm}
   \item Observations are treated as observations of i.i.d variables \(X_{1},\dots, X_{N}\) and \(Z_{1},\dots,Z_{N}\).
   \item The variational distribution \(Q\) now factorizes over the hidden variables as it is known that they are independent from each other:
@@ -159,10 +159,11 @@ Where we know the last term is always positive. About the difference of bounds, 
 \section{Example: Binomial Mixture}
 In this section we are using a coin-flipping experiment as an example to show limitations of classical maximum likelihood inference due to the presence of hidden variables. The EM algorithm is then used to surpass these limitations. The example consists in a \emph{mixture distribution} based on~\cite{do2008expectation}.
 
-The experiment consist of randomly choosing one of a pair of coins \(A\) and \(B\) with unknown biases, \(\theta_{A}\)  and \(\theta_{B}\). Let \(1\) denote \textit{heads} and \(0\) denote \textit{tails}. The selected coin is tossed \(M\)  times, repeating this whole procedure \(N\)  times. In short, the experiment is governed by two parameters:
+The experiment consist of randomly choosing (with equal probability) one of a pair of coins \(A\) and \(B\) with unknown biases, \(\theta_{A}\)  and \(\theta_{B}\). Let \(1\) denote \textit{heads} and \(0\) denote \textit{tails}. The selected coin is tossed \(M\)  times, repeating this whole procedure \(N\)  times. In short, the experiment is governed by two parameters:
 \[
-  P(A = 1) = \theta_{A} \quad \text{and} \quad P(B = 1) = \theta_{B},
+  P(A = 1) = \theta_{A} \quad \text{and} \quad P(B = 1) = \theta_{B}.
 \]
+If the coins were not chosen with equal probability but using an unknown parameter, it could be also learn by the algorithm.
 
 Maximum likelihood training attempts to infer the value of \(\bm{\theta} = (\theta_{A}, \theta_{B})\) that maximizes the likelihood.
 
@@ -261,6 +262,8 @@ Another important factor is, that the EM algorithm assumes that the energy term 
 
 An extreme case is to choose \(\mathcal{Q}\) as delta functions, where the energy term is now a constant, and the optimal setting is
 \[
-Q(z_{n}) = \delta (z_{n}, z_{n}^{opt}) , \quad z_{n}^{opt} = \argmax_{z}P(z , x_{n} \mid \theta).
+Q(z_{n}) = \delta (z_{n}, z_{n}^{opt}) \quad \text{and} \quad z_{n}^{opt} = \argmax_{z}P(z , x_{n} \mid \theta).
 \]
-This is called \emph{Viterbi training} and does not guarantee that the log likelihood is being increased in each iteration.
+This is called \emph{Viterbi training} and does not guarantee that the log likelihood is being increased on each iteration.
+
+Viterbi training justifies its approach reasoning that, given the sufficient amount of data, the likelihood function \(P(\bx, \bz \mid \btheta)\) will be peaked around its optimum value. This suggest that the initial value of the parameter plays a major role in Viterbi training, compared to the classical EM. This technique is commonly used for training hidden Markov models (HMMs) (\cite{barber} Section 23.2).

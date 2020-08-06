@@ -1,6 +1,6 @@
 \section{Model statement}
 
-A Gaussian mixture model is a latent variable model that assumes all the data points are generated from a mixture of a finite number of Gaussian distributions with unknown parameters.
+A \emph{Gaussian mixture model} is a latent variable model where the data is assumed to be generated from a finite number of Gaussian distributions with unknown parameters.
 
 \pgfmathdeclarefunction{gauss}{2}{%
   \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
@@ -18,34 +18,30 @@ A Gaussian mixture model is a latent variable model that assumes all the data po
       \addplot {gauss(3, 0.4)};
     \end{axis}
   \end{tikzpicture}
-  \caption{One-dimensional Gaussian mixture with 3 clusters.}
+  \caption{One-dimensional Gaussian mixture with three clusters. Those are \(\mathcal{N}(0, 0.5)\), \(\mathcal{N}(2, 0.75)\) and \(\mathcal{N}(3, 0.4)\).}
 \end{figure}
 
 
-The following elements are being considered (using~\cite{bishop2006pattern} notation):
+The following elements are being considered (using~\cite{bishop2006pattern} Chapter 10.2 notation):
 \begin{itemize}\setlength\itemsep{1em}
   \item \(K\) mixture components and \(N\) observations.
-  \item A set of i.i.d real valued random variables \(\bX = (X_{1},\dots, X_{N})\) and a corresponding set of observations \(\bx = (x_{1},\dots, x_{n})\).
-  \item The cluster assignment latent variables \(\bZ = (Z_{1}, \dots, Z_{N})\), where each \(z_{n}\) is a vector full of zeros but a position with a one, indicating the cluster to which \( x_n \) belongs.
+  \item A set of i.i.d \(\mathbb{R}^{D}\)-valued random variables \(\bX = (X_{1},\dots, X_{N})\) and a corresponding set of observations \(\bx = (x_{1},\dots, x_{n})\).
+  \item The cluster assignment i.i.d latent variables \(\bZ = (Z_{1}, \dots, Z_{N})\), where each \(z_{n}\) is a binary vector where only one component is non zero, indicating the cluster to which \( x_n \) belongs.
   \item We choose a Dirichlet distribution over the mixing coefficients \(\bm{\pi}\)
     \[
     \bm{\pi} \sim \text{Symmetric-Dirichlet}(\alpha_{0}) \implies P(\bm{\pi}) \propto \prod_{k=1}^{K}\pi_{k}^{\alpha_{0}-1}.
     \]
     The hyper-parameter \(\alpha_{0}\) is the effective prior of each mixture component. Then \(\bm{\pi} = (\pi_{1},\dots,\pi_{K})\) are the mixture weights, i.e, prior probability of a particular component \(k\).
     \[
-    P(\bz\mid \bm{\pi}) = \prod_{n=1}^{N}\prod_{k=1}^{K}\pi_{k}^{z_{n,k}} \implies (Z_{n} \mid \bm{\pi}) \sim \text{Categorical}(\bm{\pi}).
+    P(\bz\mid \bm{\pi}) = \prod_{n=1}^{N}\prod_{k=1}^{K}\pi_{k}^{z_{n,k}} \implies Z_{n} \mid \bm{\pi} \sim \text{Categorical}(\bm{\pi}).
     \]
-  \item \(\bm{\mu} = (\mu_{1},\dots,\mu_{K})\) and \(\bm{\Lambda} = (\Lambda_{1},\dots,\Lambda_{K})\) are the distribution parameters of each observation full conditional
+  \item The distribution mean and precision of each Gaussian distribution, \(\bm{\mu} = (\mu_{1},\dots,\mu_{K})\) and \(\bm{\Lambda} = (\Lambda_{1},\dots,\Lambda_{K})\),
     \[
-    (\bm{X} \mid \bm{Z}, \bm{\mu}, \bm{\Lambda}) \sim \prod_{n=1}^{N}\prod_{k=1}^{K}\mathcal{N}(\mu_{k} \mid \Lambda_{k})^{z_{n,k}}.
+    P(\bx \mid \bz, \bm{\mu}, \bm{\Lambda}) = \prod_{n=1}^{N}\prod_{k=1}^{K}\mathcal{N}{(\mu_{k}, \Lambda_{k}^{-1})}^{z_{n,k}}.\footnote{This notation symbolizes the density function of the given Gaussian distribution.}
     \]
-  \item The prior governing \(\bm{\mu}\) and \(\bm{\Lambda}\) is an independent Gaussian, Inverse-Gamma distribution with hyper parameters \(m_{0}, \beta_{0}, w_{0}\) and \(v_{0}\):
+  \item The prior governing \(\bm{\mu}\) and \(\bm{\Lambda}\) is an independent Gaussian-Wishart distribution with hyper parameters \(m_{0}, \beta_{0}, W_{0}\) and \(\nu_{0}\):
     \[
-    P(\bm{\mu}, \bm{\Lambda}) = P(\bm{\mu} \mid \bm{\Lambda})P(\bm{\Lambda}) \text{ where }
-    \begin{cases}
-      (\bm{\mu}\mid\bm{\Lambda}) &\sim \displaystyle\prod_{k=1}^{K}\mathcal{N}(m_{0}, \beta_{0}\Lambda_{k})\\
-      \bm{\Lambda} &\sim \displaystyle\prod_{k=1}^{K}\text{Inverse-Gamma}(w_{0}, v_{0})
-      \end{cases}.
+    P(\bm{\mu}, \bm{\Lambda}) = P(\bm{\mu} \mid \bm{\Lambda})P(\bm{\Lambda}) = \prod_{k=1}^{K}P(\mu_{k}\mid \Lambda_{k})P(\Lambda_{k})= \prod_{k=1}^{K}\mathcal{N}(m_{0}, {(\beta_{0}\Lambda_{k})}^{-1}) \mathcal{W}(W_{0}, \nu_{0})
     \]
 \end{itemize}
 
@@ -54,38 +50,135 @@ The joint probability factorizes as
   P(\bm{x}, \bm{z}, \bm{\pi}, \bm{\mu}, \bm{\Lambda}) = P(\bm{x}\mid \bm{z}, \bm{\mu}, \bm{\Lambda})P(\bm{z}\mid \bm{\pi})P(\bm{\pi})P(\bm{\mu}\mid \bm{\Lambda})P(\bm{\Lambda}).
 \]
 
-~\cite{bishop2006pattern} gives the explicit update for the CAVI algorithm, in the following section we summarize the needed steps to reach the update for one factor of the variational distribution.
+The model can be represented with a Bayesian network as done in Chapter~\ref{ch:lvm_gm}. The needed steps to give the explicit CAVI update are now summarized following~\cite{bishop2006pattern} Chapter 10.2.
 
 \section{Variational Distribution and CAVI update}
 
-We consider a variational distribution in the mean-field family,
+We consider a variational distribution which factorizes as
 \[
-  Q(\bz, \bpi, \bmu, \bLambda) = Q(\bz)Q(\bpi)\prod_{k=1}^{K}Q(\mu_{k})Q(\Lambda_{k}).
+  Q(\bz, \bpi, \bmu, \bLambda) = Q(\bz)Q(\bpi, \bmu, \bLambda).
 \]
-Let us consider the update for \(Q(\bz)\), using the update given in~\ref{eq:cavi_update}:
+Let us consider the update for \(Q(\bz)\), the update might be written as the following (using the explicit update given in~\ref{eq:cavi_update}):
 \[
   Q^{new}(\bz) \propto \exp \E{Q(\bpi, \bmu, \bLambda)}{\log P(\bx, \bz, \bpi, \bmu, \bLambda)}.
 \]
-Which implies
+Which implies:
 \[
   \begin{aligned}
     \log Q^{new}(\bz) &= \E{Q(\bpi, \bmu, \bLambda)}{\log P(\bx, \bz, \bpi, \bmu, \bLambda)} + \text{const.}\\
-    &= \E{Q(\bpi, \bmu, \bLambda)}{\log \big( P(\bx \mid \bz, \bmu, \bLambda)P(\bz \mid \bpi)P(\bpi)P(\bmu \mid \bLambda)P(\bLambda) \big)} + \text{const.}\\
+    &= \E{Q(\bpi, \bmu, \bLambda)}{\log \Big( P(\bx \mid \bz, \bmu, \bLambda)P(\bz \mid \bpi)P(\bpi)P(\bmu \mid \bLambda)P(\bLambda) \Big)} + \text{const.}\\
     &= \E{Q(\bpi)}{\log P(\bz \mid \bpi)} + \E{Q(\bmu, \bLambda)}{\log P(\bx \mid \bz, \bmu, \bLambda)} + \text{const.}
   \end{aligned}
 \]
-Where
+The first term is,
 \[
   \begin{aligned}
     \E{Q(\bpi)}{\log P(\bz \mid \bpi)} &=  \E{Q(\bpi)}{\log \prod_{n=1}^{N}\prod_{k=1}^{K}\pi_{k}^{z_{n,k}}} = \E{Q(\bpi)}{\sum_{n=1}^{N}\sum_{k=1}^{K}z_{n,k}\log \pi_{k}}\\
     &= \sum_{n=1}^{N}\sum_{k=1}^{K}z_{n,k} \E{Q(\bpi)}{\log \pi_{k}}.
   \end{aligned}
 \]
-Following a similar reasoning with the other expectation, we get that defining
+On the other hand, the latter is,
 \[
-  \log \rho_{n,k} = \E{Q(\bpi)}{\pi_{k}} + \frac{1}{2}\E{\bLambda}{\log \| \Lambda_{k}\|} - \frac{D}{2} \log (2\pi) - \frac{1}{2}\E{\mu_{k}, \Lambda_{k}}{(x_{n} - \mu_{k})^{T}\Lambda_{k}(x_{n} - \mu_{k})},
+    \begin{aligned}
+    \E{Q(\bmu, \bLambda)}{\log& P(\bx \mid \bz, \bmu, \bLambda)} =\\
+    &=  \E{Q(\bmu, \bLambda)}{\log \prod_{n=1}^{N}\prod_{k=1}^{K} \frac{1}{\sqrt{(2\pi)^{D}|\Lambda_{k}^{-1}|}} \exp \Big( -\frac{1}{2}{(x_{n} - \mu_{k})}^{T}\Lambda_{k}(x_{n}- \mu_{k}) \Big)  }\\
+    &=  \E{Q(\bmu, \bLambda)}{ \sum_{n=1}^{N}\sum_{k=1}^{K}- \frac{D}{2}\log (2\pi)+  \frac{1}{2}\log |\Lambda_{k}|+ \Big( -\frac{1}{2}{(x_{n} - \mu_{k})}^{T}\Lambda_{k}(x_{n}- \mu_{k}) \Big)  }\\
+    &=  \sum_{n=1}^{N}\sum_{k=1}^{K}  - \frac{D}{2} \log (2\pi)+ \frac{1}{2}\E{Q(\bLambda)}{\log |\Lambda_{k}|}- \frac{1}{2}\E{Q(\mu_{k}, \Lambda_{k})}{(x_{n} - \mu_{k})^{T}\Lambda_{k}(x_{n} - \mu_{k})}.
+    \end{aligned}
 \]
-where \(D\) is the dimensionality of the data \(x\). We obtain
+Given this, the new variational distribution \(Q^{new}(\bz)\) follows a Categorical distribution with parameters \(r_{n,k}\), which are the normalization of \(\rho_{n,k}\), defined as,
 \[
-  Q^{new}(\bz) \propto \prod_{n=1}^{N}\prod_{k=1}^{K} \rho_{n,k}^{z_{n,k}}.
+  \log \rho_{n,k} = \E{Q(\bpi)}{\pi_{k}} + \frac{1}{2}\E{\bLambda}{\log | \Lambda_{k}|} - \frac{D}{2} \log (2\pi) - \frac{1}{2}\E{Q(\mu_{k}, \Lambda_{k})}{(x_{n} - \mu_{k})^{T}\Lambda_{k}(x_{n} - \mu_{k})},
 \]
+\[
+  r_{n,k} = \frac{\rho_{n,k}}{\sum_{k=1}^{K}\rho_{n,k}}.
+\]
+Notice that, as \(\rho_{n,k}\) is defined as the exponential of a real value, it is positive. Therefore, \(r_{n,k}\) are non-negative and sum one as required.
+The distribution is then
+\[
+  Q^{new}(\bz) = \prod_{n=1}^{N}\prod_{k=1}^{K} r_{n,k}^{z_{n,k}}.
+\]
+Using a similar reasoning to the factor \(Q(\bpi, \bmu, \bLambda)\), the update is:
+\[
+  \begin{aligned}
+    \log Q^{new}(\bpi, \bmu, \bLambda) &= \E{Q(\bz)}{\log P(\bx, \bz, \bpi, \bmu, \bLambda)} + \text{const.}\\
+    &=  \E{Q(\bz)}{\log \big( P(\bx \mid \bz, \bmu, \bLambda)P(\bz \mid \bpi)P(\bpi)P(\bmu \mid \bLambda)P(\bLambda) \big)} + \text{const.}\\
+    &=  \log P(\bpi) + \log P(\bmu \mid \bLambda)+ \log P(\bLambda) + \E{Q(\bz)}{\log P(\bz \mid \bpi)} \\
+    &\quad + \E{Q(\bz)}{\log P(\bx \mid \bz, \bmu, \bLambda)} + \text{const.}\\
+    &= \log P(\bpi) + \sum_{k=1}^{K}\log P(\mu_{k}, \Lambda_{k}) + \E{Q(\bz)}{\log P(\bz \mid \bpi)}\\
+    &\quad + \sum_{n=1}^{N}\sum_{k=1}^{K}r_{n,k} \log \mathcal{N}(\mu_{k}, \Lambda_{k}^{-1}) + \text{const.}
+  \end{aligned}
+\]
+Where \(\E{\bz}{z_{n,k}} = r_{n,k}\) is used. The right term can be decomposed in terms involving only \(\bpi\) and each \(\mu_{k}, \Lambda_{k}\). Therefore, the variational distribution factorizes as
+\[
+  Q(\bpi, \bmu, \bLambda) = Q(\bpi)\prod_{k=1}^{K}Q(\mu_{k}, \Lambda_{k}).
+\]
+Where
+\[
+  \begin{aligned}
+    \log Q^{new}(\bpi) &= \log P(\bpi) + \E{Q(\bz)}{\log P(\bz \mid \bpi)} + \text{const.}\\
+    \log Q^{new}(\mu_{k}, \Lambda_{k}) &= \log P(\mu_{k}, \Lambda_{k}) + \sum_{n=1}^{N}r_{n,k} \log \mathcal{N}(\mu_{k}, \Lambda_{k}^{-1}) + \text{const.}
+  \end{aligned}
+\]
+Inspecting the term that depends on \(\bpi\) one get that,
+\[
+  \log Q^{new}(\bpi) = (\alpha_{0} - 1)\sum_{k=1}^{K}\log \pi_{k} + \sum_{n=1}^{N}\sum_{k=1}^{K}r_{n,k} \log \pi_{k} + \text{const}.
+\]
+Naming \(N_{k} = \sum_{n=1}^{N}r_{n,k} \ \forall k=1,\dots,K\), the update is
+\[
+  Q^{new}(\bpi) \propto \prod_{k=1}^{K}\pi_{k}^{\alpha_{0}-1+N_{k}}.
+\]
+Defining \(\bm{\alpha}\), with components:
+\[
+  \alpha_{k} = \alpha_{0} + N_{k}, \quad \forall k = 1,\dots,K,
+\]
+the new variational distribution follows a Dirichlet distribution
+\[
+  Q^{new}(\bpi) \equiv \text{Dirichlet}(\bm{\alpha}).
+\]
+Lastly, the variational distribution \(Q(\mu_{k}, \Lambda_{k})\) does not factorize but the update is given by
+\[
+  \begin{aligned}
+    \log Q^{new}(\mu_{k}, \Lambda_{k}) &= \log P(\mu_{k}, \Lambda_{k}) + \sum_{n=1}^{N}r_{n,k} \log \mathcal{N}(\mu_{k}, \Lambda_{k}^{-1}) + \text{const.}\\
+    &= \log \mathcal{N}(m_{0}, {(\beta_{0}\Lambda_{k})}^{-1}) + \log \mathcal{W}(W_{0}, \nu_{0}) + \sum_{n=1}^{N}r_{n,k} \log \mathcal{N}(\mu_{k}, \Lambda_{k}^{-1}) + \text{const.}\\
+    &= \frac{\beta_{0}}{2}{(\mu_{k} - m_{0})}^{T}\Lambda_{k}(\mu_{k} - m_{0}) + \frac{1}{2}\log |\Lambda_{k}| - \frac{1}{2}Tr(\Lambda_{k}W_{0}^{-1})\\
+    &\quad + \frac{\nu_{0} - D - 1}{2}\log |\Lambda_{k}| - \frac{1}{2}\sum_{n=1}^{N}r_{n,k}{(x_{n}- \mu_{k})}^{T}\Lambda_{k}(x_{n} - \mu_{k})\\
+    &\quad + \frac{1}{2}N_{k} \log |\Lambda_{k}| + \text{const.}
+    \end{aligned}
+  \]
+  The above terms may be separated into those who depend on \(\mu_{k}\) and those who do not. Doing so, the variational distribution is written as
+  \[
+  \log Q^{new}(\mu_{k}, \Lambda_{k}) = \log Q^{new}(\mu_{k} \mid \Lambda_{k}) + \log Q^{new}(\Lambda_{k}).
+  \]
+  The first term is
+  \[
+      \log Q^{new}(\mu_{k}  \mid \Lambda_{k}) = \frac{1}{2}\mu_{k}^{T}\Big( \beta_{0} + \sum_{n=1}^{N}r_{n,k} \Big)\Lambda_{k}\mu_{k} + \mu_{k}^{T}\Lambda_{k}\Big( \beta_{0}m_{0} + \sum_{n=1}^{N}r_{n,k}x_{n} \Big) + \text{const.}
+  \]
+  Which implies that, naming
+  \[
+    \begin{aligned}
+      \beta_{k} &= \beta_{0} + N_{k},\\
+      m_{k} &= \frac{1}{\beta_{k}}\Big(\beta_{0}m_{0} + \sum_{n=1}^{N}r_{n,k}x_{n}\Big),
+    \end{aligned}
+  \]
+  , the variational distribution follows a Gaussian distribution
+  \[
+    Q^{new}(\mu_{k} \mid \Lambda_{k}) \equiv \mathcal{N}\Big( m_{k}, \beta_{k}\Lambda_{k}\Big).
+  \]
+  Following a similar reasoning (that can be found in~\cite{Svensn2007PatternRA}), defining:
+  \[
+    \begin{aligned}
+      \bar{x}_{k} &= \frac{1}{N_{k}}\sum_{n=1}^{N}r_{n,k}x_{n},\\
+      S_{k} &= \frac{1}{N_{k}}\sum_{n=1}^{N}r_{n,k}(x_{n}- \bar{x}_{k})(x_{n} - \bar{x}_{k})^{T},\\
+      W_{k}^{-1} &= W_{0}^{-1} + N_{k}S_{k} + \frac{\beta_{0}N_{k}}{\beta_{0} + N_{k}}(\bar{x}_{k} - m_{0})(\bar{x}-m_{0})^{T},\\
+      \nu_{k} &= \nu_{0} + N_{k},
+    \end{aligned}
+  \]
+  the other variational distribution follows a Wishart distribution of parameters,
+  \[
+    Q^{new}(\Lambda_{k}) \equiv \mathcal{W}(W_{k}, \nu_{k}).
+  \]
+  In conclusion, \(Q^{new}(\mu_{k}, \Lambda_{k})\) follows a Gaussian-Wishart distribution,
+  \[
+    Q^{new}(\mu_{k}, \Lambda_{k}) \equiv  \mathcal{N}( m_{k}, \beta_{k}\Lambda_{k}) \mathcal{W}(W_{k}, \nu_{k}).
+  \]

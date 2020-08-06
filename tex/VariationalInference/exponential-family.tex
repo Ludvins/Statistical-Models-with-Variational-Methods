@@ -26,7 +26,7 @@ In this form, it is easier to see that \(\bm{T}\) is the sufficient statistic fo
 
 An important property of the exponential family is that they have \emph{conjugate priors}, this is said when the posterior distribution is in the same probability distribution family as
 the prior distribution, they are then called \emph{conjugate distributions}, and
-the prior is called a \emph{conjugate prior} of the likelihood distribution.
+the prior is called a \emph{conjugate prior} of the likelihood distribution. Appendix~\ref{ap:conj_distr} shows examples of conjugate distributions and their conjugate priors.
 
 \begin{proposition}\label{prop:conj_prior}
   Let \(X\) be a random variable and \(\btheta\) a set of parameters. Suppose an exponential family likelihood:
@@ -54,7 +54,7 @@ the prior is called a \emph{conjugate prior} of the likelihood distribution.
 One important case of exponential family are \emph{latent variable models} or \emph{LVMs}. In this models, the following assumptions are made:
 \begin{enumerate}\itemsep0.5em
   \item There set of i.i.d random variables \(\bX = (X_{1},\dots,X_{N})\) and a set of observations \(\bx = (x_{1}, \dots, x_{N})\).
-  \item Both global \(\btheta\) and local hidden variables \(\bm{Z} = (Z_{1}, \dots, Z_{N})\) govern the data. We refer to \emph{global hidden variables} when they affect the whole distribution and \emph{local hidden variables} when they affect only to a subset, in this case each \(Z_{n}\) affects only \(x_{n}\). Given this, the joint probability is
+  \item There are both global and local latent variables. The global ones are denoted by \(\btheta\) whereas the locals are denoted by \(\bm{Z} = (Z_{1}, \dots, Z_{N})\). We refer to \emph{global hidden variables} when they affect the whole distribution and \emph{local hidden variables} when they affect only to a subset, in this case each \(Z_{n}\) affects only \(x_{n}\). Given this, the joint probability is
     \[
     P(\bx, \btheta, \bz) = P(\btheta)\prod_{n=1}^{N}P(z_{n}, x_{n} \mid \btheta).
     \]
@@ -71,7 +71,7 @@ One important case of exponential family are \emph{latent variable models} or \e
 
 One important case of LVMs and exponential family models are \emph{conditionally conjugate models}, where the following assumptions are made.
 \begin{enumerate}[itemsep=2ex]
-  \item The prior for the global latent variable \(P(\btheta)\) is in the exponential family with an hyper-parameter \(\alpha = [\alpha_{1}, \alpha_{2}]\), where \(\alpha_{1}\) is a vector and \(\alpha_{2}\) is a scalar, and statistics that concatenate the global latent variable and its log normalizer \([\btheta, -\psi(\btheta)]\),
+  \item The prior for the global latent variable \(P(\btheta)\) is in the exponential family with an hyper-parameter \(\alpha = [\alpha_{1}, \alpha_{2}]\), where \(\alpha_{1}\) is a vector and \(\alpha_{2}\) is a scalar, and statistics that concatenate the global latent variable \(\btheta\)  and its log normalizer from \(P(z_{n}, x_{n} \mid \btheta)\), \(\psi(\btheta)\)\footnote{The same symbol \(\psi\) is used for every normalizer function. The distinction must be made using their parameters. },
     \[
     P(\btheta) = h(\btheta) \exp \Big( \alpha^{T}[\btheta, -\psi(\btheta)] - \psi(\alpha)\Big).
     \]
@@ -87,7 +87,6 @@ One important case of LVMs and exponential family models are \emph{conditionally
     \[
     P(z_{n}\mid x_{n} , \btheta) =  h(z_{n})\exp \Big( {\eta(\btheta, x_{n})}^{T}T(z_{n}) - \psi(\btheta, x_{n}) \Big).
     \]
-
 \end{enumerate}
 
 Using Proposition~\ref{prop:conj_prior}, the posterior \(P(\btheta \mid \bx, \bz)\) is in the same family with parameter
@@ -155,7 +154,7 @@ Then, the variational parameter updated is
   \lambda^{new} = \Bigg[ \lambda_{1} + \sum_{n=1}^{N} \E{Q(z_{n}\mid \gamma_{n})}{T(x_{n},z_{n})}, \lambda_{2} + N \Bigg].
 \]
 
-We can compute the ELBO at each iteration up to a constant that does not depend on the variational parameters,
+The ELBO can be computed at each iteration up to a constant which does not depend on the variational parameters,
 \[
   \begin{aligned}
     ELBO &= {\Big( \lambda_{1} + \sum_{n=1}^{N} \E{Q(z_{n}\mid \gamma_{n})}{T(x_{n},z_{n})}\Big)}^{T}\E{Q(\btheta \mid \lambda)}{\btheta} - (\lambda_{2} + N) \E{Q(\btheta \mid \lambda)}{\psi(\btheta)}\\
