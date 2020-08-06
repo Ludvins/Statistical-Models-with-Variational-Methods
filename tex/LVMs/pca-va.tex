@@ -1,15 +1,12 @@
 
-LVMs have usually been restricted to the exponential family because, in this case, inference is feasible. But recent advances in variational inference have enabled LVMs to be extended with neural networks. For example, \emph{Variational Auto-encoders} or \emph{VAE} (\cite{kingma2013auto}) are the most influential models combining both concepts.
+LVMs are usually applied to the exponential family because inference is feasible in this case. Neural network have recent enabled LVMs to be extended outside the exponential family, for example, \emph{variational auto-encoders} or \emph{VAEs} (\cite{kingma2013auto}) are the most influential models combining both concepts. They extent the classical \emph{principal components analysis} (PCA~\cite{pearson1901liii}) technique for  reduction. Suppose we have a \(D\)-dimensional representation of a data point \(x\) and \(z\) is its latent \(K\)-dimensional representation (\(K < D\)). PCA computes an affine transformation \(\bm{W}\), represented by a \(K \times D\) matrix.
 
-VAEs extent the classical technique of \emph{principal components analysis} for data representation in lower-dimensional spaces. Suppose we have a \(D\)-dimensional representation of a data point \(x\) and \(z\) is its latent \(K\)-dimensional representation (\(K < D\)). PCA computes an affine transformation \(\bm{W}\), represented by a \(K \times D\) matrix.
-
-
-A probabilistic view of PCA can be modeled with an LVM (\cite{tipping1999probabilistic}), with the following elements:
+Whereas the PCA reduction is usually computed using either the singular value decomposition or the eigenvalue decomposition of the covariance matrix of the original data, a probabilistic view of PCA can be modeled with an LVM (\cite{tipping1999probabilistic}). The following elements are considered:
 
 \begin{itemize}
   \item \(\bX = \{X_{1},\dots,X_{N}\}\) i.i.d \(\mathbb{R}^{D}\)-valued random variables and the corresponding observations \(\bx = \{x_{1},\dots, x_{N}\}\).
   \item \(\bZ = \{Z_{1}, \dots, Z_{N}\}\) i.i.d latent \(\mathbb{R}^{K}\)-valued random variables, where \(Z_{n}\) models the \(K\)-dimensional representation of \(x_{n}\).
-  \item A global latent \(K\times D\)-dimensional random variable \(\bm{W}\).
+  \item A global latent \(K\times D\)-dimensional random variable \(\bm{W}\), which models the transformation between the spaces.
   \item A noise hyper-parameter \(\sigma^{2}\).
 \end{itemize}
 
@@ -44,20 +41,23 @@ We assume the priors are normally distributed:
 \]
 The data points are considered generated via a projection,
 \[
-  (X_{n} \mid Z_{n}, \bm{W}) \sim N(\bm{W}^{T}Z_{n}, \sigma^{2}I)\quad \forall n = 1,\dots, N.
+  X_{n} \mid Z_{n}, \bm{W} \sim \mathcal{N}(\bm{W}^{T}Z_{n}, \sigma^{2}I)\quad \forall n = 1,\dots, N.
 \]
-The probabilistic model extends the classical one in the way that the latter assumes the noise is infinitesimally small, i.e, \(\sigma^{2} \to 0\). The \emph{expectation-maximization algorithm} (Section~\ref{sec:em}) is commonly used to solve this variational inference problem.
+The probabilistic model extends the classical one in the way that the latter assumes the noise is infinitesimally small, i.e, \(\sigma^{2} \to 0\). The \emph{expectation-maximization algorithm} (Chapter~\ref{ch:vi_em}) is commonly used to solve this variational inference problem.
 
-
+There exists other approaches for the PCA model, for example, another variable \(W_{0}\) can be considered in order to produce non-centered points, that is,
+\[
+  W_{0} \sim \mathcal{N}_{D}(0, I) \quad \text{and} \quad   X_{n} \mid Z_{n}, \bm{W}, W_{0} \sim \mathcal{N}(\bm{W}^{T}Z_{n} + W_{0}, \sigma^{2}I)\quad \forall n = 1,\dots, N.
+\]
 
 \section{Artificial Neural networks}
 
-An \emph{artificial neural network} or \emph{ANN} with \(L\) hidden layers can be seen as a deterministic non-linear function \(f\) parameterized by a set of matrix \(\bm{W} = \{\bm{W}_{0},\dots, \bm{W}_{L}\}\) and non-linear activation functions \(\{r_{0},\dots, r_{L}\}\). Given an input \(x\) the output \(y\) is calculated has
+An \emph{artificial neural network} or \emph{ANN} with \(L\) hidden layers can be seen as a deterministic non-linear function \(f\) parameterized by a set of matrixes \(\bm{W} = \{\bm{W}_{0},\dots, \bm{W}_{L}\}\) and non-linear activation functions \(\{r_{0},\dots, r_{L}\}\). Given an input \(x\) the output \(y\) is calculated has
 \[
-  h_{0} = r_{0}(\bm{W}^{T}_{0}x), \quad \dots, \quad h_{l} = r_{l}(\bm{W}_{l}^{T}h_{l-1}) \quad \dots \quad y = r_{L}(\bm{W}_{L}^{T}h_{L-1}).
+  h_{0} = r_{0}(\bm{W}^{T}_{0}x), \quad \dots \quad h_{l} = r_{l}(\bm{W}_{l}^{T}h_{l-1}), \quad \dots \quad y = r_{L}(\bm{W}_{L}^{T}h_{L-1}).
 \]
 
-\emph{Deep neural networks} or \emph{DNNs} are ANNs where the number of hidden layers is higher. Commonly, any neural network with more that 2 hidden layers is considered deep. Given a dataset \(\{(x_{1}, y_{1}), \dots, (x_{N}, y_{N})\}\) and a loss function \(l(y,y^{*})\) that defines how well the output \(y^{*} = f_{\bm{W}}(x)\)  returned by the model matches the real output \(y\), learning reduces to the optimization problem
+\emph{Deep neural networks} or \emph{DNNs} are ANNs where the number of hidden layers is higher. Commonly, any neural network with more that 2 hidden layers is considered deep. Given a dataset (set of inputs and their corresponding outputs) \(\{(x_{1}, y_{1}), \dots, (x_{N}, y_{N})\}\) and a loss function \(l(y,y^{*})\) that defines how well the output \(y^{*} = f_{\bm{W}}(x)\)  returned by the model matches the real output \(y\), learning reduces to the optimization problem
 \[
   \bm{W}^{opt} = \argmin_{\bm{W}} \sum_{n=1}^{N}l(y_{n}, f_{\bm{W}}(x_{n})).
 \]
@@ -122,12 +122,12 @@ It can be seen as a non-linear probabilistic PCA model.
 
 The model is quite similar to the one presented for the PCA, the difference comes from the conditional distribution of \(X\), that depends on \(Z\) through a fully-connected ANN with a single hidden layer.
 
-The prior of the latent variable is a centered Gaussian
+As in the case of the PCA, the prior of the latent variable follows a centered Gaussian
 \[
-  Z_{n} \mid N(0,I) \quad \forall n \in 1,\dots,N
+  Z_{n} \sim N(0,I) \quad \forall n \in 1,\dots,N.
 \]
 
-Let \(D\) be the dimension of the data \(X\) and \(K\) the dimension of the hidden variable \(Z\).Let \(f\) a single hidden layer ANN with input dimension \(Z\) and output dimension \(D\). Where the output is the mean value of the normal distribution under \(X\).
+Let \(D\) be the dimension of the data \(X\) and \(K\) the dimension of the hidden variable \(Z\). Let \(f\) a single hidden layer ANN with input dimension \(Z\) and output dimension \(D\). Where the output is the mean value of the normal distribution under \(X\).
 
 As we are considering a single hidden layer, let \(\bm{W}_{0}\) and \(\bm{W}_{1}\) be the matrixes governing that ANN and \(r_{0}, r_{1}\) the activation functions, the ANN \(f\) is
 \[
@@ -136,14 +136,15 @@ As we are considering a single hidden layer, let \(\bm{W}_{0}\) and \(\bm{W}_{1}
 
 and the data-points are then generated as
 \[
-  (X_{n}\mid Z_{n}) \sim N(f(Z_{n}), I) \quad \forall n \in 1,\dots,N.
+  X_{n}\mid Z_{n} \sim \mathcal{N}(f(Z_{n}), I) \quad \forall n \in 1,\dots,N.
 \]
 Where no noise is being considered this time.
 
 \section{Variational Auto-encoder (Work in Progress)}
 
-Similarly to the models PCA and NLPCA, a \emph{variational autoencoder} or VAE, allows to perform dimensionality reduction. However a VAE will contain a neural network in the \(P\)  model (decoder) and another one in the variational model \(Q\) (encoder).
+\emph{Variational auto-encoders} or VAEs are a dimensionality reduction model, like PCA and NLPCA. In contrast with this two, this auto-encoders contain two neural networks, one in the \(P\) model (decoder) and another one in the variational model \(Q\) (encoder).
 
 The \(P\) model has the same structure as the nonlinear PCA. On the other hand, the  distribution \(Q\) is defined with a reverse ANN, with input dimension \(D\) and output dimension \(K\).
 
-The neural networks can be defined to give an output of double the dimension, that is, the encoder would give a point in with \( 2K \) components, so the first \( K \) are used for the mean and the last \( K \) sor the variance of the normal distribution.  
+The neural networks can be defined to give an output of double the dimension, that is, the encoder would give a point in with \( 2K \) components, so the first \( K \) are used for the mean and the last \( K \) for the variance of the normal distribution.
+

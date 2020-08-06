@@ -1,5 +1,5 @@
 
-\texttt{InferPy} (\cite{cozar2019inferpy}) is a high-level API for probabilistic modeling written in \texttt{Python} and capable of running on top of \texttt{Edward} and \texttt{Tensorflow}. \texttt{InferPy}'s API is strongly inspired by \texttt{Keras} and it has a focus on enabling flexible data processing, easy-to-code probabilistic modeling, scalable inference and robust model validation.
+\texttt{InferPy} (\cite{cozar2019inferpy}) is a high-level API written in \texttt{Python} inspired by \texttt{Keras} and run on top of \texttt{Tensorflow} and \texttt{Edward} for probabilistic modeling. It is focused on: enabling probabilistic modeling, flexible data processing and scalable inference.
 
 \begin{figure}[h!]
     \centering
@@ -7,13 +7,14 @@
     \caption{InferPy architecture.}
 \end{figure}
 
-The main features of \texttt{InferPy} are:
+\texttt{InferPy}'s main features are:
 \begin{itemize}
-    \item Allows a simple definition over probabilistic models containing or not neural networks.
-    \item All models that can be defined using \texttt{Edward2} can also be defined in  \texttt{InferPy}, whose probability distributions are mainly inherited from \texttt{tensorflow-probability}.
-    \item All the models parameters can be defined using the standard \texttt{Python} types (\texttt{Numpy} compatibility).
-    \item \texttt{InferPy} relies on top of \texttt{Edward}'s inference engine, therefore, it includes all the inference algorithms avaible in that package.
-    \item An additional advantage of using \texttt{Edward} and \texttt{TensorFlow} as inference engine is that all the parallelization details are hidden to the user. Moreover, the same code will run either in CPUs or GPUs.
+  \item Allows to define probabilistic models whether they contain or not neural networks in a simple way.
+  \item All models that can be defined using \texttt{Edward2} can also be defined in  \texttt{InferPy}, whose probability distributions are mainly inherited from \texttt{tensorflow-probability}.
+  \item All the models parameters can be defined using the standard \texttt{Python} types (\texttt{Numpy} compatibility).
+  \item \texttt{InferPy} relies on top of \texttt{Edward}'s inference engine, therefore, it includes all the inference algorithms available in that package.
+  \item As it uses \texttt{Edward} and \texttt{TensorFlow} as its inference engine, all the parallelization details are hidden to the user.
+  \item The same code will run either in CPUs or GPUs.
 \end{itemize}
 
 \section{Installation}
@@ -80,13 +81,11 @@ The full model definition would be the following:
 \begin{minted}[]{python}
     @inf.probmodel
     def pca(k,d):
-        w =  inf.Normal(loc=tf.zeros([k,d]),
-                       scale=1, name="w")                    # shape = [k,d]
-        w0 = inf.Normal(loc=tf.zeros([d]),
-                        scale=1, name="w0")                   # shape = [d]
+        w =  inf.Normal(loc=tf.zeros([k,d]), scale=1, name="w")
+        w0 = inf.Normal(loc=tf.zeros([d]), scale=1, name="w0")
         with inf.datamodel():
-            z = inf.Normal(tf.zeros([k]),1, name="z")         # shape = [N,k]
-            x = inf.Normal(np.dot(z,w) + w0, 1, name="x")     # shape = [N,d]
+            z = inf.Normal(tf.zeros([k]),1, name="z")
+            x = inf.Normal(np.dot(z,w) + w0, 1, name="x")
 \end{minted}
 
 Models are defined by decorating a \texttt{Python} functions with \texttt{@inf.probmodel}. In this case we are defining a model with 2 parameters:

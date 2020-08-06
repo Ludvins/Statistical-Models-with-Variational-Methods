@@ -55,7 +55,7 @@
 \usetikzlibrary{positioning}
 \usetikzlibrary{bayesnet}
 \usetikzlibrary{shapes.geometric}
-
+\usetikzlibrary{decorations.text}
 \usepackage[
     type={CC},
     modifier={by-nc-sa},
@@ -128,6 +128,7 @@ manychapters,pdfspacing]{classicthesis}
 \newpage
 \vspace*{\fill}
 \doclicenseThis
+The source code of this text and developed programs are available in the Github repository \href{https://github.com/Ludvins/Statistical-Models-with-Variational-Methods}{Ludvins/Statistical-Models-with-Variational-Methods}
 
 \chapter*{Abstract}
 
@@ -159,11 +160,11 @@ Some introduction about how important Variational methods are nowadays and what 
 \ctparttext{
   \color{black}
   \begin{center}
-    \emph{Statistical inference} is the process of using data analysis to deduce properties of an underlying distribution.
+    \emph{Statistical inference} is defined as the process of deducing properties of an underlying distribution using data analysis.
 
-    \emph{Bayesian inference} is a method of statistical inference in which Bayes' theorem is used, it derives the \emph{posterior probability} as a consequence of two antecedents: a \emph{prior probability} and a \emph{likelihood function} derived from a statistical model for the observed data.
+    \emph{Bayesian inference} is an statistical inference method in which Bayes' theorem is applied. The \emph{posterior probability} is derived as a consequence of a \emph{prior probability} and a \emph{likelihood function}. Both of these are derived from a statistical model for the observed data.
 
-    \emph{Maximum likelihood estimation (MLE)} is a method of estimating the parameters of a probability distribution by maximizing a \emph{likelihood function}, so that under the assumed statistical model the observed data is most probable.
+    \emph{Maximum likelihood estimation} is a parameter estimation method which maximizes the \emph{likelihood function} of the underlying parametric distribution. This method maximizes the parameters under which the observed data is most probable.
   \end{center}
 }
 \part{Statistical Inference}
@@ -184,17 +185,17 @@ Some introduction about how important Variational methods are nowadays and what 
   \color{black}
   \begin{center}
 
-    \emph{Variational Bayesian methods} consist of intractable integrals approximation techniques arising in inference and machine learning problems. They are commonly applied in complex models consisting of \emph{observed variables}, \emph{unknown parameters} and \emph{latent variables}. The relation between these random variables might be described by a \emph{graphical model}.
+    \emph{Variational Bayesian methods} consist of approximation techniques applied to intractable integrals that arise in inference and machine learning problems. Theese methods are commonly used in complex models containing \emph{observed and latent variables} and \emph{unknown parameters}. \emph{Graphical models} might be used to describe the underlying relations of the given variables.
 
     \emph{Variational Bayesian inference} solves the inference problem by creating an equivalent \emph{optimization problem} and approaching its solution through machine learning techniques.
   \end{center}
 }
 \part{Variational Inference}
 
-\chapter{Introduction}
+\chapter{Introduction}\label{ch:vi_intro}
 \input{tex/VariationalInference/introduction}
 
-\chapter{Expectation Maximization}\label{sec:em}
+\chapter{Expectation Maximization}\label{ch:vi_em}
 \input{tex/VariationalInference/expectation-maximization}
 
 \chapter{Mean-Field Variational Inference}
@@ -210,14 +211,13 @@ Some introduction about how important Variational methods are nowadays and what 
   \color{black}
   \begin{center}
 
-    A \emph{graphical model} is a statistical model for which a graph expresses the
-    conditional dependence structure between random variables.
+    A \emph{graphical model} is a statistical model for which the dependence structure between random variables is expressed by a graph.
 
     Commonly, they provide a graph-based representation for encoding a multi-dimensional
     distribution representing a set of independences that hold in the specific
     distribution. The most commonly used are \emph{Bayesian networks} and \emph{Markov random
-      fields}, which differ in the set of independences they can encode and the
-    factorization of the distribution that they include.
+      fields}, these two differ in the set of independences they are able to encode and the
+    factorization of the distribution they include.
   \end{center}
 }
 \part{Graphical Models}
@@ -237,12 +237,15 @@ Some introduction about how important Variational methods are nowadays and what 
     Some inference methods get optimized when applied among with a graphical model, in this part we focus in how methods we have already reviewed use the Bayesian network structure.
   \end{center}
 }
-\part{Bayesian Networks Learning}
+\part{Bayesian Networks Parametric Learning}
+
+\chapter{Structure Learning}
+\input{tex/BayesianNetworksLearning/structure-learning}
 
 \chapter{Maximum Likelihood Training}
 \input{tex/BayesianNetworksLearning/maximum-likelihood}
 
-\chapter{Bayesian Training (Revision Needed)}
+\chapter{Bayesian Training}
 \input{tex/BayesianNetworksLearning/bayesian}
 
 \chapter{Variational Inference in Bayesian Networks}
@@ -257,7 +260,7 @@ Some introduction about how important Variational methods are nowadays and what 
 }
 \part{Commonly studied Latent Variable Models}
 
-\chapter{Gaussian Mixture}
+\chapter{Gaussian Mixture}\label{ch:lvm_gm}
 \input{tex/LVMs/gm}
 
 \chapter{Latent Dirichlet Allocation}
@@ -277,6 +280,8 @@ Some introduction about how important Variational methods are nowadays and what 
 \chapter{InferPy usage}
 \input{tex/InferPy/introduction}
 
+\chapter{Dimensionality Reduction}
+
 \chapter{Gaussian Mixture}
 
 
@@ -291,6 +296,10 @@ Some introduction about how important Variational methods are nowadays and what 
 \appendix
 \chapter{Distributions in the exponential family (Work in Progress)}\label{ap:exp_fam}
 \input{tex/Appendixes/A}
+
+\chapter{Conjugate Distributions (Work in Progress)}\label{ap:conj_distr}
+\input{tex/Appendixes/B}
+
 
 \addtocontents{toc}{\vspace{1\baselineskip}}
 \clearpage
