@@ -1,15 +1,18 @@
 In this section Bayesian inference is used to solve an inference problem governed by a Bayesian network, the problem statement is the following:
 
-Consider the following scenario where a disease \(D\) and two habits \(A\) and \(B\) are being studied.  Consider the following i.i.d variables \(\{A_{1},\dots, A_{N}\}\), \(\{B_{1},\dots,B_{N}\}\) and \(\{D_{1},\dots, D_{N}\}\) governed by the parameters \(\theta_{A}, \theta_{B}\) and \(\btheta_{D}\) as shown in figure~\ref{fig:bayesian_example}. Let \(N = 7\) be the number of observations of the variables as shown in Table~\ref{tab:bn_ex} and \( \bx = \{(a_n, b_n, d_n),\ n=1,\dots,N\} \) the set of observations.
+A disease \(D\) and two habits \(A\) and \(B\) are being studied.  Consider the following i.i.d variables \(\{A_{1},\dots, A_{N}\}\), \(\{B_{1},\dots,B_{N}\}\) and \(\{D_{1},\dots, D_{N}\}\) governed by the parameters \(\theta_{A}, \theta_{B}\) and \(\btheta_{D}\) as shown in figure~\ref{fig:bayesian_example}. Let \(N = 7\) be the number of observations of the variables as shown in Table~\ref{tab:bn_ex} and \( \bx = \{(a_n, b_n, d_n),\ n=1,\dots,N\} \) the set of observations.
 
 All the variables are binary satisfying
 \[
-  P(A_{n} = 1 \mid \theta_{A}) = \theta_{A}, \quad P(B_{n} = 1 \mid \theta_{B}) = \theta_{B}, \quad P(D_{n} = 1 \mid A_{n} = 0, B_{n} = 1, \btheta_{D}) = \theta_{1},
+  P(A_{n} = 1 \mid \theta_{A}) = \theta_{A}, \quad P(B_{n} = 1 \mid \theta_{B}) = \theta_{B} \quad \forall n=1,\dots,N,
+\]
+\[
+  P(D_{n} = 1 \mid A_{n} = 0, B_{n} = 1, \btheta_{D}) = \theta_{1}, \quad \forall n = 1,\dots,N,
 \]
 \[
   \btheta_{D} = ( \theta_{0}, \theta_{1}, \theta_{2},\theta_{3}).
 \]
-Where we are using a binary to decimal transformation between the states of \(A\) and \(B\) and the sub-index of \(\theta\).
+Where a binary to decimal transformation between the states of \(A\) and \(B\) and the sub-index of \(\theta\) is being used.
 
 \begin{figure}[!ht]
   \begin{tabular}{*{2}{>{\centering\arraybackslash}b{\dimexpr0.5\linewidth-2\tabcolsep\relax}}}
@@ -55,8 +58,8 @@ The graph gives the following joint probability distribution the variables:
 \[
 P(a_{n},b_{n},d_{n}, \theta_A, \theta_B, \theta_D) = P(d_{n}\mid a_{n},b_{n},\theta_D)P(a_{n} \mid \theta_A)P(b_{n} \mid \theta_A).
 \]
-We need to specify a prior and since dealing with multidimensional continuous
-distributions is computationally problematic, it is usual to use univariate
+A prior distribution must be specified and since dealing with multidimensional continuous
+distributions is computationally problematic, it is usual to use uni-variate
 distributions.
 
 \section{Global and local parameter independence}
@@ -167,13 +170,13 @@ in the last case is
 
  The natural generalization to more than two states is using a Dirichlet
  distribution as prior, assuming i.i.d data, local and global prior
- independence. We are considering two different scenarios, firstly one where the
+ independence. Two different scenarios are being considered, firstly one where the
  variable has no parents, as the case for \(A\) and \(B\) in the previous
- example. Secondly, we will consider a variable with a non void set of parents.
+ example. And secondly a variable with a non-void set of parents.
 
  Let \(\bx\) denote the given dataset as observations of a random variable \(X\), and \(\btheta\) the set of parameters modeling the experiment.
 
- \subsection{No parents}
+ \subsection{No parents}\label{subsec:no_parents}
 
  Consider a variable \(X \sim Categorical(\btheta)\) with
  \(Dom(X) = \{1, \dots, I\} \) and \(\btheta = (\theta_{1},\dots, \theta_{I})\) so that

@@ -1,12 +1,12 @@
 
-Consider a set of i.i.d variables \(\bX = (X_{1},\dots,X_{N})\), when reviewing maximum likelihood training, we concluded that, in case \(P(x \mid \theta)\) is unconstrained, the maximum likelihood distribution corresponds to the empirical distribution.
+Consider a set of i.i.d variables \(\bX = (X_{1},\dots,X_{N})\), when reviewing maximum likelihood training, we concluded that, in case \(P(x_{1},\dots, x_{N} \mid \theta)\) is unconstrained, the maximum likelihood distribution corresponds to the empirical distribution.
 
 However, Bayesian networks are constraint by:
  \[
    P(x_{1}, \dots, x_{N} \mid \theta) = \prod_{n = 1}^N P(x_n  \mid  pa(x_n), \theta).
  \]
 This restriction requires to re-study the Kullback-Leibler divergence between the empirical
- distribution \(Q(x_1,\dots,x_N)\) and \(P(x_1, \dots, x_N \mid \theta)\) in order to extract the maximum likelihood value. Then,
+ distribution \(Q(x_1,\dots,x_N)\) and \(P(x_1, \dots, x_N \mid \theta)\) in order to extract the maximum likelihood value. The divergence might be written as,
  \[
    \begin{aligned}
    \KL{Q}{P} &= - \E{Q}{\sum_{n = 1}^N\log{P(x_n \mid pa(x_n), \theta)}} +
@@ -16,7 +16,7 @@ This restriction requires to re-study the Kullback-Leibler divergence between th
    \end{aligned}
  \]
 
-Proposition~\ref{prop:expectation_over_marginal} might be used over each term of the summation, which says that as each term of the summation depends only on \((x_{n}, pa(x_{n}))\), the expectation distribution can be marginalized into them, resulting:
+Proposition~\ref{prop:expectation_over_marginal} might be used over each term of the summation, which says that, as each term of the summation depends only on \((x_{n}, pa(x_{n}))\), the expectation distribution can be marginalized over them, resulting:
  \[
    \begin{aligned}
      \KL{Q}{P} &= \sum_{n = 1}^N \E{Q(x_n,pa(x_n))}{\log{Q(x_n \mid pa(x_n))}} - \E{Q(x_n,pa(x_n))}{\log{P(x_n \mid pa(x_n), \theta)}}\\

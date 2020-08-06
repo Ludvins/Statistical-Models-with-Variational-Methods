@@ -1,10 +1,10 @@
 
-In this section we come back to variational inference, in this case we are  reviewing two main algorithms, \emph{expectation maximization} and \emph{variational message passing}.
+In this section we come back to variational inference, in this case we are reviewing two main algorithms, \emph{expectation maximization} and \emph{variational message passing}.
 
 
 \section{Expectation Maximization Algorithm}
 
-As both hidden variables and Bayesian networks are used, the following notation from~\cite{barber} is utilized: \(\bX = (\bm{V}, \bm{H}) = \{X_{1}, \dots , X_{M}\}\) is the set of variables partitioned in visible and hidden. Let \(\{\bv^{1}, \dots, \bv^{N}\}\) be the set of observations of the visible variables. For each data-point \(\bx^{n} = (\bv^{n}, \bh^{n})\) decomposes into visible and hidden parts.
+As both hidden variables and Bayesian networks are used, the following notation from~\cite{barber} is used: \(\bX = (\bm{V}, \bm{H}) = (X_{1}, \dots , X_{M})\) is the set of variables partitioned in visible and hidden. Let \(\{\bv^{1}, \dots, \bv^{N}\}\) be the set of observations of the visible variables. For each data-point \(\bx^{n} = (\bv^{n}, \bh^{n})\) decomposes into visible and hidden parts.
 
 Remember the ELBO is:
 \[
@@ -20,30 +20,31 @@ Where the steps of the EM algorithm are:
   \SetAlgoLined\KwData{A dataset \(\bx\), a distribution \(P(\bx, \bz \mid \btheta)\) that factorizes in a Bayesian network.}
   \KwResult{The maximum likelihood estimates for \(P(x_{m}\mid pa(x_{m})), m=m,\dots,M\), }
   Initialize \( P(x_{m}\mid pa(x_{i})), m=1,\dots,M \)\;
+  \(t \leftarrow 0\)\;
   \While{Convergence stop criteria}{
-    \(t \leftarrow t+1 \)\;
     \For{\(n=1\) to \(N\)  }{
       \(Q^{n}_{t}(\bx) = P_{t}(\bh^{n} \mid \bv^{n})\delta(\bv, \bv^{n})\)\tcp*{E-step}
     }
-    \For{\(i=1\) to \(M\)  }{
+    \For{\(m=1\) to \(M\)  }{
       \(P_{t}(x_{m} \mid pa(x_{m})) = \frac{\sum_{n=1}^{N}Q_{t}^{n}(x_{m}, pa(x_{m}))}{ \sum_{n=1}^{N}Q_{t}^{n}(pa(x_{m}))}\)\tcp*{M-step}
     }
+    \(t \leftarrow t+1 \)\;
   }
-  \KwRet{\( P_{t}(x_{m}\mid pa(x_{m})), m=1,\dots,M  \)}\;
+  \KwRet{\( P_{t}(x_{m}\mid pa(x_{m})), \quad m=1,\dots,M  \)}\;
   \caption{Expectation Maximization Algorithm for Bayesian networks}\label{alg:em_bn}
 \end{algorithm}
 
 
 Whereas the structure of the Bayesian network gives no advantage over the E-step, it does on the M-step. Let the variational distribution be fixed as \(Q_{old}\), the \emph{energy term} in a Bayesian network is
 \[
-  \sum_{n=1}^{N} \E{Q_{old}(\bh^{n})}{ \log{P(\bx^{n} \mid \btheta)} } = \sum_{n = 1}^{N}\sum_{m = 0}^{M} \E{Q_{old}(\bh^{n})}{\log{P( x_{m}^{n} \mid pa(x_{m}^{n}), \btheta)}}.
+  \sum_{n=1}^{N} \E{Q_{old}(\bh^{n})}{ \log{P(\bx^{n} \mid \btheta)} } = \sum_{n = 1}^{N}\sum_{m = 1}^{M} \E{Q_{old}(\bh^{n})}{\log{P( x_{m}^{n} \mid pa(x_{m}^{n}), \btheta)}}.
 \]
 
 It is useful to use the following notation that defines a conditional distribution of the hidden variable when the visible one equals \(\bv^{n}\).
 \[
   Q^{n}(\bx) = Q^{n}(\bv,\bh) = Q_{old}(\bh^{n}) \mathbb{I}(\bv = \bv^{n}).
 \]
-We can define the mixture distribution
+A mixture distribution might be defined as
 \[
   Q(\bx) = \frac{1}{N}\sum_{n = 1}^{N}Q^{n}(\bx).
 \]
@@ -51,7 +52,7 @@ One may show that the energy term equals
 \[
   \sum_{n = 1}^{N}\E{Q_{old}(\bh^n)}{\log{P(\bx^{n} \mid \btheta)}} = N \ \E{Q(\bx)}{\log{P(\bx \mid \btheta)}},
 \]
-As
+as
 \[
   \begin{aligned}
     \E{Q(\bx)}{\log{P(\bx \mid \theta)}} &= \int_{\bx}Q(\bx)\log{P(\bx \mid \btheta)} =  \int_{\bx} \frac{1}{N}\sum_{n=1}^{N}Q^{n}(\bx)\log{P(\bx \mid \btheta)} \\
@@ -77,7 +78,7 @@ to the last term results in a Kullback-Leibler Divergence:
   \sum_{m = 1}^{M} E_{Q(pa(x_{m}))} \Big[ \KL{Q(x_{m}\mid pa(x_{m}))}{P(x_{m} \mid pa(x_{m}), \btheta)}\Big]
 \]
 \[
-  =\sum_{m = 1}^{M}\E{Q(pa(x_{m}))}{\E{Q(x_{m}\mid pa(x_{m}))}{\log{Q(x_{m} \mid pa(x_{m}))}} - \E{Q(x_{m}\mid pa(x_{m}))}{\log{P(x_{m} \mid pa(x_{m}), \btheta)}}}
+  =\sum_{m = 1}^{M}\E{Q(pa(x_{m}))}{\E{Q(x_{m}\mid pa(x_{m}))}{\log{Q(x_{m} \mid pa(x_{m}))}} - \E{Q(x_{m}\mid pa(x_{m}))}{\log{P(x_{m} \mid pa(x_{m}), \btheta)}}}.
 \]
 So maximizing the energy term is equivalent to minimize the above formula, that is, setting
 \[
@@ -88,15 +89,15 @@ So the first observation is that \(\btheta\) is not needed in order to maximize 
 
 \section{Variational Message Passing (Work in Progress)}\label{sec:vmp}
 
-In this section, the \emph{Variational Message Passing} or \emph{VMP} algorithm is reviewed as a variational Bayes application to Bayesian networks where the exponential family is considered using a message passing procedure between the nodes of a graphical model.
+In this section, the \emph{Variational Message Passing} or \emph{VMP} algorithm is reviewed as a variational Bayes application to Bayesian networks. The exponential family is considered using a message passing procedure between the nodes of the given graphical model.
 
-VMP allows variational inference to be applied automatically to a large class of Bayesian networks, without the need to derive application-specific update equations (\cite{winn2005variational}).
+VMP automatically applies variational inference to a wide class of Bayesian networks. Its main advantage is that no application-specific updates equations need to be derived (\cite{winn2005variational}).
 
 The full set of variables is \( \bX = (X_1\dots,X_N) \), where we are considering both hidden variables \( \bm{H} = (H_1,\dots,H_J) \) and visible ones \( \bm{V} = (V_{1}, \dots, V_{I})\). A variational distribution \( Q \) in the mean-field family
 \[
    Q(\bm{H}) = \prod_{j=1}^J Q_{j}(h_j).
 \]
-The optimized factor for a fixed term \(Q(h_{j})\) is (as shown in the CAVI section~\ref{eq:cavi_update}) given by
+The optimized factor for a fixed term \(Q(h_{j})\) is (as shown in the CAVI update~\ref{eq:cavi_update}) given by
 \[
    \log Q_{j}^{new}(h_j) = \E{Q_{\backslash j}}{\log P(\bm{V}, \bm{H})} + \text{const.}
 \]
@@ -108,46 +109,53 @@ The contribution of \(H_{j}\) to the given formula lies on the terms \( P(h_j \m
 \[
   cp(X,Y) = pa(X)\backslash \{Y\},
 \]
-then, adding all other terms to the constant,
+then, adding all other terms to the constant term,
 \[
    \log Q_{j}^{new}(h_j) = \E{Q_{\backslash j}}{\log P(h_j \mid pa(h_j))} + \sum_{X_k \in ch(H_j)} \E{Q_{\backslash j}}{\log P(x_k \mid h_{j},cp(x_k, h_{j}))} + \text{const.}
 \]
 
-This shows how the update of a hidden variable only depends on its Markov blanket. The optimization of \( Q_j \) is therefore computed as the sum of a term involving \( H_j \) and its parent nodes, along with a term for each children. This terms can be interpreted as ``messages'' from the corresponding nodes.
+This shows how the update of a hidden variable only depends on its Markov blanket. The optimization of \( Q_j \) is therefore computed as the sum of a term involving \( H_j \) and its parent nodes, along with a term for each children. This terms can be seen as ``messages'' from the corresponding nodes.
 
-The exact form of the messages will depend on the functional form of the conditional distributions in the model. Important simplifications to the variational update equations occur when the conditional distribution of a node given its parents is in the exponential family. Sub-indexes will be used to denote parents, children and co-parents.
+The exact messages depends on the conditional distributions of the model and their functional form. The variational update equations present important simplifications when the conditional distribution of a node given its parents is in the exponential family. Sub-indexes will be used to denote parents, children and co-parents in order to simplify the notation.
 
-Consider a variable \( X \) and \( Y \in pa_X \), such as \( Y \) is a hidden variable. The s that both distributions belong to the exponential family:
+Consider a variable \( X \) and \( Y \in pa_X \), where \( Y \) is a hidden variable. Then suppose that both distributions belong to the exponential family:
 \[
-     P(y \mid pa_y) = h_Y(pa_Y)\exp \Big( {\bm{\eta}_Y(pa_y)}^T\bm{T}_Y(y) - \psi_Y(pa_y) \Big).
+     P(y \mid pa_y) = h_Y(pa_y)\exp \Big( {\bm{\eta}_Y(pa_y)}^T\bm{T}_Y(y) - \psi_Y(pa_y) \Big).
 \]
 \[
-P(x \mid y,cp_{x,y}) = h_X(y, cp_{x,y})\exp \Big( {\bm{\eta}_X(y, cop_{x,y})}^T\bm{T}_X(x) - \psi_X(y, cp_{x,y}) \Big).
+P(x \mid y,cp_{x,y}) = h_X(y, cp_{x,y})\exp \Big( {\bm{\eta}_X(y, cp_{x,y})}^T\bm{T}_X(x) - \psi_X(y, cp_{x,y}) \Big).
 \]
 
-\begin{remark}
-  Given a variable \(X\) in the exponential family, if we know the natural parameter vector \(\bm{\eta}\), then we can find the expectation of the statistic function with respect to the distribution. Defining \(\bar{\phi}\) as a reparameterisation of \(\phi\) in terms of \(\bm{\eta}\):
+\begin{proposition}\label{prop:vmp}
+  Given a variable \(X\) in the exponential family, with known natural parameter vector \(\bm{\eta}\),  the expectation of the statistic function with respect to the distribution might be calculated as:
+    \[
+    \E{P}{\bm{T}(x)} =   -  \frac{ d\bar{\psi}(\bm{\eta}(\theta)) }{d \bm{\eta}}.
+  \]
+\end{proposition}
+\begin{proof}
+  Defining \(\bar{\phi}\) as a reparameterisation of \(\phi\) in terms of \(\bm{\eta}\):
   \[
     \begin{aligned}
-      P(x\mid \theta) &= h(x)\exp \Big( \bm{\eta}(\theta)^{T}\bm{T}(x) + \psi(\theta) \Big)\\
-       &= h(x)\exp \Big( \bm{\eta}(\theta)^{T}\bm{T}(x) + \bar{\psi}(\bm{\eta}(\theta)) \Big).
+      P(x\mid \theta) &= h(x)\exp \Big( \bm{\eta}{(\theta)}^{T}\bm{T}(x) + \psi(\theta) \Big)\\
+       &= h(x)\exp \Big( \bm{\eta}{(\theta)}^{T}\bm{T}(x) + \bar{\psi}(\bm{\eta}(\theta)) \Big),
     \end{aligned}
   \]
-  Integrating with respect to \(X\):
+  then, integrating with respect to \(X\):
   \[
-    1 = \int_{x} h(x)\exp \Big( \bm{\eta}(\theta)^{T}\bm{T}(x) + \bar{\psi}(\bm{\eta}(\theta)) \Big).
+    1 = \int_{x} h(x)\exp \Big( \bm{\eta}{(\theta)}^{T}\bm{T}(x) + \bar{\psi}(\bm{\eta}(\theta)) \Big).
   \]
   Differentiating with respect to \(\bm{\eta}\):
   \[
-    \frac{d}{d\theta}1 = 0 = \int_{x} \frac{d}{d\bm{\eta}}h(x)\exp \Big( \bm{\eta}(\theta)^{T}\bm{T}(x) + \bar{\psi}(\bm{\eta}(\theta)) \Big) = \int_{x}P(x \mid \theta)\Big[ \bm{T}(x) + \frac{ d\bar{\psi}(\bm{\eta}(\theta)) }{d \bm{\eta}}\Big].
+    \frac{d}{d\theta}1 = 0 = \int_{x} \frac{d}{d\bm{\eta}}h(x)\exp \Big( \bm{\eta}{(\theta)}^{T}\bm{T}(x) + \bar{\psi}(\bm{\eta}(\theta)) \Big) = \int_{x}P(x \mid \theta)\Big[ \bm{T}(x) + \frac{ d\bar{\psi}(\bm{\eta}(\theta)) }{d \bm{\eta}}\Big].
   \]
-
-  What implies that
+  What implies that the expectation of the statistic function is
   \[
-    \E{P}{\bm{T}(x)} =   -  \frac{ d\bar{\psi}(\bm{\eta}(\theta)) }{d \bm{\eta}}
+    \E{P}{\bm{T}(x)} =   -  \frac{ d\bar{\psi}(\bm{\eta}(\theta)) }{d \bm{\eta}}.
   \]
+\end{proof}
 
-\end{remark}
+This proposition will be used to compute the expected value of the statistics under the variational \(Q\) distribution.
+
 
 The distribution \( P(Y \mid pa_Y) \) can be though as a prior over \( Y \), and \( P(X \mid pa_X) = P(X \mid Y, cop_{X,Y})\) as a contribution to the likelihood of \( Y \).
 
@@ -157,7 +165,7 @@ Conjugacy requires that these two conditionals have the same functional form wit
 \]
 
 \begin{exampleth}
-    If \( X \) is Gaussian distributed with mean \( \mu \) (Gaussian distributed) and standard deviation \( \sigma \), let \(\tau = 1/\sigma^{2}\) be its precision,  the log conditional is
+    If \( X \) is Gaussian distributed with mean \( \mu \) (Gaussian distributed) and precision \(\tau\),  the log conditional is
     \[
          \log P(x \mid \mu, \tau) =
          \begin{pmatrix}
@@ -193,18 +201,45 @@ Conjugacy requires that these two conditionals have the same functional form wit
     \]
 \end{exampleth}
 
-From this results, it can be seen that \( \log P(x \mid y , cp_y) \) is linear in \( \bm{T}_X(x) \) and \( \bm{T}_Y(y) \), and, by the same reasoning, linear in any sufficient statistic of any parent of \( X \). This is a general result for any variable \( X \) in this kind of models: \emph{For any variable \( X \), the log conditional under its parents must be multi-linear of the statistics of \( X \) and its parents}.\footnote{A function is multi-linear if it depends linearly with respect each variable.}
+
+
+\begin{algorithm}[t]
+  \SetAlgoLined\KwData{A dataset \(\bx\).}
+  \KwResult{Optimized parameters for the variational distributions of each variable.}
+  Initialize each factor \(Q_{j}\) with a vector \(\E{Q_{j}}{X_{j}}\)\;
+  \While{convergence stop criteria}{
+    \For{each node \(X\) }{
+      Send all messages for all its child nodes \(Y\)\;
+      \(\bm{m}_{X \to Y} = \E{Q_{\backslash Y}}{\bm{T}_{X}(x)}\) \;
+    }
+    \For{each node \(X\) }{
+      Send all messages for all its parent nodes\;
+      \(\bm{m}_{X \to Y} = \bar{\bm{\eta}_{X,Y}}\Big(\E{Q_{\backslash Y}}{\bm{T}_X(x)}, \{\bm{m}_{X_k \to X}\}_{X_k\in cp_Y}\Big) \)\;
+    }
+    \For{each node \(X\) }{
+      Compute the updated parameter vector \(\bm{\eta}_{X}^{new}\)\;
+    }
+    \For{each node \(X\) }{
+      Update the expected value of the statistic \( \E{Q}{T_{X}(x)} \)\;
+    }
+  }
+  \KwRet{ each \(Q_{j}\)}\;
+  \caption{Variational Message Passing Algorithm}\label{alg:vmp}
+\end{algorithm}
+
+
+From these results, it can be seen that \( \log P(x \mid y , cp_y) \) is linear in \( \bm{T}_X(x) \) and \( \bm{T}_Y(y) \), and, by the same reasoning, linear in any sufficient statistic of any parent of \( X \). This is a general result for any variable \( X \) in this kind of models: \emph{For any variable \( X \), the log conditional under its parents must be multi-linear of the statistics of \( X \) and its parents}.\footnote{A function is multi-linear if it depends linearly with respect each variable.}
 
 Returning to the variational update for a node \( Y \):
 \[
-     \log Q^{new}(y) = \E{Q_{\backslash Y}}{log P(y \mid pa_Y)} + \sum_{X_k \in ch(Y)}\E{Q_{\backslash Y}}{\log P(x_k \mid pa_{X_k}))} + \text{const.} \ ,
+     \log Q^{new}(y) = \E{Q_{\backslash Y}}{\log P(y \mid pa_Y)} + \sum_{X_k \in ch(Y)}\E{Q_{\backslash Y}}{\log P(x_k \mid pa_{X_k})} + \text{const.} \ ,
 \]
 where the expectations are over the variational distribution of all other hidden variables can be calculated in terms of \( \bm{T}_Y(y) \):
 \[
     \begin{aligned}
-     \log Q^{new}(y) &= \E{Q_{\backslash Y}}{\log(h_Y (pa_y)) + \bm{\eta}_Y(pa_y)^T \bm{T}_Y(y) + \psi_Y(pa_y)}\\
-     &+ \sum_{X_k \in ch(Y)} \E{Q_{\backslash Y}}{ \bm{\eta}_{X_k, Y}(x, cp(x_k))^T \bm{T}_Y(y) + \lambda_{k}(x_k, cp_{x_{k},y}) } + \text{const.}\\
-     &= \Bigg[ \E{Q_{\backslash Y}}{\bm{\eta}_Y(pa_Y)^T} + \sum_{X_k \in ch(Y)} \E{Q_{\backslash Y}}{ \bm{\eta}_{X_k, Y}(x, cp_{x_k,y})^T}  \Bigg]^T \bm{T}_Y(y) \\
+     \log Q^{new}(y) &= \E{Q_{\backslash Y}}{\log(h_Y (pa_y)) + \bm{\eta}_Y{(pa_y)}^T \bm{T}_Y(y) + \psi_Y(pa_y)}\\
+     &+ \sum_{X_k \in ch(Y)} \E{Q_{\backslash Y}}{ \bm{\eta}_{X_k, Y}{(x_{k}, cp(x_k))}^T \bm{T}_Y(y) + \lambda_{k}(x_k, cp_{x_{k},y}) } + \text{const.}\\
+     &= {\Bigg[ \E{Q_{\backslash Y}}{\bm{\eta}_Y{(pa_Y)}^T} + \sum_{X_k \in ch(Y)} \E{Q_{\backslash Y}}{ \bm{\eta}_{X_k, Y}{(x_{k}, cp_{x_k,y})}^T}  \Bigg]}^T \bm{T}_Y(y) \\
      & + \log h_{Y}(pa_y)+ \text{const.}
     \end{aligned}
 \]
@@ -217,21 +252,75 @@ It follows that \( Q^{new}(y) \) is in the exponential family of the same form a
 As the expectations of \( \bm{\eta}_Y \) and \( \bm{\eta}_{X_k, Y} \) are multi-linear functions of the expectations of the statistic functions of their corresponding variables, it is possible to reparameterize these functions in terms of these expectations
 \[
      \begin{aligned}
-     \bar{\bm{\eta}}_Y (\{ \mathbb{E}[{\bm{T}_{X_k}}(x_k)] \}_{X_k \in pa_Y}) &= \E{}{\bm{\eta}_Y(pa_Y)}\\
-     \bar{\bm{\eta}}_{X_k,Y} (  \mathbb{E}[\bm{T}_{X_k}(x_k)], \{ \mathbb{E}[{\bm{T}_{X_j}}(x_j)] \}_{X_j \in cp_{X_k}}) &= \E{}{\bm{\eta}_{X_k, cp_{X_k}}(x_k, cp_{x_k})}\\
+     \bar{\bm{\eta}}_Y \Big(\Big\{ \E{Q_{\backslash Y}}{\bm{T}_{X_k}(x_k)} \Big\}_{X_k \in pa_Y} \Big) &= \E{Q_{\backslash Y}}{\bm{\eta}_Y(pa_Y)},\\
+     \bar{\bm{\eta}}_{X_k,Y} \Big(  \E{Q_{\backslash Y}}{\bm{T}_{X_k}(x_k)}, \Big\{ \E{Q_{\backslash Y}}{\bm{T}_{X_j}(x_j)} \Big\}_{X_j \in cp_{X_k}}\Big) &= \E{Q_{\backslash Y}}{\bm{\eta}_{X_k, cp_{X_k}}(x_k, cp_{x_k})}.\\
      \end{aligned}
 \]
-As a result, to compute the variational update, only the expectations of the sufficient statistics are needed.
+As a result, to compute the variational update, only the expectations of the sufficient statistics are needed, which might be computed using Proposition~\ref{prop:vmp}. In the proposition, the expectation is computed using the full distribution whereas the messages uses all the variables but the updated one. Given that, the missing variable in the expectations of each message does not appear in the argument, the proposition might be used to compute them.
 
 The message from a parent node \( Y \) to a child node \( X \) is the expectation under \( Q \) of its statistic vector
 \[
-      \bm{m}_{Y \to X} = \E{}{\bm{T}_Y(y)}.
+      \bm{m}_{Y \to X} = \E{Q_{\backslash X}}{\bm{T}_Y(y)}.
 \]
 The message from a child node \( X \) to a parent node \( Y \) is:
 \[
-      \bm{m}_{X \to Y} = \bar{\bm{\eta}_{X,Y}}(\E{}{\bm{T}_X(x)}, \{\bm{m}_{X_k \to X}\}_{X_k\in cp_Y})
+      \bm{m}_{X \to Y} = \bar{\bm{\eta}}_{X,Y}\Big(\E{Q_{\backslash Y}}{\bm{T}_X(x)}, \{\bm{m}_{X_k \to X}\}_{X_k\in cp_Y}\Big),
 \]
-which relied on having received all messages from all the co-parents. If a node \( X \)  is observed, the messages defined above are defined as \( \bm{T}_A(a) \) instead of \( \E{}{\bm{T}_A(a)} \).
+which relied on having received all messages from all the co-parents. If a node \( X \)  is observed, its messages are defined as \( \bm{T}_X(x) \) instead of \( \E{}{\bm{T}_X(x)} \).
+When a node \( Y \) has received all messages from its parents and children, we can compute the updated parameter \( \bar{\eta}^{new}_Y \) as
+\[
+  \eta^{new}_Y = \bar{\bm{\eta}}_Y{(\{ \bm{m}_{X_k \to Y} \}_{X_k \in pa_Y})} + \sum_{X_k \in ch_Y}\bm{m}_{X_k \to Y}.
+\]
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 0.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (31) {\(X_{3}\) };
+\node[mynode, above left=of 31] (11) {\(X_{1}\) };
+\node[mynode, above right=of 31] (21) {\(X_{2}\) };
+\node[mynode, below right=of 21] (41) {\(X_{4}\) };
+\node[mynode, below left=of 31] (51) {\(X_{5}\) };
+\node[mynode, below right=of 31] (61) {\(X_{6}\) };
+
+\node[mynode, right =1.5cm of 41] (32) {\(X_{3}\) };
+\node[mynode, above left=of 32] (12) {\(X_{1}\) };
+\node[mynode, above right=of 32] (22) {\(X_{2}\) };
+\node[mynode, below right=of 22] (42) {\(X_{4}\) };
+\node[mynode, below left=of 32] (52) {\(X_{5}\) };
+\node[mynode, below right=of 32] (62) {\(X_{6}\) };
+
+\path (11) edge[-latex] (31)
+(21) edge[-latex] (31)
+(31) edge[-latex] (51)
+(31) edge[-latex] (61)
+(41) edge[-latex] (61)
+;
+\path [bend right] (41) edge[-latex, red] (61);
+\path [bend right] (31) edge[-latex, red] (51);
+\path [bend right] (31) edge[-latex, red] (61);
+\path [bend left] (11) edge[-latex, red] (31);
+\path [bend left] (21) edge[-latex, red] (31);
+
+\path (12) edge[-latex] (32)
+(22) edge[-latex] (32)
+(32) edge[-latex] (52)
+(32) edge[-latex] (62)
+(42) edge[-latex] (62)
+;
+\path [bend right] (32) edge[-latex, red] (12);
+\path [bend right] (32) edge[-latex, red] (22);
+\path [bend left] (52) edge[-latex, red] (32);
+\path [bend left] (62) edge[-latex, red] (32);
+\path [bend left] (62) edge[-latex, red] (42);
+
+\end{tikzpicture}
+\caption{Six node example of one variational message passing algorithm updating step. \textbf{1.} All nodes give their parent nodes their message. \textbf{2.} All nodes give their child nodes their message. This must be done secondly because co-parent messages from the first step are needed. }
+\end{figure}
+
 
 \begin{exampleth}
      If \( X \) is Gaussian distributed and \( Y, \beta \) are its parents, the messages are:
@@ -253,9 +342,4 @@ which relied on having received all messages from all the co-parents. If a node 
           \end{pmatrix}.
      \]
 \end{exampleth}
-
-When a node \( Y \) has received all messages from its parents and children, we can compute the updated parameter \( \bar{\eta}^{new}_Y \) as
-\[
-     \eta^{new}_Y = \bar{\bm{\eta}}_Y(\{ \bm{m}_{X_k \to Y} \}_{X_k \in pa_Y}) + \sum_{X_k \in ch_Y}\bm{m}_{X_k \to Y}.
-\]
 
