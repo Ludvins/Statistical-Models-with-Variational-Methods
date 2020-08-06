@@ -1,0 +1,114 @@
+
+
+
+In this appendix, examples of conjugate distributions and their conjugate priors are shown. In the following sections \(X\) will denote the given random variable and \(\bx = (X_{1},\dots,X_{N})\) a given set of observations.
+
+\section{Categorical and Dirichlet distributions}
+
+\emph{The Dirichlet distribution is the conjugate prior of the Categorical distribution.}
+
+Following the procedure done in Section~\ref{subsec:no_parents}, let \(X \sim Categorical(\btheta)\), where \(X\) takes values in \(\{1,\dots,I\}\) and \(\btheta = (\theta_{1},\dots,\theta_{I})\). The parameter follows a Dirichlet distribution \(\btheta \sim Dirichlet(\bm{u})\),
+
+\[
+  P(\bx \mid \btheta) = \prod_{i=1}^{I}\theta_{i}^{\sum_{n} \mathbb{I}[x_{n}=i]} \quad \text{and} \quad P(\btheta) = \frac{1}{B(\bm{u})}\prod_{i=1}^{I}\theta_{i}^{u_{i}-1}.
+\]
+
+The posterior is therefore,
+\[
+  P(\btheta \mid \bx) = \frac{P(\btheta)P(\bx \mid \btheta)}{P(x)} = \frac{1}{P(\bx)B(\bm{u})}\prod_{i=1}^{I}\theta_{i}^{u_{i}-1 + \sum_{n} \mathbb{I}[x_{n}=i]}
+\]
+
+Naming \(\bm{c} = (u_{1} + \sum_{n}\mathbb{I}[x_{n}=1], \dots, u_{N} + \sum_{n}\mathbb{I}[x_{n}=N])\),
+\[
+  \btheta \mid \bx \sim Dirichlet(\bm{c}).
+\]
+
+A particular case would be using a Binomial distribution for the variable and a Beta distribution for the parameter. In short, \emph{the Beta distribution is the conjugate prior of the Binomial distribution.}
+
+\section{Gaussian and Wishart distributions}
+
+\emph{The Wishart distribution is the conjugate prior of the Gaussian distribution with known mean and unknown precision.}
+
+Let \(X \sim \mathcal{N}(\bmu, \bLambda)\), where \(\bmu\) is the mean vector and \(\bLambda\) the \(p \times p\)  precision matrix. The parameter follows a Wishart distribution as
+\[
+  \bLambda \sim \mathcal{W}(\nu, \bm{V}).
+\]
+Given \(N\) observations of the variable and \(\bx =(x_{1},\dots, X_{N})\). The density functions are
+\[
+  \begin{aligned}
+    P(\bx \mid \bLambda) &= \frac{|\bLambda|^{N/2}}{{(2\pi^{k})}^{N/2}}\exp \Big( -\frac{1}{2}\sum_{n=1}^{N}{(x_{n} - \bmu)}^{T}\bLambda(x_{n} - \bmu) \Big)\\
+    P(\bLambda) &= \frac{1}{2^{\nu p/2} |\bm{V}|^{\nu/2} \Gamma_{p}(\nu/2)}|\bLambda|^{(\nu-p-1)/2}e^{-(1/2)tr(\bm{V}^{-1}\bLambda)},
+  \end{aligned}
+\]
+The prior distribution can be seen as proportional to
+\[
+  P(\bLambda) \propto |\bLambda|^{\frac{\nu-p-1}{2}} \exp \Big({-\frac{1}{2}tr(\bm{V}^{-1}\bLambda)}\Big),
+\]
+where the rest comes form normalization.
+The posterior is then
+\[
+  \begin{aligned}
+    P(\bLambda \mid x) &\propto P(x \mid \bLambda)P(\bLambda) \propto   \frac{|\bLambda|^{N/2}}{{(2\pi^{k})}^{N/2}}\exp \Big( -\frac{1}{2}\sum_{n=1}^{N}{(x_{n} - \bmu)}^{T}\bLambda(x_{n} - \bmu) \Big) |\bLambda|^{\frac{\nu-p-1}{2}} \exp \Big({-\frac{1}{2}tr(\bm{V}^{-1}\bLambda)}\Big)\\
+    &= \frac{1}{ {(2\pi^{k})}^{N/2}}|\bLambda|^{\frac{\nu+N-p-1}{2}} \exp -\frac{1}{2}\Big( tr(\bm{V}^{-1}\bLambda) + \sum_{n=1}^{N}{(x_{n} - \bmu)}^{T}\bLambda(x_{n} - \bmu) \Big)\\
+    &= \frac{1}{ {(2\pi^{k})}^{N/2}}|\bLambda|^{\frac{\nu+N-p-1}{2}} \exp -\frac{1}{2}\Big( tr(\bm{V}^{-1}\bLambda) + \sum_{n=1}^{N}tr\big((x_{n} - \bmu)^{T}\bLambda(x_{n} - \bmu)\big) \Big)\\
+    &= \frac{1}{ {(2\pi^{k})}^{N/2}}|\bLambda|^{\frac{\nu+N-p-1}{2}} \exp -\frac{1}{2}\Big( tr(\bm{V}^{-1}\bLambda) + \sum_{n=1}^{N}tr \big( (x_{n} - \bmu)(x_{n} - \bmu)^{T}\bLambda\big) \Big)\\
+    &= \frac{1}{ {(2\pi^{k})}^{N/2}}|\bLambda|^{\frac{\nu+N-p-1}{2}} \exp -\frac{1}{2}\Big( tr \big( \bm{V}^{-1} +  \sum_{n=1}^{N}(x_{n} - \bmu)(x_{n} - \bmu)^{T}\big)\bLambda \Big).
+  \end{aligned}
+\]
+Where the property \(tr(ABC) = tr(BCA) = tr(CAB)\) is used. In conclusion, the posterior follows
+\[
+  \bLambda \mid \bx \sim \mathcal{W}\Big(\nu + N, \big(\bm{V}^{-1} +  \sum_{n=1}^{N}(x_{n} - \bmu)(x_{n} - \bmu)^{T}\big)^{-1}  \Big).
+\]
+
+\section{Gaussian and Gaussian-Wishart distributions}
+
+\emph{The Gaussian-Wishart distribution is the conjugate prior of the Gaussian distribution with unknown mean and precision.}
+
+
+Let \(X \sim \mathcal{N}(\bmu, \bLambda)\), where \(\bmu\) is the mean vector and \(\bLambda\) the \(p \times p\)  precision matrix. The parameters follow a Gaussian-Wishart distribution as
+\[
+  (\bmu, \bLambda) \sim \mathcal{N}\mathcal{W}(\bmu_{0}, {(\beta_{0}\bLambda)}^{-1}, \nu, \bm{V}).
+\]
+Given \(N\) observations of the variable and \(\bx =(x_{1},\dots, X_{N})\). The density functions are
+\[
+  \begin{aligned}
+    P(\bx \mid \bmu, \bLambda) &\propto |\bLambda|^{\frac{N}{2}}\exp \Big( -\frac{1}{2}\sum_{n=1}^{N}{(x_{n} - \bmu)}^{T}\bLambda(x_{n} - \bmu) \Big),\\
+    P(\bLambda) &\propto |\bLambda|^{\frac{\nu-p-1}{2}}\exp \Big(-\frac{1}{2}tr(\bm{V}^{-1}\bLambda)\Big),\\
+    P(\bmu \mid \bLambda) &\propto |\bLambda|^{\frac{1}{2}} \exp \Big( -\frac{1}{2}(\bmu - \bmu_{0})^{T}(\beta_{0}\bLambda)(\bmu-\bmu_{0}) \Big).
+  \end{aligned}
+\]
+
+The posterior is then
+\[
+  P(\bmu, \bLambda \mid \bx) \propto P(\bx \mid \bmu, \bLambda)P(\bmu, \bLambda) = P(\bx \mid \bmu, \bLambda)P(\bmu \mid \bLambda) P(\bLambda).
+\]
+\[
+  P(\bmu, \bLambda \mid \bx) \propto |\bLambda|^{\frac{\nu + N - p}{2}} \exp -\frac{1}{2}\Big( tr(\bV^{-1}\bLambda) + (\bmu - \bmu_{0})^{T} (\beta_{0}\bLambda)(\bmu - \bmu_{0}) + \sum_{n=1}^{N}(x_{n} - \bmu)^{T}\bLambda(x_{n}- \bmu)  \Big)
+\]
+As the Gaussian-Wishart distribution has a \(\bLambda^{\frac{1}{2}}\) factor, the posterior's degrees of freedom \(\nu'\) is:
+\[
+  |\bLambda|^{\frac{\nu - p + N}{2}} = |\bLambda|^{\frac{\nu - p + N-1}{2}} |\bLambda|^{\frac{1}{2}}  \implies \nu' = \nu + N.
+\]
+Using the factors that surround \(\bLambda\) inside the exponential term, the new scale parameter \(\beta_{0}'\) is:
+\[
+  \bmu^{T}\beta_{0}\bLambda\bmu + N\bmu^{T}\bLambda\bmu = \bmu^{T}((\beta_{0} + N)\bLambda)\bmu \implies \beta_{0}' = \beta_{0} + N.
+\]
+The mean parameter comes from the updated term from \(2\bmu^{T}\beta_{0}\bLambda\bmu_{0}\), which is
+\[
+  2\bmu^{T}\beta_{0}'\bLambda\bmu_{0}' = 2\bmu^{T}(\bLambda N \bar{\bx} + \beta_{0}\bLambda\bmu_{0}) \implies \bmu_{0}' = \frac{1}{\beta_{0}'}(N\bar{\bx} + \beta_{0}\bmu_{0}).
+\]
+Where
+\[
+  \bar{\bx} = \frac{1}{N}\sum_{n=1}^{N}x_{n}.
+\]
+The updated scale matrix \(\bV'\) comes from computing the new trace value, adding to it any one dimensional term multiplied by \(\bLambda\).
+\[
+  \begin{aligned}
+    tr(\bV'^{-1} \bLambda) &= tr(\bV^{-1}\bLambda + \sum_{n=1}^{N}(x_{n} - \bar{\bx})(x_{n} - \bar{\bx})^{T}\bLambda + \beta_{0}(\bar{\bx} - \bmu_{0})(\bar{\bx} - \bmu_{0})^{T}\bLambda\\
+    &\quad+ (N - \beta_{0})\bar{\bx}\bar{\bx}^{T}\bLambda + 2\beta_{0}\bar{\bx}\mu_{0}^{T}\bLambda).
+  \end{aligned}
+\]
+Then,
+\[
+  \bV'^{-1} = \Big(\bV^{-1} + \sum_{n=1}^{N}(x_{n} - \bar{\bx})(x_{n} - \bar{\bx})^{T} + \frac{\beta_{0}N}{\beta_{0} + N}(\bar{\bx} - \bmu_{0})(\bar{\bx} - \bmu_{0})^{T}\Big).
+\]
