@@ -1,5 +1,5 @@
 
-Whereas Bayesian networks are represented by an acyclic directed graph, \emph{Markov random fields} are undirected graphs that may be cyclic. Thus, this kind of graphical models can represent certain dependencies that Bayesian networks cannot, like cyclic ones. \emph{Markov random fields} are commonly used to model low-to mid-level tasks in image processing and computer vision (\cite{li2009markov}).
+Whereas Bayesian networks are represented by an acyclic directed graph, \emph{Markov random fields} are undirected graphs that may be cyclic. Thus, this kind of graphical models are able to represent certain dependencies which Bayesian networks cannot, like cyclic ones. \emph{Markov random fields} are commonly used to model tasks in computer vision and image processing (\cite{li2009markov}).
 
 \begin{definition}
   Given an undirected graph \(G = (V, E)\), a set of random variables \(\bX = (X_{1}, \dots, X_{N})\) \emph{form a Markov random field over \(G\)} if they satisfy the, so called, Markov properties (\cite{barber}):
@@ -9,7 +9,7 @@ Whereas Bayesian networks are represented by an acyclic directed graph, \emph{Ma
       \[
       X_{n} \bigCI X_{m} \mid \bX_{\backslash n,m} \quad \forall n,m \in \{1,\dots,N\} \quad n \neq m.
       \]
-    \item \textbf{Local Markov property}. A variable is conditionally independent over all
+    \item \textbf{Local Markov property}. Any variable is conditionally independent over all
     other variables given its neighbors:
     \[
       X_{n} \bigCI \bX_{\backslash ne(X_{n})} \mid \bX_{ne(X_{n})} \quad \forall n \in \{1,\dots,N\}.
