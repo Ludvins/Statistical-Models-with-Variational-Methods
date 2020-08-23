@@ -1,0 +1,47 @@
+
+\texttt{BayesPy} (\cite{BayesPy}) is a Bayesian inference \texttt{Python} package for modeling Bayesian networks and make inference. Currently, it only supports conjugate models in the exponential family as it only implements \emph{variational message passing algorithm} in contrast with \texttt{InferPy} that used \emph{gradient descent}.
+
+\subsection{Instalation}
+
+The package can be installed using \texttt{pip install bayespy} and has the following requirements:
+\begin{itemize}
+  \item \texttt{NumPy} \(\geq\) 1.10.
+  \item \texttt{SciPy} \(\geq\) 0.13.0.
+  \item \texttt{matplotlib} \(\geq\) 1.2.
+  \item \texttt{h5py}.
+\end{itemize}
+
+\subsection{Usage guide}
+
+Three steps are needed to make Bayesian inference in \texttt{BayesPy}, firstly construct the model, secondly observe the data and lastly run the inference method.
+
+Distributions are available at \texttt{BayesPy.nodes} and these nodes must be defined on \texttt{Python} objects. For example the following syntax
+\begin{minted}{python}
+  mu = nodes.Gaussian(np.zeros(2), np.identity(2), plates=(10))
+\end{minted}
+creates 10 i.i.d variables \(X_{1},\dots,X_{10}\)  such that
+\[
+  X_{n} \sim \mathcal{N}_{2}(0, I) \quad \forall n =1,\dots,10.
+\]
+Notice that the plate notation is done uwing a single parameter \texttt{plate}, incontrast with \texttt{InferPy} that used the syntax \texttt{with inf.datamodel()}.
+
+When all nodes are created, the data must be observed using each node's \texttt{.observe()} method. Using the node's observations as argument.
+
+The only inference method (VMP) is available at \texttt{bayespy.inference.VB} whose arguments must be all probabilistic nodes in the model, for example,
+\begin{minted}{python}
+  Q = VB(x, z, mu, Lambda, pi)
+\end{minted}
+creates the inference object of the Gaussian mixture model we studied. The inference method initializes the nodes variational prior automatically, either way, the user can decide how to initialize these values calling any of the following methods on the node itself:
+\begin{itemize}
+  \item \texttt{initialize\_from\_prior:} Uses the parent nodes to initialize the node. This is by default.
+  \item \texttt{initialize\_from\_parameters:} Use the parameters given in the argument to initialize.
+  \item \texttt{initialize\_from\_value:} Use the value given in the argument to initialize.
+  \item \texttt{initialize\_from\_random:} Takes a random value for the variable.
+\end{itemize}
+
+The inference task is started using the method \texttt{.update()} from the \texttt{VB} object. By default the nodes are updated using the same order in they where passed when creating the object, to change that, a new order can be given as a argument.
+\begin{minted}{python}
+  Q.update(z, mu, Lambda, pi).
+\end{minted}
+
+Another possible arguments are the number of iterations (\texttt{repeat}) and the relative tolerance, i.e, distance of the ELBO between iterations (\texttt{tol}). After each iteration the value of the ELBO (\texttt{loglike}) is displayed.

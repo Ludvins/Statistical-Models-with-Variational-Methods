@@ -1,0 +1,29 @@
+
+\texttt{Scikit-Learn} (\cite{scikit-learn}) is an open source library focused on providing machine learning tools, which include model fitting, selection and evaluation. From this library, we are using the \texttt{BayesianGaussianMixture} class which provides variational estimation of a Gaussian mixture model using the EM algorithm.
+In the implementation of the algorithm, the variational distribution family is fixed as in Chapter~\ref{ch:gm}, for this reason, the \textbf{E-step} optimize the variational distribution. Meanwhile, the \textbf{M-step} does optimize the parameters (hyper-parameters in this case), that is, the parameters of \(\bmu, \bLambda, \bz\) and \(\bpi\). This updates can be found in the class \href{https://github.com/scikit-learn/scikit-learn/blob/0fb307bf3/sklearn/mixture/_bayesian_mixture.py#L65}{source code}, and do equal the ones we computed for the CAVI algoithm in Chapter~\ref{ch:gm}.
+
+As this package is not specifically designed to make Bayesian inference, no nodes need to be defined as the model is internally handled. This being said, \texttt{BayesianGaussianMixture} models all decisions via its parameters:
+\begin{itemize}
+  \item \texttt{n\_components}: total ammount of mixture components, default value is 1.
+  \item \texttt{covariance\_type}: describes the type of covariance to use in the model. \texttt{full} means that each component has its own covariance matrix, \texttt{tied} means that all components have the same matrix, \texttt{diag} means that each component has its own covariance matrix but it must be diagonal and \texttt{spherical} means that each component has its own single variance value, i.e, diagonal matrix with the same value. The default value is \texttt{full}.
+  \item \texttt{tol}: Tolerance threshold, 0.001 by default.
+  \item \texttt{max\_iter}: Number of iterations to make. By default 100.
+  \item \texttt{init\_params}: Handles the weights initialization, where \texttt{kmeans} and \texttt{random} are possible. By default K-means is used.
+  \item \texttt{weight\_concentration\_prior\_type}: Describes how the weights prior is modeled. \texttt{dirichlet\_process} or \texttt{dirichlet\_distribution}. Where a Dirichlet process is an infinite-dimensional generalization of the Dirichlet distribution, used for infinite Gaussian Mixtures. This is used by default.
+  \item \texttt{weight\_concentration\_prior}: Real value corresponding to each component weight value. By default equals \(1/n\_components\).
+  \item \texttt{mean\_precision\_prior}: The precision prior of the mean distribution, by default 1.
+  \item \texttt{mean\_prior}: The mean prior of the mean distribution, by default the mean of the dataset.
+  \item \texttt{degrees\_of\_freedom\_prior}: Degrees of freedom of the Wishart distribution, by default the ammount of features of the data.
+  \item \texttt{covariance\_prior}: Prior matrix of the Wishart distribution equals. By default it is initialized to the empirical covariance matrix.
+\end{itemize}
+
+The inference task is simple as creating the Gaussian mixture object:
+\begin{minted}{python}
+  gm = BayesianGaussianMixture()
+\end{minted}
+Use the dataset to fit the model:
+\begin{minted}{python}
+  gm.fit(X)
+\end{minted}
+
+Once done, the posterior parameters can be inspected using the attributes \texttt{weights\_}, \texttt{means\_} and \texttt{precisions\_}. As many models in this package, the model can be used to predict a new input using \texttt{gm.predict(X)}.
