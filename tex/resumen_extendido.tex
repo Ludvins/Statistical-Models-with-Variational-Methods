@@ -1,0 +1,48 @@
+
+El campo de la \emph{inferencia variacional} se encuentra en la intersección entre la \emph{inferencia estadística}, la \emph{teoría de grafos} y el \emph{aprendizaje automático}. El trabajo se divide en un estudio \textbf{teórico} de la materia (partes 1 a 6), y una aplicación \textbf{práctica} de los modelos y técnicas estudiados (parte 7).
+
+La parte teórica describe los conceptos y técnicas utilizadas en la inferencia variacional, apoyándose en un razonamiento matemático de los mismos. En concreto:
+
+\textbf{Parte 1:} En esta parte se describen los conceptos básicos de la teoría de la probabilidad (capítulo 1), entre los cuales se encuentran los conceptos de \emph{variable aleatoria}, \emph{distribución de probabilidad} e \emph{independencia}. También se definen aquellas distribuciones de probabilidad, discretas y continuas, que se vayan a utilizar a lo largo del documento (capítulo 2), resaltando aquellas propiedades que vayan a ser de utilidad.
+
+Se introduce la definición de la \emph{divergencia de Kullback-Leibler} que juega un papel central en este documento. Finalmente, el tercer capítulo introduce la teoría de grafos y aquellas propiedades que se utilizarán en \emph{modelos gráficos}.
+
+\textbf{Parte 2:} En esta parte se discute el concepto de \emph{inferencia estadística}, destacando las principales diferencias entre dos enfoques distintos: \emph{estimacion de máxima verosimilitud} que busca encontrar aquellos valores de los parámetros que maximizan la probabilidad de los datos se generen a partir de ellos, y la \emph{inferencia Bayesiana} que se basa en la utilización del teorema de Bayes y una distribución de probabilidad a ``priori'' sobre los parámetros.
+
+En el primer enfoque llegamos a la conclusión de que la distribución de máxima verosimilitud coincide con la distribución empírica cuando no consideramos restricciones. Además, vemos que la estimación de máxima verosimilitud es un caso concreto de una técnica de inferencia Bayesiana, \emph{máximo a posteriori}. El cual busca aquellos valores de los parámetros que mejor se ajustan a los datos.
+
+Como último capítulo de la parte se introducen los tres tipos de \emph{datos perdidos} (completamente aleatorio, aleatorio y no aleatorio). Expresando matemáticamente como afecta cada uno de ellos a la inferencia.
+
+\textbf{Parte 3:} Esta parte está enfocada al estudio de la \emph{inferencia variacional Bayesiana}, aplicada a modelos probabilísticos con variables ocultas (incluyendo los parámetros), la cual transforma el problema de inferencia en un problema de optimización. Se introduce brevemente el concepto de métodos de \emph{cadenas de Markov Monte Carlo} como principal contrapartida a los métodos variacionales.
+
+Los métodos variacionales se apoyan en la utilización de distribución de probabilidad variacional sobre las variables ocultas \(Q(\bz)\) y minimizar su divergencia de Kullback-Leibler con la distribución condicionada sobre los datos \(P(\bz \mid \bx)\). Para ello se deriva una cota inferior al logaritmo de la evidencia \(\log P(\bx)\), cambiando el problema de inferencia por uno variacional.
+
+Se estudian dos algoritmos principales: el algoritmo \emph{EM}, se introduce como un método parcialmente Bayesiano, pues no considera distribuciones de probabilidad en los parámetros pese a ser un método variacional, y el algoritmo \emph{CAVI}, que surge como una generalización del anterior donde si se consideran distribuciones a ``priori'' en los parámetros. Se introduce la \emph{familia exponencial} y una clase de modelos que simplifican la inferencia, estos son los \emph{modelos condicionalmente conjugados}. Para terminar se explica el modelo de la \emph{mixtura de Gaussianas} y su resolución mediante el algoritmo CAVI.
+
+Se estudia el modelo de \emph{mixtura de Gaussianas} que supone que los datos se general a partir de la suma ponderada de distintas distribuciones Gaussianas, donde se consideran distribuciones de probabilidad sobre las variables correspondientes a los pesos, las medias y las varianzas de las distribuciones.
+
+\textbf{Parte 4:} En esta parte se introducen las ideas fundamentales de los \emph{modelos gráficos}. Se describen dos modelos principales: las \emph{redes Bayesianas} como principal modelo gráfico dirigido, donde se incluyen los conceptos de \emph{D-separación} y \emph{D-conexión} y los \emph{campos aleatorios de Markov} como principal modelo gráfico no dirigido. El algoritmo de \emph{eliminación de variables} permite calcular de forma eficiente una distribución de probabilidad condicionada (problema \(\mathcal{NP}-\)duro ), ayudándose de la estructura de modelo gráfico y \emph{programación dinámica}.
+
+Aunque el resto del documento está enfocado a la utilización de redes Bayesianas, métodos de inferencia similares se pueden aplicar a los campos aleatorios de Markov.
+
+\textbf{Parte 5:} En esta parte se estudia el aprendizaje de modelos de redes Bayesianas. Se introduce el \emph{algoritmo PC} (capítulo 16) como método de construcción de redes Bayesianas dado un conjunto de datos. Para ello, es necesario calcular la independencia condicionada de un conjunto de variables, donde surge el concepto de \emph{información mutua}.
+
+Como ya dijimos antes, la distribución de probabilidad sin restricciones que maximiza la función de verosimilitud es la distribución empírica, sin embargo, las distribuciones ligadas a una red Bayesiana presentan una clara restricción (su factorización). En el capítulo 17 vemos como esta restricción no es suficiente para provocar un cambio.
+
+Se exponen las ventajas que provee las estructura de red Bayesiana a la tarea de inferencia, haciendo especial énfasis en cómo se ve alterado el algoritmo \emph{EM}, donde uno de sus pasos se ve completamente alterado y simplificado gracias a la red.
+
+Se introduce el algoritmo de \emph{paso de mensajes variacional}, como aplicación del algoritmo \emph{CAVI} a un modelo probabilístico ligado a una red Bayesiana, donde cada factor se encuentra en la familia exponencial. De esta forma, un procedimiento de paso de mensajes entre los nodos permite simplificar y automatizar la  inferencia.
+
+\textbf{Parte 6:} En esta parte se revisa el modelo gráfica correspondiente a la \emph{mixtura de Gaussianas} y se estudian 2 modelos gráficos conocidos, \emph{asignación latente de Dirichlet} y \emph{análisis de componentes principales probabilístico}.
+
+En el primer modelo, que estudia la ocurrencia de palabras y temas en un conjunto de documentos, se establece el modelo generativo de los datos y el modelo variacional, estudiando las actualizaciones de parámetros que el algoritmo \emph{CAVI} lleva a cavo en cada iteración.
+
+El segundo modelo, basado en una reducción de dimensionalidad, extiende el \emph{análisis de componentes principales} clásico, donde se estudia una transformación lineal entre el espacio observado y el espacio donde se supone la reducción, a un ámbito probabilístico. El problema clásico es normalmente resuelto calculando la descomposición de valores propios de la matriz de covarianza de los datos. Por otro lado, el modelo probabilístico es comúnmente resuelto mediante el algoritmo EM.
+
+El modelo probabilístico es extendido mediante el uso de redes artificiales neuronales en lugar de aplicaciones lineales entre los espacios, dotando al modelo de no-linealidad.
+
+Finalmente se puede considerar que el modelo variacional presenta otra red neuronal, que transforma los datos del espacio observado al oculto, dando lugar al modelo conocido como \emph{codificadores automáticos variacionales}.
+
+Por otro lado, la parte práctica estudia la aplicación de las técnicas estudiadas a algunos modelos vistos, concretamente aquellos relacionados con la reducción de dimensionalidad y la mixtura de Gaussianas. Esto se desarrolla en la parte 7:
+
+\textbf{Parte 7:}
