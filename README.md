@@ -19,3 +19,18 @@ The main sources used for writing this documents were
 - *Probabilistic Graphical Models, Principles and Techniques (Daphne Koller and Nir Friedman)*.
 - *Probabilistic Models with Deep Neural Networks (Andrés R. Masegosa, Rafael Cabañas, Helge Langseth, Thomas D. Nielsen and Antonio Salmerón)*.
 - *Variational inference: A review for statisticians (David M Blei, Alp Kucukelbir and Jon D McAuliffe)*.
+
+# Brief Summary
+
+In this document, the theoretical fundamentals of **statistical inference**, more precisely, **variational inference** are reviewed, making special emphasis on how the application of **graphical models** affects inference.
+
+**Statistical inference** is the process of inferring the underlying properties of a dataset or population. Two main paradigms are discussed, **Bayesian inference** and **likelihoodist inference** which differ in that the former uses **Bayes' theorem** during the inference task, assuming a **prior distribution** over the model parameters.
+
+**Variational Bayesian methods** are a class of techniques that among with **Bayes' theorem**, transform the inference task in a optimization one. Which might then be approached through machine learning algorithms, such as **gradient or coordinate descent**. Specific algorithms do also rise, as the case of **expectation maximization**.
+
+The combination of **variational inference**, the **exponential family** and **graphical models** do highly simplify the optimization task, automatizing it in some models. **Variational message passing** is an example of this.
+
+Some common models who are usually approached using variational inference are **Gaussian mixtures**, **latent Dirichlet allocation** and **principal components analysis**.
+
+
+**Keywords:** *statistical inference, variational inference, exponential family, graphical models, expectation-maximization algorithm, variational Bayes, Gaussian mixture, variational auto-encoders*.
