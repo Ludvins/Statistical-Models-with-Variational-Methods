@@ -1,0 +1,421 @@
+
+In this section, the \emph{Variational Message Passing} or \emph{VMP} algorithm (\cite{winn2005variational, bishop2003vibes}) is reviewed as a variational Bayes application to Bayesian networks. The exponential family is considered using a message passing procedure between the nodes of the given graphical model.
+
+VMP automatically applies variational inference to a wide class of Bayesian networks. Its main advantage is that no application-specific updates equations need to be derived.
+
+The full set of variables is \( \bX = (X_1\dots,X_N) \), where both visible and hidden variables \( \bm{Z} = (Z_1,\dots,Z_J) \subset \bX\) are being considered with a variational distribution \( Q \) in the mean-field family
+\[
+   Q(\bZ) = \prod_{j=1}^J Q(z_j).
+\]
+The optimized factor for a fixed term \(Q(z)\) is (as shown in the CAVI update~\ref{eq:cavi_update}) given by
+\begin{equation}\label{eq:vmp_update}
+   \log Q^{new}(z) = \E{Q_{\backslash Z}}{\log P(\bx)} + \text{const.}
+\end{equation}
+Using the Bayesian network structure, the update is factorized as
+\[
+  \log Q^{new}(z) = \E{Q_{\backslash Z}}{ \sum_{n=1}^N \log P(x_n \mid pa(x_n))} + \text{const.}
+\]
+The contribution of the latent variable \(Z\) to the update lies on the terms \( P(z \mid pa(z)) \) and the conditionals of all its children. Let \(cp(Z,X)\) denote the co-parents of \(Z\) with \(X\),
+\[
+  cp(Z,X) = pa(X)\backslash \{Z\},
+\]
+then, arranging all other terms to the constant term, the variational update is given by
+\begin{equation}\label{eq:vmp_update_open}
+   \log Q^{new}(z) = \E{Q_{\backslash Z}}{\log P(z \mid pa(z))} + \sum_{X \in ch(Z)} \E{Q_{\backslash Z}}{\log P(x \mid z,cp(z, x))} + \text{const.}
+\end{equation}
+
+This shows how the update of a hidden variable only depends on its Markov blanket. The optimization of \( Q \) is therefore computed as the sum of a term involving \( Z \) and its parent nodes, along with a term for each children. These terms are seen as ``messages'' between nodes.
+
+The exact messages depends on the conditional distributions of the model and their functional form. The variational update equations present important simplifications when the conditional distribution of a node given its parents is in the exponential family. Sub-indexes will be used to denote parents, children and co-parents in order to simplify the notation.
+
+Consider a latent variable \( Z \) and \( X \in ch_{Z} \). Then suppose that both distributions belong to the exponential family as
+\[
+  P(z \mid pa_z) = h_Z(z)\exp \Big( {\bm{\eta}_Z(pa_z)}^T\bm{T}_Z(z) - \psi_Z(pa_z) \Big).
+\]
+\[
+  P(x \mid z,cp_{z,x}) = h_X(x)\exp \Big( {\bm{\eta}_X(z, cp_{z,x})}^T\bm{T}_X(x) - \psi_X(z, cp_{z,x}) \Big).
+\]
+
+The distribution \( P(z \mid pa_z) \) can be though as a prior belief over \( Z \), whereas \( P(x \mid pa_x) = P(x \mid z, cp_{z,x})\) might be a contribution to the likelihood of \( Z \).
+
+In order to achieve conjugacy, the product of these distributions must be in the same form as the prior, to do so they must have the same form with respect to \( Z \). In short, \(P(x \mid z, cp_{z,x})\) needs to be written in terms of \(Z\)'s natural statistic \( \bm{T}_Z (z)\). This is done by defining functions \( \bm{\eta}_{X,Y} \) and \( \lambda \) such that \begin{equation}\label{eq:vmp_conj}
+  \log P(x \mid z , cp_{z,x}) = \bm{\eta}_{X,Z}{(x, cp_{z,x})}^T \bm{T}_Z(z) + \lambda(x, cp_{z,x}).
+\end{equation}
+
+\begin{exampleth}
+    If \( X \) is Gaussian distributed with mean \( \mu \) (Gaussian distributed) and precision \(\tau\) (Gamma distributed), the log conditional is
+    \[
+         \log P(x \mid \mu, \tau) =
+         \begin{pmatrix}
+             \mu \tau & -\tau/2
+         \end{pmatrix}
+         \begin{pmatrix}
+             x\\
+             x^2
+         \end{pmatrix}
+         - \frac{\mu^{2}\tau}{2} + \frac{1}{2}\big( \log \tau - \log 2\pi \big).
+    \]
+    We may rewrite it the conditional as
+    \[
+         \log  P(x \mid \mu, \tau) =
+         \begin{pmatrix}
+             \tau x & -\tau/2
+         \end{pmatrix}
+         \begin{pmatrix}
+             \mu\\
+             \mu^2
+         \end{pmatrix}
+         + \frac{1}{2}\big( \log \tau - \tau x^2 - \log 2\pi \big),
+    \]
+    where
+    \[
+         \bm{\eta}_{X,\mu}(x,\tau) =  \begin{pmatrix}
+            \tau x\\
+            -\tau/2
+        \end{pmatrix}^T\quad \text{and} \quad \bm{T}_\mu(\mu)=  \begin{pmatrix}
+            \mu\\
+            \mu^2
+        \end{pmatrix}.
+    \]
+\end{exampleth}
+
+As a result, the variational update of a variable (Equation~\ref{eq:vmp_update}) might be written in terms of \(\bm{T}_{Z}(z)\).
+\[
+    \begin{aligned}
+     \log Q^{new}(z) &= \E{Q_{\backslash Z}}{\log(h_Z (pa_z)) + \bm{\eta}_Z{(pa_z)}^T \bm{T}_Z(z) + \psi_Z(pa_z)}\\
+     &\quad+ \sum_{X \in ch(Z)} \E{Q_{\backslash Z}}{ \bm{\eta}_{X, Z}{(x, cp_{z,x})}^T \bm{T}_Z(z) + \lambda_{X}(x, cp_{z,x}) } + \text{const.}\\
+     &= {\Bigg[ \E{Q_{\backslash Z}}{\bm{\eta}_Z{(pa_Z)}^T} + \sum_{X \in ch(Z)} \E{Q_{\backslash Z}}{ \bm{\eta}_{X, Z}{(x, cp_{z,x})}^T}  \Bigg]}^T \bm{T}_Z(z) \\
+     &\quad+ \log h_{Z}(pa_z)+ \text{const.}\\
+     &= {\Bigg[ \E{Q}{\bm{\eta}_Z{(pa_Z)}^T} + \sum_{X \in ch(Z)} \E{Q}{ \bm{\eta}_{X, Z}{(x, cp_{z,x})}^T}  \Bigg]}^T \bm{T}_Z(z) \\
+     &\quad+ \log h_{Z}(pa_z)+ \text{const.}
+   \end{aligned}
+ \]
+ Where the last equality comes from the fact that \(Z\) does not appear inside the expectation. Which means that \( Q^{new}(z) \) is in the exponential family with the form of \( P(z \mid pa_z) \) with the following parameter function
+ \begin{equation}\label{eq:vmp_param_update}
+   \bm{\eta}^{new}_Z =  \E{Q}{\bm{\eta}_Z{(pa_Z)}^T} + \sum_{X \in ch(Z)} \E{Q}{ \bm{\eta}_{X, Z}{(x, cp_{z,x})}^T}.
+ \end{equation}
+ From Equation~\ref{eq:vmp_conj}, it can be seen that \( \log P(x \mid z , cp_{z,x}) \) is linear in \( \bm{T}_X(x) \) and \( \bm{T}_Z(z) \), and, by the same reasoning, linear in any sufficient statistic of any parent of \( X \). This means that the variational update given in Equation~\ref{eq:vmp_update} is a multi-linear\footnote{A function is multi-linear on a set of variables if it varies linearly with respect to each one.} function of the expectations of the natural statistics \(\E{Q}{\bm{T}}\) of each node in \(Z\)'s Markov blanket. As a result, the right hand side of Equation~\ref{eq:vmp_param_update} is multi-linear on the expectations of the statistic functions of their corresponding variables. And so are the expectations of \( \bm{\eta}_Z \) and \( \bm{\eta}_{X, Z} \). Therefore, it is possible to reparameterize these functions in terms of these expectations
+\[
+  \begin{aligned}
+    \bar{\bm{\eta}}_Z \Bigg(\Big\{ \E{Q}{\bm{T}_{x}(x)} \Big\}_{x \in pa_Z} \Bigg) &= \E{Q}{\bm{\eta}_Z(pa_Z)},\\
+    \bar{\bm{\eta}}_{X,Z} \Bigg(  \E{Q}{\bm{T}_{X}(x)}, \Big\{ \E{Q}{\bm{T}_{Y}(y)} \Big\}_{Y \in cp_{Z,X}}\Bigg) &= \E{Q}{\bm{\eta}_{X, Z}(x, cp_{z,x})}.\\
+  \end{aligned}
+\]
+
+\begin{exampleth}
+    The log conditional in the previous example \(\log P(x \mid \mu, \tau)\) is multi-linear in
+  \[
+    \bm{T}(x) = \begin{pmatrix} x\\ x^{2} \end{pmatrix}, \quad \bm{T}(\mu) = \begin{pmatrix} \mu\\ \mu^{2} \end{pmatrix} \quad \text{and} \quad \bm{T}(\tau) = \begin{pmatrix} \tau\\ \log \tau \end{pmatrix}.
+  \]
+The multi-linear function \( \bm{\eta}_{X,\mu}(x,\tau) =  \begin{pmatrix}
+            \tau x\\
+            -\tau/2
+          \end{pmatrix}\) is defined. It can be reparameterized as
+          \[
+            \bar{\bm{\eta}}_{X,\mu}\Big(\E{}{\bm{T}(x)},\E{}{\bm{T}(\tau)}\Big) =  \begin{pmatrix}
+            \E{}{\bm{T}(\tau)}_{0} \E{}{\bm{T}(x)}_{0}\\
+            -\frac{1}{2}\E{}{\bm{T}(\tau)}_{0}
+          \end{pmatrix}\]
+        Where the sub-indexes refer to the component of each vector. So that \(  \E{}{\bm{T}(x)}_{0} = \E{}{x}  \) and \(  \E{}{\bm{T}(\tau)}_{0} = \E{}{\tau}  \).
+\end{exampleth}
+
+To sum up, to compute the variational update, only the expectations of the sufficient statistics are needed, which might be computed using the following proposition.
+
+\begin{proposition}\label{prop:vmp}
+  Given a variable \(X\) in the exponential family, with known natural parameter vector \(\bm{\eta}\),  the expectation of the statistic function with respect to the distribution might be calculated as:
+    \[
+    \E{P}{\bm{T}(x)} =   -  \frac{ d\bar{\psi}(\bm{\eta}(\theta)) }{d \bm{\eta}}.
+  \]
+\end{proposition}
+\begin{proof}
+  Defining \(\bar{\phi}\) as a reparameterisation of \(\phi\) in terms of \(\bm{\eta}\):
+  \[
+    \begin{aligned}
+      P(x\mid \theta) &= h(x)\exp \Big( \bm{\eta}{(\theta)}^{T}\bm{T}(x) + \psi(\theta) \Big)\\
+       &= h(x)\exp \Big( \bm{\eta}{(\theta)}^{T}\bm{T}(x) + \bar{\psi}(\bm{\eta}(\theta)) \Big),
+    \end{aligned}
+  \]
+  then, integrating with respect to \(X\):
+  \[
+    1 = \int_{x} h(x)\exp \Big( \bm{\eta}{(\theta)}^{T}\bm{T}(x) + \bar{\psi}(\bm{\eta}(\theta)) \Big).
+  \]
+  Differentiating with respect to \(\bm{\eta}\):
+  \[
+    \frac{d}{d\theta}1 = 0 = \int_{x} \frac{d}{d\bm{\eta}}h(x)\exp \Big( \bm{\eta}{(\theta)}^{T}\bm{T}(x) + \bar{\psi}(\bm{\eta}(\theta)) \Big) = \int_{x}P(x \mid \theta)\Big[ \bm{T}(x) + \frac{ d\bar{\psi}(\bm{\eta}(\theta)) }{d \bm{\eta}}\Big].
+  \]
+  What implies that the expectation of the statistic function is
+  \[
+    \E{P}{\bm{T}(x)} =   -  \frac{ d\bar{\psi}(\bm{\eta}(\theta)) }{d \bm{\eta}}.
+  \]
+\end{proof}
+
+The messages between each node are therefore defined as the following (the full algorithm is shown in Algorithm~\ref{alg:vmp}):
+\begin{itemize}
+  \item The message from a parent node \( X \) to a child node \( Z \) is the expectation under \( Q \) of its natural statistic:
+    \[
+    \bm{m}_{X \to Z} = \E{Q}{\bm{T}_{X}(x)}.
+    \]
+  \item The message from a child node \( X \) to a parent node \( Z \) is:
+    \[
+    \bm{m}_{X \to Z} = \bar{\bm{\eta}}_{X,Z}\Big(\E{Q}{\bm{T}_X(x)}, \{\bm{m}_{Y \to X}\}_{Y \in cp_{Z,X}}\Big),
+    \]
+    which relied on having received all messages from all the co-parents. If a node \( X \)  is observed, its messages are defined as \( \bm{T}_X(x) \) instead of \( \E{Q}{\bm{T}_X(x)} \).
+\end{itemize}
+
+When a node \( Z \) has received all messages from its parents and children, we can compute the updated parameter \(\bm{\eta}^{new}_Z \) as
+\[
+  \begin{aligned}
+    \bm{\eta}^{new}_Z &= \E{Q}{\bm{\eta}_Z{(pa_Z)}} + \sum_{X \in ch(Z)} \E{Q}{ \bm{\eta}_{X, Z}{(x, cp_{z,x})}}\\
+    &= \bar{\bm{\eta}}_Z{(\{ \bm{m}_{X \to Z} \}_{X \in pa_Z})} + \sum_{X \in ch_Z}\bm{m}_{X \to Z}.
+  \end{aligned}
+\]
+\begin{remark}
+  In case \(Z\) has no parent nodes, the first term of the update equals its natural parameter function \(\bm{\eta}_{Z}\) evaluated on its hyper-parameters. The update of \(\mu\) in Section~\ref{sec:vmp} is an example.
+\end{remark}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 0.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (31) {\(X_{3}\) };
+\node[mynode, above left=of 31] (11) {\(X_{1}\) };
+\node[mynode, above right=of 31] (21) {\(X_{2}\) };
+\node[mynode, below right=of 21] (41) {\(X_{4}\) };
+\node[mynode, below left=of 31] (51) {\(X_{5}\) };
+\node[mynode, below right=of 31] (61) {\(X_{6}\) };
+
+\node[mynode, right =1.5cm of 41] (32) {\(X_{3}\) };
+\node[mynode, above left=of 32] (12) {\(X_{1}\) };
+\node[mynode, above right=of 32] (22) {\(X_{2}\) };
+\node[mynode, below right=of 22] (42) {\(X_{4}\) };
+\node[mynode, below left=of 32] (52) {\(X_{5}\) };
+\node[mynode, below right=of 32] (62) {\(X_{6}\) };
+
+\node[mynode, right =1.5cm of 42] (33) {\(X_{3}\) };
+\node[mynode, above left=of 33] (13) {\(X_{1}\) };
+\node[mynode, above right=of 33] (23) {\(X_{2}\) };
+\node[mynode, below right=of 23] (43) {\(X_{4}\) };
+\node[mynode, below left=of 33] (53) {\(X_{5}\) };
+\node[mynode, below right=of 33] (63) {\(X_{6}\) };
+
+
+\path (11) edge[-latex] (31)
+(21) edge[-latex] (31)
+(31) edge[-latex] (51)
+(31) edge[-latex] (61)
+(41) edge[-latex] (61)
+;
+\path [bend left] (11) edge[-latex, orange] (31);
+\path [bend left] (21) edge[-latex, orange] (31);
+
+\path (12) edge[-latex] (32)
+(22) edge[-latex] (32)
+(32) edge[-latex] (52)
+(32) edge[-latex] (62)
+(42) edge[-latex] (62)
+;
+\path [bend left] (42) edge[-latex, orange] (62);
+
+\path (13) edge[-latex] (33)
+(23) edge[-latex] (33)
+(33) edge[-latex] (53)
+(33) edge[-latex] (63)
+(43) edge[-latex] (63)
+;
+\path [bend right] (63) edge[-latex, orange] (33);
+\path [bend right] (53) edge[-latex, orange] (33);
+
+\end{tikzpicture}
+\caption{Six node example of one variational message passing algorithm updating node \(X_{3}\) . \textbf{1.} All parent nodes pass their messages. \textbf{2.} Send all messages from co-parents to its children. \textbf{3. } Send messages from children to \(X_{3}\).}
+\end{figure}
+
+
+\begin{exampleth}
+     If \( X \) is Gaussian distributed and \( \mu, \tau \) are its parents, the messages from \(X\) to its parents are:
+     \[
+           \bm{m}_{X \to \mu} = \begin{pmatrix}
+                \E{}{\tau}\E{}{X}\\
+                - \E{}{\tau}/2
+           \end{pmatrix}, \quad
+           \bm{m}_{X \to \tau} = \begin{pmatrix}
+               -\frac{1}{2}\Bigg( \E{}{x^2} - 2\E{}{x}\E{}{\mu} + \E{}{\mu^2} \Bigg)\\
+               \frac{1}{2}
+          \end{pmatrix}.
+     \]
+     And the messages from \( X \) to any child node \(Y\)  (in case it had any) is
+     \[
+          \bm{m}_{X \to Y}\begin{pmatrix}
+               \E{}{\tau}\E{}{x}\\
+               - \E{}{x^2}
+          \end{pmatrix}.
+     \]
+\end{exampleth}
+
+\section{Example: uni-variate Gaussian model}\label{sec:vmp}
+
+In order to illustrate the procedure that VMP follows, the following uni-variate Gaussian model is used. Let \(X\) be a Gaussian distributed random variable with unknown mean \(\mu\) and precision \(\tau\). Let \(\bx = (x_{1},\dots,X_{N})\) be a set of i.i.d observations of the variable, such as
+\[
+  P(\bx \mid \mu, \tau^{-1}) \equiv \prod_{n=1}^{N}\mathcal{N}(\mu, \tau^{-1}).
+\]
+The parameters are assumed to follow a Gaussian and Gamma distribution respectively:
+\[
+  \begin{aligned}
+    \log P(\mu) &= \begin{pmatrix} \alpha \beta \\ -\beta/2 \end{pmatrix}^{T}\begin{pmatrix} \mu \\ \mu^{2} \end{pmatrix} + \frac{1}{2}\big( \log \beta + \beta \alpha^{2} - \log 2\pi \big)\\
+    \log P(\tau) &= \begin{pmatrix} -b \\ a - 1 \end{pmatrix}^{T}\begin{pmatrix} \tau \\ \log \tau \end{pmatrix} + a \log b - \log \Gamma (a)
+  \end{aligned}
+\]
+Given this, their sufficient statistics are:
+\[
+  \bm{T}(\mu) = \begin{pmatrix} \mu \\ \mu^{2} \end{pmatrix} \quad \bm{T}(\tau) = \begin{pmatrix} \tau \\ \log \tau \end{pmatrix}.
+\]
+The log conditional of a given observation \(x_{n}\) takes the form
+\[
+  \log P(x_{n} \mid \mu, \tau^{-1}) = \begin{pmatrix} \tau \mu & - \tau/2 \end{pmatrix} \begin{pmatrix} x_{n} \\ x_{n}^{2} \end{pmatrix} + \frac{1}{2}\big( \log \tau + \tau \mu^{2} + \log 2\pi \big).
+\]
+
+The reparameterizations of this conditional are
+\[
+  \begin{aligned}
+    \log P(x_{n} \mid \mu, \tau^{-1}) &= \begin{pmatrix} \tau x_{n} & - \tau/2 \end{pmatrix} \begin{pmatrix} \mu \\ \mu^{2} \end{pmatrix} + \frac{1}{2}\big( \log \tau + \tau x_{n}^{2} + \log 2\pi \big)\\
+    &=\begin{pmatrix} -\frac{1}{2}{(x_{n} - \mu)}^{2} & \frac{1}{2} \end{pmatrix} \begin{pmatrix} \tau \\ \log \tau \end{pmatrix} - \log 2\pi
+  \end{aligned}
+\]
+The first step of the algorithm is initializing the variational distribution
+\[
+  Q(\mu, \tau) = Q(\mu)Q(\tau),
+\]
+and the initial values of \(\E{Q}{\bm{T}(\mu)}\) and \(\E{Q}{\bm{T}(\tau)}\). The update procedure is now described as seen in Figure~\ref{fig:vmp_uni}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=1cm and 0.5cm,
+  mynode/.style={draw,circle,text width=0.5cm,align=center}
+]
+
+\node[mynode] (x1) {\(X_{n}\) };
+\node[mynode, above left=of x1] (mu1) {\(\mu\) };
+\node[mynode, above right=of x1] (tau1) {\(\tau\) };
+
+\node[mynode, right=3cm of x1] (x2) {\(X_{n}\) };
+\node[mynode, above left=of x2] (mu2) {\(\mu\) };
+\node[mynode, above right=of x2] (tau2) {\(\tau\) };
+
+\node[mynode, right=3cm of x2] (x3) {\(X_{n}\) };
+\node[mynode, above left=of x3] (mu3) {\(\mu\) };
+\node[mynode, above right=of x3] (tau3) {\(\tau\) };
+
+\node[mynode, right=3cm of x3] (x4) {\(X_{n}\) };
+\node[mynode, above left=of x4] (mu4) {\(\mu\) };
+\node[mynode, above right=of x4] (tau4) {\(\tau\) };
+
+\path (mu1) edge[-latex] (x1)
+(tau1) edge[-latex] (x1)
+(mu2) edge[-latex] (x2)
+(tau2) edge[-latex] (x2)
+(mu3) edge[-latex] (x3)
+(tau3) edge[-latex] (x3)
+(mu4) edge[-latex] (x4)
+(tau4) edge[-latex] (x4)
+;
+
+\path [bend left] (tau1) edge[-latex, orange] (x1);
+\path [bend left] (x2) edge[-latex, orange] (mu2);
+\path [bend left] (mu3) edge[-latex, orange] (x3);
+\path [bend left] (x4) edge[-latex, orange] (tau4);
+
+
+\end{tikzpicture}
+\caption{Message passing procedure of the uni-variate Gaussian model.}\label{fig:vmp_uni}
+\end{figure}
+
+
+\begin{enumerate}
+  \item Let us start with \(\mu\), as the variable has no parent nodes, the only messages have to be retrieved from the observed variables, to do so, each \(X_{n}\) needs to retrieve its message from \(\tau\).
+    \[
+    \bm{m}_{\tau \to x_{n}} = \E{Q}{\bm{T}(\tau)} = \begin{pmatrix} \E{Q}{\tau} & \E{Q}{\log \tau} \end{pmatrix}^{T}.
+    \]
+  \item The message from \(X_{n}\) to \(\mu\) can now be sent. This is the expectation of \(\bm{\eta}_{\mu, x_{n}}(x_{n}, \tau) = \begin{pmatrix} \tau x_{n} & -\tau /2 \end{pmatrix}\)
+    \[
+    \bm{m}_{x_{n} \to \mu} = \E{Q}{\bm{\eta}_{\mu, x_{n}}(x_{n}, \tau)} = \begin{pmatrix} \E{Q}{\tau} x_{n} \\ - \frac{\E{Q}{\tau}}{2} \end{pmatrix}.
+    \]
+  \item The variational distribution of \(\mu\) is updated as
+    \[
+    \bm{\eta}_{\mu}^{new} = \E{Q}{\bm{\eta}(\alpha, \beta)} + \sum_{x_{n}} \bm{m}_{x_{n} \to \mu} = \begin{pmatrix} \alpha \beta \\ -\beta/2  \end{pmatrix} + \sum_{x_{n}} \begin{pmatrix}   \E{Q}{\tau} x_{n} \\ - \frac{\E{Q}{\tau}}{2} \end{pmatrix}.
+    \]
+    The new expectation of \(\bm{T}(\mu)\) is computed and send to each \(X_{n}\) as
+    \[
+    \bm{m}_{\mu \to X_{n}} = \begin{pmatrix} \E{Q}{\mu} \\ \E{Q}{\mu^{2}} \end{pmatrix}.
+    \]
+  \item Each \(X_{n}\) sends a message to \(\tau\):
+    \[
+    \bm{m}_{X_{n} \to \tau} = \begin{pmatrix} -\frac{1}{2}\Big(x_{n}^{2} - 2x_{n}\E{Q}{\mu} + \E{Q}{\mu^{2}}\Big) \\ \frac{1}{2} \end{pmatrix}.
+    \]
+    Which allows \(\tau\) to update its distribution
+    \[
+    \bm{\eta}^{new}_{\tau} = \begin{pmatrix} -b \\ a - 1 \end{pmatrix} + \sum_{x_{n}} \bm{m}_{x_{n} \to \tau}.
+    \]
+\end{enumerate}
+
+
+
+\begin{algorithm}[t]
+  \SetAlgoLined\KwData{Bayesian network structure with latent variables \(\bZ\) and a dataset. Each variable must belong to the exponential family.}
+  \KwResult{Optimized parameters for the variational distributions of each variable.}
+  \For{\(Z \in \bm{Z}\) }{
+    Initialize its sufficient statistic expectation \( \E{Q}{\bm{T}(z)} \).
+  }
+  \While{convergence stop criteria}{
+    \For{\(Z \in \bm{Z}\) }{
+      \For{\(Y \in pa(Z)\)}{
+        \tcp{Retrieve messages from its parent nodes.}
+        \If{\(Y \in \bm{V}\) }{
+          \(
+            \bm{m}_{Y \to Z} = \bm{T}_{Y}(y)
+          \)
+        }\Else{
+          \(
+            \bm{m}_{Y \to Z} = \E{Q}{\bm{T}_{Y}(y)}
+          \)
+        }
+      }
+      \For{\(Y \in ch(Z)\) }{
+        \tcp{Retrieve messages from the co-parent nodes.}
+        \For{\(Z \in cp(Z,Y)\) }{
+          \tcp{Send their message to the child node.}
+          \If{\(Z \in \bm{V}\)}{
+            \(
+              \bm{m}_{Z \to Y} = \bm{T}_{Z}(z)
+            \)
+          }\Else{
+            \(
+              \bm{m}_{Z \to Y} = \E{Q}{\bm{T}_{Z}(z)}
+            \)
+          }
+        }
+        \If{\(Y \in \bm{V}\)}{
+          \(
+            \bm{m}_{Y \to Z} = \bar{\bm{\eta}}_{Y,Z}\Big(\bm{T}_Y(y), \{\bm{m}_{Z \to Y}\}_{Z \in cp_{Z,Y}}\Big)
+          \)
+        }\Else{
+          \(
+            \bm{m}_{Y \to Z} = \bar{\bm{\eta}}_{Y,Z}\Big(\E{Q}{\bm{T}_Y(y)}, \{\bm{m}_{Z \to Y}\}_{Z \in cp_{Z,Y}}\Big)
+          \)
+        }
+      }
+      \tcp{Update parameter vector.}
+      \(
+        \bm{\eta}_{Z}^{new} = \bar{\bm{\eta}}_{Z} \big( \{\bm{m}_{Y \to Z}\}_{Y \in pa(Z)} \big) + \sum_{Y \in ch(Z)} \bm{m}_{Y \to Z}.
+      \)\;
+      \tcp{Update the expected value of the sufficient statistic.}
+      \(
+      \E{Q}{\bm{T}(z)} = -\frac{d \bar{\psi}(\bm{\eta})(\theta)}{d\bm{\eta}}.
+      \)
+    }
+  }
+  \KwRet{\(\bm{\eta}_{Z}^{new} \ \forall Z \in \bZ\)}\;
+  \caption{Variational Message Passing Algorithm}\label{alg:vmp}
+\end{algorithm}
