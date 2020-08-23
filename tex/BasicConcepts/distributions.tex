@@ -23,20 +23,19 @@ A distribution could have more than one mode, in this case we say it is \emph{mu
     \E{}{X} = \int_{\Omega} X(\omega)dP(\omega) \footnote{\(P\) is a
       measure over \(\Omega\)}.
   \]
-  For a general variable X it is defined as \(\E{}{X} = \E{}{X^+} -
+  For a general variable \(X\), it is defined as \(\E{}{X} = \E{}{X^+} -
   \E{}{X^-}\). Where
   \[
     X^+(\omega) = \max(X(\omega), 0) \quad \text{and} \quad X^-(\omega) = \min(X(\omega), 0).
   \]
 
-  Suppose now that \(X\) is a real-valued random variable, in case it is also
-  continuous, the expectation is
+  In case the variable is continuous, the expectation is
   \[
     \E{}{X} =  \int_{-\infty}^{+\infty} x f(x) dx.
   \]
   In case it is discrete, let \(x_i\) be the values \(X\) can take, the expectation takes the form
   \[
-    \E{}{X} =  \sum_{i = 1}^{+\infty} x_i p(x_i) dx.
+    \E{}{X} =  \sum_{i} x_i p(x_i) dx.
   \]
 
 
@@ -66,7 +65,7 @@ In the above definition, the expectation is calculated over the probability dist
     Var(X) = \sigma^2 = \E{}{{(X - \E{}{X})}^2} = \E{}{X}^2 - \E{}{X^2}
   \]
 
-  The square root of the variance \(\sigma\) is called the \emph{standard deviation}.
+  The positive square root of the variance \(\sigma\) is called the \emph{standard deviation}.
 \end{definition}
 
 When using a multi-variate distribution \(\bm{X} = {(X_1,\dots,X_N)}^T\) we can talk about the \emph{covariance
@@ -84,37 +83,37 @@ The following result will be helpful later on.
 
 \begin{proposition}\label{prop:expectation_over_marginal}
   Let \(\bX = \{X_1,\dots,X_N\}\) be a set of random variables,
-  \(\mathcal{X}_{0} \subset \mathcal{X}\) and \(P(\mathcal{X}), P(\mathcal{X}_{0})\)
+  \(\bX_{0} \subset \bX\) and \(P(\bX), P(\bX_{0})\)
   their probability distributions.
-  It follows that the expectation of a function \(g\) over \(\mathcal{X}_0\), verifies
+  It follows that the expectation of a function \(g\) over \(\bX_0\), verifies
     \[
-      \E{P(\mathcal{X})}{g(\mathcal{X}_0)} = \E{P(\mathcal{X}_0)}{g(\mathcal{X}_0)}.
+      \E{P(\bX)}{g(\bX_0)} = \E{P(\bX_0)}{g(\bX_0)}.
     \]
     That is, we only need to know the marginal distribution of the subset in
     order to carry out the average.
 \end{proposition}
 
 \begin{proof}
-  Let \(\I = (i_{1}, \dots, i_{k})\) be the indexes corresponding to \(\mathcal{X}_{0}\), then
+  Let \(\I = (i_{1}, \dots, i_{k})\) be the indexes corresponding to \(\bX_{0}\), then
   \[
     \begin{aligned}
-      \E{P(\mathcal{X})}{g(\mathcal{X}_{0})}&= \int_{x_{1}}\dots\int_{x_{n}}g(x_{i_{1}},\dots,x_{i_{k}})f(x_{1},\dots,x_{n}) \\
-      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) \int \dots \int f(x_{1},\dots,x_{n}) d_{x_{1}},\dots,d_{x_{n}}\\
-      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) f(x_{i_{1}},\dots,x_{i_{k}}) =  \E{P(\mathcal{X}_{0})}{g(\mathcal{X}_{0})}.\\
+      \E{P(\bX)}{g(\bX_{0})}&= \int_{x_{1}}\dots\int_{x_{N}}g(x_{i_{1}},\dots,x_{i_{k}})f(x_{1},\dots,x_{N}) \\
+      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) \int \dots \int f(x_{1},\dots,x_{N}) d_{x_{1}},\dots,d_{x_{N}}\\
+      &= \int_{x_{i_{1}}}\dots\int_{x_{i_{k}}} g(x_{i_{1}},\dots,x_{i_{k}}) f(x_{i_{1}},\dots,x_{i_{k}}) =  \E{P(\bX_{0})}{g(\bX_{0})}.\\
       \end{aligned}
   \]
-Where in the second-last equality we used marginalization.
+Where in the last equality we used marginalization.
 \end{proof}
 
 We are going to discuss now some examples of probability distributions that are
 going to be used from now on.
 
-\section{Discrete Distributions}
+\section{Discrete distributions}
 
-\subsection*{Bernoulli Distribution}
+\subsection*{Bernoulli distribution}
 
 The Bernoulli distribution describes a discrete binary variable \(X\) that takes
-the value 1 with probability \(p\) and the value 0 with probability \(1-p\).
+the value \(1\)  with probability \(p\) and the value \(0\)  with probability \(1-p\).
 \[
   P(x) =
 \left\{
@@ -125,37 +124,38 @@ the value 1 with probability \(p\) and the value 0 with probability \(1-p\).
 \right.
 \]
 
-\subsection*{Categorical Distribution}
+\subsection*{Categorical distribution}
 
-A generalization of the Bernoulli Distribution when the variable can take more than two states is the \emph{Categorical Distribution}. Let \(Dom(X) = \{1,\dots,N\}\), then \(X\) follows a categorical distribution of parameters \(\theta = (\theta_{1},\dots, \theta_{N})\) if and only if
+A generalization of the Bernoulli distribution when the variable can take more than two states is the \emph{Categorical distribution}. Let \(Dom(X) = \{1,\dots,N\}\), then \(X\) follows a categorical distribution of parameters \(\theta = (\theta_{1},\dots, \theta_{N})\) if and only if
 \[
   P(x \mid \theta) = \prod_{i=1}^{N}\theta_{i}^{\mathbb{I}[x = i]} \text{ and } \sum_{i = 1}^{N}\theta_{i} = 1.
 \]
 
-\subsection*{Binomial Distribution}
+\subsection*{Binomial distribution}
 
 The binomial distribution describes the number of successes in a sequence of
-independent Bernoulli Trials. A discrete binary random variable \(X\) follows a
+independent Bernoulli trials. A discrete binary random variable \(X\) follows a
 \emph{binomial distribution} of parameters \(n \in \mathbb{N}\) and \(p \in
 [0,1]\), denoted as \(X \sim B(n, p)\) if and only if
 \[
-  P(x = k) = \binom{n}{k}p^k(1-p)^{n-k}.
+  P(x = k) = \binom{n}{k}p^k{(1-p)}^{n-k}.
 \]
+That is, \(X\) models the probability of getting \(k\) times an \(1\) outcome in a Bernoulli trial with parameter \(p\) in \(n\) total trials.
 
 
-\subsection*{Multinomial Distribution}
+\subsection*{Multinomial distribution}
 The multinomial distribution is a generalization of the binomial distribution which describes the result of a sequence of independent trials in a categorical distribution. A discrete random variable \(X\) follows a \emph{multinomial distribution} of parameters \(n \in \mathbb{N}\), \(\bm{p} = (p_{1},\dots,p_{K})\) such that \(\sum p_{k} = 1\)  if and only if
 \[
-  P(\bx =x_{1},\dots,x_{K}) =
+  P(\bx =(x_{1},\dots,x_{K})) =
   \begin{cases}
     \frac{n!}{x_{1}!\dots x_{K}!}\prod_{k=1}^{K}p_{k}^{x_{k}} & \text{if } \sum_{k}{x_{k}} = n\\
     0 & \text{otherwise}
   \end{cases}
 \]
 
-\section{Continuous Distributions}
+\section{Continuous distributions}
 
-\subsection*{Uni-Variate Normal Distribution}
+\subsection*{Uni-Variate Gaussian distribution}
 
 The \emph{normal} or \emph{Gaussian distribution} is a type of continuous
 probability distribution for real-valued random variables.
@@ -174,7 +174,7 @@ probability distribution for real-valued random variables.
 \end{definition}
 
 The simplest case of a normal distribution is known as \emph{standard normal
-  distribution}, denoted as \(Z\). It is a special case where \(\mu = 0\) and \(\sigma = 1\), then
+  distribution}. It is a special case where \(\mu = 0\) and \(\sigma = 1\), then
 its density function is
 \[
   f(x) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}x^2}.
@@ -183,15 +183,15 @@ its density function is
 One of the properties of the normal distribution is that if \(X \sim \mathcal{N}(\mu, \sigma)\), \(a,b \in \mathbb{R}\) and \(f:\mathbb{R} \to \mathbb{R}\) be defined
 as \(f(x) = ax + b\), then \(f(X) \sim \mathcal{N}(\mu + b, a^2 \sigma)\).
 
-\subsection*{Multi-Variate Normal Distribution}
+\subsection*{Multi-Variate Gaussian distribution}
 
 This distribution plays a fundamental role in this project so we will discuss
 its properties in more detail. It is an extension of the uni-variate one when having a
 multi-variate random variable.
 
 \begin{definition}
-We say that a random vector \(\bm{X} = (X_1,\dots,X_p)\) follows a \emph{multi-variate normal or Gaussian distribution} of parameters \(\bm{\mu} \in \mathbb{R}^p\) and \(\bm{\Sigma}
-\in \mathbb{M}_n(\mathbb{R})\), denoted as \(\bm{X} \sim \mathcal{N}(\bm{\mu},
+We say that a random vector \(\bm{X} = (X_1,\dots,X_N)\) follows a \emph{multi-variate normal or Gaussian distribution} of parameters \(\bm{\mu} \in \mathbb{R}^N\) and \(\bm{\Sigma}
+\in \mathbb{M}_N(\mathbb{R})\), denoted as \(\bm{X} \sim \mathcal{N}(\bm{\mu},
 \bm{\Sigma})\) if and only if its probability density function is
 
 \[
@@ -227,14 +227,11 @@ uni-variate standard Gaussian distributions.
 
 \end{definition}
 
-\subsection*{Gamma Distribution}
-
-Another continuous distribution that we are going to use is the \emph{Gamma
-  distribution}.
+\subsection*{Gamma distribution}
 
 \begin{definition}
 
-We say that a continuous random variable \(X\) defined on \(\mathbb{R}^{+}\)  follows a \emph{Gamma distribution} of parameters \(\alpha, \beta > 0\), denoted as \(X \sim Gamma(\alpha, \beta)\) if and only if its density function is
+We say that a continuous random variable \(X\) defined on \(\mathbb{R}^{+}\)  follows a \emph{gamma distribution} of parameters \(\alpha, \beta > 0\), denoted as \(X \sim Gamma(\alpha, \beta)\) if and only if its density function is
 
 \[
   f(x) = \frac{\beta^{\alpha} x^{\alpha-1}e^{-\beta x}}{\Gamma(\alpha)},
@@ -254,7 +251,7 @@ The \emph{inverse gamma distribution} is defined by the density function
 \]
 \end{definition}
 
-\subsection*{Wishart Distribution}
+\subsection*{Wishart distribution}
 
 The Wishart distribution is a generalization of the gamma distribution to multiple dimensions. Consider \(G\) a \(p\times \nu\) matrix where each column \(G_{i} \sim \mathcal{N}_{p}(0, \bV)\) is independent from the others, with \(V\) a common vector.
 
@@ -271,7 +268,7 @@ where
   \Gamma_{p}(\frac{\nu}{2}) = \pi^{p(p-1)/4}\prod_{j=1}^{p}\Gamma \Big( \frac{n}{2}-\frac{j-1}{2} \Big).
 \]
 
-\subsection*{Gaussian-Wishart Distribution}
+\subsection*{Gaussian-Wishart distribution}
 
 The Gaussian-Wishart distribution is a four parameter distribution. Let \(\bmu\) follow a Gaussian distribution of mean \(\bmu_{0}\) and covariance matrix \((\bm{\lambda} \bLambda)^{-1}\)
 \[
@@ -290,7 +287,7 @@ Their probability density function equals a product of the corresponding Gaussia
   f(\bmu, \bLambda) = \mathcal{N}(\bmu_{0}, (\bm{\lambda} \bLambda)^{-1})\mathcal{W}(\nu, \bm{W})\footnote{Each distribution symbolyze its density funcion.}.
 \]
 
-\subsection*{Beta Distribution}
+\subsection*{Beta distribution}
 
 \begin{definition}
 We say that a continuous random variable \(X\) defined on the
@@ -307,18 +304,18 @@ where \(B(\alpha, \beta)\) is the \emph{beta function} defined as
 \]
 \end{definition}
 
-The mean is given by \(\E{}{X} = \frac{\alpha}{\alpha + \beta}\).
+Its mean is given by \(\E{}{X} = \frac{\alpha}{\alpha + \beta}\).
 
-\subsection*{Dirichlet Distribution}
+\subsection*{Dirichlet distribution}
 
 The Dirichlet distribution is a family of continuous multi-variate probability
 distributions parameterized by a vector \(\bm{\alpha}\) of positive reals. It is
-a multi-variate generalization of the Beta Distribution.
+a multi-variate generalization of the Beta distribution.
 
 \begin{definition}
   We say that a continuous random multi-variate variable \(\bX\) with order
   \(K \geq 2\), follows a \emph{Dirichlet
-    Distribution} with parameters \(\bm{\alpha} = (\alpha_{1}, \dots, \alpha_{K})\), if and
+    distribution} with parameters \(\bm{\alpha} = (\alpha_{1}, \dots, \alpha_{K})\), if and
   only if its density function is defined as
   \[
     f(\bx) = \frac{1}{B(\bm{\alpha})}\prod_{k = 1}^{K}x_{k}^{\alpha_{k}-1},
@@ -365,7 +362,7 @@ When the vector parameter \(\bm{\alpha}\) is filled with the same value \(\alpha
 
 
 
-\section{Kullback-Leibler Divergence}
+\section{Kullback-Leibler divergence}
 
 \begin{definition}
   Let \(P\) and \(Q\) be two probability distributions over the same probability space \( \Omega \), the \emph{Kullback-Leibler divergence}
@@ -399,4 +396,3 @@ The Kullback-Leibler divergence is always non-negative.
 \end{proof}
 As a result, the Kullback-Leibler divergence is \(0\) if and only if the two
 distributions are equal almost everywhere.
-

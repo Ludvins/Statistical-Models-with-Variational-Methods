@@ -8,7 +8,7 @@ Bayesian inference attempts to determine the \emph{posterior distribution} \(P(\
 \]
 
 
-\section{Example: Discrete prior}
+\section{Example: discrete prior}
 
 For this example, consider a set of i.i.d variables \(\bX = (X_{1},\dots, X_{N})\) with their corresponding set of observations be \(\bx = (x_{1},\dots,x_{N})\), where each \(X\) models the results of coin-tossing experiment, let \(1\) symbolize \emph{heads} and \(0\) \emph{tails}.
 
@@ -16,12 +16,11 @@ Bayesian inference attempts to estimate the probability distribution of \(\theta
 \[
 P(x_n = 1  \mid  \theta) = \theta \quad \forall n \in \{1,\dots,N\}.
 \]
-
-The joint probability takes the form:
+The joint probability factorizes using the i.i.d assumption
 \[
   P(\bx,\theta) = P(\theta)\prod_{n=1}^N P(x_n \mid \theta).
 \]
-We want to calculate the posterior distribution:
+The objective of Bayesian inference is then to compute the posterior distribution,
 \[
   P(\theta \mid \bx) = \frac{P(\bx \mid \theta)P(\theta)}{P(\bx)},
 \]
@@ -35,11 +34,10 @@ the number of tails, mathematically:
 \[
   n_{h} = \#\{x \in \bx \ : \ x = 1\} \quad \text{and} \quad n_{t} = \#\{x \in \bx \ : \ x = 0\}.
 \]
-Given that \(x_{n} \mid \theta\) is a Bernoulli trail \(\forall n \in \{1,\dots,N\}\) , the posterior is:
+Given that \(X_{n} \mid \theta\) follows a Bernoulli distribution \(\forall n \in \{1,\dots,N\}\), where the posterior is
 \[
   P(\theta  \mid \bx) = \frac{P(\theta)}{P(\bx)} \theta^{n_h}{(1-\theta)}^{n_t}.
 \]
-
 Suppose that \(n_h = 2\) and \(n_t = 8\), the posterior might be calculated up to a normalization factor:
 \[
 \begin{aligned}
@@ -65,7 +63,7 @@ Therefore, the posterior is
 \end{aligned}
 \]
 
-\section{Example: Continuous Prior}
+\section{Example: continuous Prior}
 
 In the previous example, we have used a discrete prior for the parameter distribution, a continuous prior might be chosen instead. Suppose an uniform prior distribution:
 \[
@@ -96,7 +94,8 @@ in this case, the posterior is:
     + n_h - 1}{(1 - \theta)}^{\beta + n_t - 1} \implies \theta \mid \bx \sim Beta(n_h + \alpha, n_t + \beta)
 \]
 
-\section{Utility}
+\section{Utility function}
+
 The Bayesian posterior says nothing about how to benefit from the beliefs it
 represents, in order to do this we need to specify the utility of each decision.
 
@@ -127,9 +126,9 @@ in our discrete example would be
   \begin{aligned}
   U(\theta = 0.2) &= U(\theta = 0.2, \theta_{true} = 0.2)P(\theta_{true} = 0.2  \mid
   \bx)\\
-  &+ U(\theta = 0.2, \theta_{true} = 0.5)P(\theta_{true} = 0.5  \mid
+  &\quad+ U(\theta = 0.2, \theta_{true} = 0.5)P(\theta_{true} = 0.5  \mid
   \bx) \\
-  & +  U(\theta = 0.2, \theta_{true} = 0.8)P(\theta_{true} = 0.8  \mid  \bx)\\
+  &\quad+  U(\theta = 0.2, \theta_{true} = 0.8)P(\theta_{true} = 0.8  \mid  \bx)\\
   &= 10 \times 0.4979 - 20\times 0.5059 -20 \times 0.00024 \\
   &= -5.1438,\\
   U(\theta = 0.5) &= -4.9038, \\
@@ -139,7 +138,7 @@ in our discrete example would be
 
 Given this, if we had to make a decision for the parameter, we could choose the value with the highest utility. Other approaches like the mode or mean (continuous posterior) of the distribution are possible.
 
-\section{Maximum a Posteriori Estimation}
+\section{Maximum a posteriori estimation}
 
 \emph{Maximum a posteriori probability estimation} is a Bayesian inference method of estimating the mode of the posterior distribution. In contrast to maximum likelihood estimation, it employs an augmented optimization objective which incorporates a prior distribution.
 
@@ -155,7 +154,7 @@ Given this, if we had to make a decision for the parameter, we could choose the 
 \end{remark}
 
 \begin{remark}
-  MAP estimation can be seen as a limiting case of Bayesian estimation under the 0–1 utility function:
+  MAP estimation can be seen as a limiting case of Bayesian estimation under the \(0-1\)  utility function:
   \[
     U(\btheta, \btheta_{true}) = \mathbb{I}[\btheta = \btheta_{true}],
   \]

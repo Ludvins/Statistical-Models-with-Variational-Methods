@@ -7,7 +7,7 @@ The \emph{mean-field variational family} \(\mathcal{Q}\) is defined as the famil
 
 where \(\bZ = \{Z_{1},\dots,Z_{M}\}\) is the considered set of variables. The mean-field family is commonly used to model the family of distributions over the latent variables in our optimization problem. Notice that each \emph{factor} \(Q_{m}\) can be different and this family does not depend on the observed data.
 
-The mean-field family can capture any marginal of the latent variables but not correlation between them, as it assumes they are independent. For example, consider a two dimensional Gaussian distribution where a high percentage of the density is inside the blue ellipse shown in the following figure. Any mean-field approximation would factorize as a product of two Gaussian distributions, condensing its density in a circle as shown in purple.
+The mean-field family can capture any marginal of the latent variables but not correlation between them, as it assumes they are independent. For example, consider a two dimensional Gaussian distribution where a high percentage of the density is inside the blue ellipse shown in Figure~\ref{fig:mean_field}. Any mean-field approximation would factorize as a product of two Gaussian distributions, condensing its density in a circle as shown in purple.
 
 \begin{figure}[h!]
 \centering
@@ -27,16 +27,18 @@ The mean-field family can capture any marginal of the latent variables but not c
         % \addlegendentry{Mean-field Approximation}
     \end{axis}
   \end{tikzpicture}
-  \caption{Mean-field family distribution (purple) approximating a Gaussian distribution (blue)}
+  \caption{Mean-field family distribution (purple) approximating a Gaussian distribution (blue).}\label{fig:mean_field}
 \end{figure}
 
 Notice the parametric form of each factor \(Q_{m}\) is not specified and the appropriate configuration depends on the variable. For example, a continuous variable might have a Gaussian factor and a categorical variable have a categorical factor.
 
-\section{CAVI Algorithm }
+\section{CAVI algorithm }
 
 In this section, we describe a widely used algorithm to solve the optimization problem we discussed in the previous section using the mean-field family. It is \emph{coordinate ascent variational inference} or \emph{CAVI} (also known as \emph{Variational Bayes}) and its procedure is to iteratively optimize each factor of the mean-field family distribution, while fixing the others. With this, the ELBO reaches a local optimum.
 
-CAVI might be seen as a generalization of the EM algorithm, where model parameters are considered random hidden variables.
+The \emph{coordinate ascent} approach is similar to the \emph{gradient ascent} in that both attempt to reach a local optima following a iterative procedure and maximizing each step. They differ in that the former updates each \emph{coordinate} (variable in this context) whereas the latter updates all of them using the direction of the gradient.
+
+CAVI might be seen as a generalization of the EM algorithm, where the algorithm is extended to a full Bayesian approach, considering the parameters as latent variables. This will be reviewed in Section~\ref{sec:CAVI_EM}.
 
  \begin{algorithm}[t]
   \SetAlgoLined\KwData{A distribution \(P(\bx , \bm{z})\) with a dataset \(\bx\).}
@@ -84,9 +86,9 @@ Notice that the proportionality restriction is enough to fully determine the dis
     Q_{m}^{new}(z_{m}) \propto \exp{\E{Q_{\backslash m}}{\log{P(z_{m}, \bm{z}_{\backslash m}, \bx)}}}.
 \end{equation}
 
-As the ELBO is generally a non-convex function and the CAVI algorithm converges to a local optimum, the initialization values of the algorithm play an important role on its performance. The convergence criteria is usually a threshold for the ELBO.
+As the ELBO is generally a non-convex function and the CAVI algorithm converges to a local optimum, the initialization values of the algorithm play an important role on its performance. The convergence criteria is usually a threshold for the ELBO or a fixed ammount of iterations.
 
-\section{CAVI as an EM generalization}
+\section{CAVI as an EM generalization}\label{sec:CAVI_EM}
 
 As CAVI considers parameters as hidden variables, we need to specify a variational distribution for them. We are choosing the distribution that summarizes the information in the optimal point, let \(\btheta_{opt}\) be the optimal value of \(\btheta\):
 \[

@@ -1,0 +1,82 @@
+As both hidden variables and Bayesian networks are used, the following notation from~\cite{barber} is used: \(\bX = (\bm{V}, \bm{H}) = (X_{1}, \dots , X_{M})\) is the set of variables partitioned in visible and hidden. Let \(\{\bv^{1}, \dots, \bv^{N}\}\) be the set of observations of the visible variables. For each data-point \(\bx^{n} = (\bv^{n}, \bh^{n})\) decomposes into visible and hidden parts.
+
+Remember the ELBO is:
+\[
+  \text{ELBO}(Q) = \underbrace{\sum_{n=1}^{N}\E{Q(\bh^{n})}{\log{Q(\bh^{n})}}}_{Entropy} + \underbrace{\sum_{n=1}^{N}\E{Q(\bh^{n})}{\log{P(\bv^{n}, \bh^{n} \mid \btheta)}}}_{Energy}.
+\]
+Where the steps of the EM algorithm are:
+\begin{itemize}
+  \item \textbf{E-step}:  \(Q^{new}(\bh^{n}) = P(\bh^{n} \mid \bv^{n} , \btheta) \quad \forall n=1,\dots,N\).
+  \item \textbf{M-step}: \(\btheta^{new} = \argmax_{\btheta} \text{ELBO}(Q)\).
+\end{itemize}
+
+\begin{algorithm}[t]
+  \SetAlgoLined\KwData{A dataset \(\bx\), a distribution \(P(\bx, \bz \mid \btheta)\) that factorizes in a Bayesian network.}
+  \KwResult{The maximum likelihood estimates for \(P(x_{m}\mid pa(x_{m})), m=m,\dots,M\), }
+  Initialize \( P(x_{m}\mid pa(x_{i})), m=1,\dots,M \)\;
+  \(t \leftarrow 0\)\;
+  \While{Convergence stop criteria}{
+    \For{\(n=1\) to \(N\)  }{
+      \(Q^{n}_{t}(\bx) = P_{t}(\bh^{n} \mid \bv^{n})\delta(\bv, \bv^{n})\)\tcp*{E-step}
+    }
+    \For{\(m=1\) to \(M\)  }{
+      \(P_{t}(x_{m} \mid pa(x_{m})) = \frac{\sum_{n=1}^{N}Q_{t}^{n}(x_{m}, pa(x_{m}))}{ \sum_{n=1}^{N}Q_{t}^{n}(pa(x_{m}))}\)\tcp*{M-step}
+    }
+    \(t \leftarrow t+1 \)\;
+  }
+  \KwRet{\( P_{t}(x_{m}\mid pa(x_{m})), \quad m=1,\dots,M  \)}\;
+  \caption{Expectation Maximization Algorithm for Bayesian networks}\label{alg:em_bn}
+\end{algorithm}
+
+
+Whereas the structure of the Bayesian network gives no advantage over the E-step, it does on the M-step. Let the variational distribution be fixed as \(Q_{old}\), the \emph{energy term} in a Bayesian network is
+\[
+  \sum_{n=1}^{N} \E{Q_{old}(\bh^{n})}{ \log{P(\bx^{n} \mid \btheta)} } = \sum_{n = 1}^{N}\sum_{m = 1}^{M} \E{Q_{old}(\bh^{n})}{\log{P( x_{m}^{n} \mid pa(x_{m}^{n}), \btheta)}}.
+\]
+
+It is useful to use the following notation that defines a conditional distribution of the hidden variable when the visible one equals \(\bv^{n}\).
+\[
+  Q^{n}(\bx) = Q^{n}(\bv,\bh) = Q_{old}(\bh^{n}) \mathbb{I}(\bv = \bv^{n}).
+\]
+A mixture distribution might be defined as
+\[
+  Q(\bx) = \frac{1}{N}\sum_{n = 1}^{N}Q^{n}(\bx).
+\]
+One may show that the energy term equals
+\[
+  \sum_{n = 1}^{N}\E{Q_{old}(\bh^n)}{\log{P(\bx^{n} \mid \btheta)}} = N \ \E{Q(\bx)}{\log{P(\bx \mid \btheta)}},
+\]
+as
+\[
+  \begin{aligned}
+    \E{Q(\bx)}{\log{P(\bx \mid \theta)}} &= \int_{\bx}Q(\bx)\log{P(\bx \mid \btheta)} =  \int_{\bx} \frac{1}{N}\sum_{n=1}^{N}Q^{n}(\bx)\log{P(\bx \mid \btheta)} \\
+    &= \frac{1}{N} \int_{\bx}\sum_{n=1}^{N}Q_{old}(\bh^n)\mathbb{I}[\bv = \bv^{n}]\log{P(\bx \mid \btheta)}\\
+    &= \frac{1}{N}\sum_{n = 1}^{N}\E{Q_{old}(\bh^n)} {\log{P(\bh^n, \bv^{n} \mid \btheta)}}\\
+    &= \frac{1}{N}\sum_{n = 1}^{N}\E{Q_{old}(\bh^n)} {\log{P(\bx^{n} \mid \btheta)}},
+  \end{aligned}
+\]
+In the other hand, using the Bayesian network structure and Proposition~\ref{prop:expectation_over_marginal}:
+\[
+  \begin{aligned}
+    \E{Q(x)}{\log{P(\bx \mid \btheta)}} &= \sum_{m = 1}^{M}\E{Q(\bx)}{\log{P(x_{m} \mid pa(x_{m}), \btheta)}}\\
+    &= \sum_{m = 1}^{M}\E{Q(x_{m}, pa(x_{m}))}{\log{P(x_{m} \mid pa(x_{m}, \btheta))}}\\
+    &= \sum_{m = 1}^{M}\E{Q(pa(x_{m}))}{ \E{Q(x_{m}\mid pa(x_{m}))}{ \log{P(x_{m} \mid pa(x_{m}), \btheta)}}}.
+\end{aligned}
+\]
+Adding a constant as
+\[
+  \E{Q(pa(x_{m}))}{\E{Q(x_{m}\mid pa(x_{m}))}{\log{Q(x_{m} \mid pa(x_{m}))}}}
+\]
+to the last term results in a Kullback-Leibler Divergence:
+\[
+  \sum_{m = 1}^{M} E_{Q(pa(x_{m}))} \Big[ \KL{Q(x_{m}\mid pa(x_{m}))}{P(x_{m} \mid pa(x_{m}), \btheta)}\Big]
+\]
+\[
+  =\sum_{m = 1}^{M}\E{Q(pa(x_{m}))}{\E{Q(x_{m}\mid pa(x_{m}))}{\log{Q(x_{m} \mid pa(x_{m}))}} - \E{Q(x_{m}\mid pa(x_{m}))}{\log{P(x_{m} \mid pa(x_{m}), \btheta)}}}.
+\]
+So maximizing the energy term is equivalent to minimize the above formula, that is, setting
+\[
+  P^{new}(x_{m} \mid pa(x_{m}), \btheta) = Q(x_{m} \mid pa(x_{m})).
+\]
+So the first observation is that \(\btheta\) is not needed in order to maximize the energy term due to the Belief network structure. Algorithm~\ref{alg:em_bn} shows the full procedure of the algorithm in Bayesian networks.
+

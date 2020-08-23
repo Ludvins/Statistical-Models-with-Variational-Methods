@@ -30,10 +30,10 @@ Given a set of variables \(\bX = (X_{1},\dots,X_{N})\), \emph{Bayesian networks}
     ;
 
     \end{tikzpicture}
-    \captionof{figure}{Bayesian Network factorizing \(P(x_1, x_2, x_3, x_4) = P(x_1 \mid x_4)P(x_2\mid x_3, x_4)P(x_3)P(x_4)\)}\label{fig:bn_example}
+    \captionof{figure}{Bayesian Network factorizing \(P(x_1, x_2, x_3, x_4) = P(x_1 \mid x_4)P(x_2\mid x_3, x_4)P(x_3)P(x_4)\).}\label{fig:bn_example}
 \end{figure}
 
-Any probability distribution can be written as a Bayesian Network, even though
+Any probability distribution can be written as a Bayesian network, even though
 it may end up being a fully-connected ``cascade''\footnote{This term comes from the visual structure of the graph.} DAG, which means that each variable \( X_n \) is a parent of any \( X_m \) with \( m > n \). This is because any distribution satisfies:
 \[
    P(x_1, \dots, x_{N}) = P(x_1) \prod_{n=2}^{N}P(x_{n} \mid x_{1},\dots, x_{n-1})
@@ -51,27 +51,19 @@ How could we check if two variables are conditionally independent given a
 Bayesian network? For example in Figure~\ref{fig:relations}, \(X_1 \bigCI
 X_2 \mid X_4\) as
 \[
-\begin{aligned}
-P(x_2 | x_4) &= \frac{1}{P(x_4)}\int_{x_1,x_3}P(x_1, x_2, x_3, x_4)
-= \frac{1}{P(x_4)}\int_{x_1,x_3}P(x_1|x_4)P(x_2|x_3,x_4)P(x_3)P(x_4)\\
-                 &= \int_{x_3}P(x_2|x_3, x_4)P(x_3),
-\end{aligned}
+  \begin{aligned}
+    P(x_2 \mid x_4) &= \frac{1}{P(x_4)}\int_{x_1,x_3}P(x_1, x_2, x_3, x_4)
+    = \frac{1}{P(x_4)}\int_{x_1,x_3}P(x_1 \mid x_4)P(x_2\mid x_3,x_4)P(x_3)P(x_4)\\
+    &= \int_{x_3}P(x_2\mid x_3, x_4)P(x_3),
+  \end{aligned}
 \]
 \[
-\begin{aligned}
-P(x_1, x_2 | x_4) &= \frac{1}{P(x_4)}\int_{x_3}P(x_1, x_2, x_3, x_4)
-= \frac{1}{P(x_4)}\int_{x_3}P(x_1|x_4)P(x_2|x_3,x_4)P(x_3)P(x_4)\\
-                 &= P(x_1|x_4)\int_{x_3}P(x_2|x_3, x_4)P(x_3) = P(x_1|x_4)P(x_2|x_4).
-\end{aligned}
+  \begin{aligned}
+    P(x_1, x_2 \mid x_4) &= \frac{1}{P(x_4)}\int_{x_3}P(x_1, x_2, x_3, x_4)
+    = \frac{1}{P(x_4)}\int_{x_3}P(x_1\mid x_4)P(x_2\mid x_3,x_4)P(x_3)P(x_4)\\
+    &= P(x_1\mid x_4)\int_{x_3}P(x_2\mid x_3, x_4)P(x_3) = P(x_1\mid x_4)P(x_2\mid x_4).
+  \end{aligned}
 \]
-
-\begin{proposition}\label{prop:bn_neig_indep}
-  Let \(X\) and \(Y\) be two different nodes of a Bayesian network such as \(Y \not \in ne(X)\), then
-  \[
-    X \bigCI Y \mid ne(X).
-  \]
-  Which means that all information about \(X\) is in its neighbors.
-\end{proposition}
 
 \section{D-separation and D-connection}
 
@@ -79,22 +71,20 @@ Now we are going to define two central concepts to determine conditional
 independence in any Bayesian network, these are \emph{d-connection} and \emph{d-separation}.
 
 \begin{definition}
-Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\)
-are disjoint sets of vertices. We say that \(\bm{X} \text{ and
-} \bm{Y}\) are \emph{d-connected} by \(\bm{Z}\) if and only if there
-exists an undirected path \(U\) from any vertex in \(\bm{X}\) to any
-vertex in \(\bm{Y}\) such that:
-\begin{itemize}
-\item For any collider \(C\), itself or any it's descendants is in \(\bm{Z}\).
-\item No non-collider on \(U\) is on \(\bm{Z}\).
-\end{itemize}
+  Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\)
+  are disjoint sets of vertices. We say that \(\bm{X} \text{ and
+  } \bm{Y}\) are \emph{d-connected} by \(\bm{Z}\) if and only if there
+  exists an undirected path \(U\) from any vertex in \(\bm{X}\) to any
+  vertex in \(\bm{Y}\) such that:
+  \begin{itemize}
+    \item For any  collider \(C\), itself or any it's descendants is in \(\bm{Z}\).
+    \item No non-collider on \(U\) is on \(\bm{Z}\).
+  \end{itemize}
+  That is, there exists a path where \(\bZ\) contains all of its colliders and their descendants, and no other node from the path.
 \end{definition}
 
 \begin{definition}
-Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\)
-are disjoint sets of vertices. \(\bm{X}\) and \(\bm{Y}\)
-are \emph{d-separated} by \(\bm{Z}\) if and only if they are not
-d-connected by \(\bm{Z}\) in \(G\)
+  Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\) are disjoint sets of vertices. \(\bm{X}\) and \(\bm{Y}\) are \emph{d-separated} by \(\bm{Z}\) if and only if they are not d-connected by \(\bm{Z}\) in \(G\). That is, for any undirected path from \(\bX\) to \(\bY\), either there is a collider or a descendant of it not in \(\bZ\) or there is a non-collider in  \(\bZ\).
 \end{definition}
 
 \begin{figure}[t]
@@ -124,10 +114,10 @@ For example, in Figure~\ref{fig:d-sep}, \(d\) d-separates \(a\) and \(c\) (\(e\)
 is a collider in the path that is not in \(\{d\}\)),
 and \(\{d,e\}\) d-connect them.
 
-\begin{theorem}[\cite{pearl_and_detcher}]\label{th:d-separation}
+\begin{theorem}[\cite{spirtes2000causation} Theorem 3.3]\label{th:d-separation}
 Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\)
-are disjoint sets of vertices. If  \(\bm{X}\) and \(\bm{Y}\)
-are d-separated by \(\bm{Z}\), then they are independent conditional
+are disjoint sets of vertices. \(\bm{X}\) and \(\bm{Y}\)
+are d-separated by \(\bm{Z}\) if and only if they are independent conditional
 on \(\bm{Z}\) in all probability distributions that \(G\) may represent.
 \end{theorem}
 
@@ -154,7 +144,7 @@ essentially the same but repeated a number of times, the \emph{plate notation} i
 
 \node[mynode,right=2cm of f] (g) {\(B_i\)};
 \node[mynode, above=of g] (h) {A};
-\plate{} {(g)} {\(n\)}; %
+\plate[inner sep=.3cm,xshift=.02cm,yshift=.2cm]  {} {(g)} {\(n\)}; %
 
 
 \path (a) edge[-latex] (b)
@@ -239,15 +229,109 @@ given the grass is wet?
 
 \[
 P(R = T | G = T) = \frac{P(G = T, R = T)}{P(G=T)} = \frac{\sum_{s}P(G=T, R=T,
-s)}{\sum_{r,s} P(G=T, r, s)}
+s)}{\sum_{r,s} P(G=T, r, s)}.
 \]
 
 Using the expression of the joint probability among with the tables we can
 compute every term. For example:
 \[
 \begin{aligned}
-P(G=T, R=T, S=T) &= P(S=T|R=T)P(G=T|R=T,S=T)P(R=T) \\
-&= 0.01 * 0.99 * 0.2 = 0.00198
+  P(G=T, R=T, S=T) &= P(S=T|R=T)P(G=T|R=T,S=T)P(R=T) \\
+  &= 0.01 * 0.99 * 0.2 = 0.00198.
 \end{aligned}
 \]
+\end{exampleth}
+
+\section{Exact inference in Bayesian networks}
+
+In this section, exact inference in graphical models is reviewed. The Bayesian network structure makes it possible to perform inference efficiently in complex models.
+
+Let \(\bX\) and \(\bY\) be two set of variables with \(\bX \cap \bY = \emptyset\) and \(\bX \cup \bY \cup \bW\) being the full set of variables in the network. The objective is to efficiently compute conditional distributions \(\bX \mid \by\), that is, computing \(P(\bx \mid \by)\ \forall \bx\).
+
+This conditional can be computed as
+\[
+  P(\bx \mid \by) = \frac{P(\bx, \by)}{P(\by)}\quad \text{where}\quad P(\bx, \by) = \sum_{\bw} P(\bx, \by, \bw) \quad \text{and} \quad P(\by) = \sum_{\bx}P(\bx, \by).
+\]
+One may notice that, the numerator \(P(\bx, \by)\) can be used to compute the denonimator. Given this, the procedure would be to compute \(P(\bx , \by) \ \forall \bx\) using \(P(\bx, \by, \bw)\), which are the entries of the joint distribution, and then using this values to efficiently calculate \(P(\by)\).
+
+The inference problem in graphical models turns to be \(\mathcal{NP}-\)hard, which, assuming the Exponential Time Hypothesis (\cite{impagliazzo1999complexity}), means that the worst case requires exponential time. Much worse is the fact that \emph{approximate inference} is still \(\mathcal{NP}-\)hard (\cite{koller_friedman} Section 9.1).
+
+\begin{algorithm}[t]
+  \SetAlgoLined\KwData{Set of factors \(\bm{\phi}\) in which the joint distribution factorizes, set of variables to be eliminates \(\bX\) and an ordering on \(\bX=(X_{1},\dots,X_{N})\) such that the set is ordered \(X_{i} < X_{j} \iff i < j\).}
+  \KwResult{A factor \(\psi^{*}\) with the variables eliminated.}
+  \For{\(n = 1,\dots,N\) \tcp*{Eliminate variable \(X_{n}\) }}{
+    Let \(\bm{\phi} '\) be the set of factors that do depend on \(X_{n}\)\;
+    \(\psi = \prod_{\phi \in \bm{\phi}'} \phi\)\tcp*{Define the product of factors \(\phi\)}
+    \(\tau = \sum_{X_{n}} \phi\)\tcp*{Define the sum-product factor \(\tau\)}
+    \(\bm{\phi} = \bm{\phi}' \cup \tau\)\tcp*{Append the new factor}
+  }
+  \(\phi^{*} = \prod_{\phi \in \bm{\phi}} \phi\)\;
+  \KwRet{\(\phi^{*}\)}\;
+  \caption{Sum-product Variable Elimination}\label{alg:ve}
+\end{algorithm}
+
+\emph{Variable elimination algorithm (\ref{alg:ve})} uses \emph{dynamic programming} techniques to perform inference in a reasonable time. Let \(\bX = (X_{1},\dots,X_{N})\) be a set of variables, \(\{\bY, \bZ\}\) a partition of it, and \(P(\bx)\) factorize as the product of the Bayesian network factors \(\bm{\phi} = \{P(x_{n}\mid pa(x_{n}))\}_{n = 1,\dots, N}\),  then, for any ordering of \(\bZ\), the variable elimination algorithm on \(\bm{\phi}\) and \(\bZ\) returns a factor \(\phi^{*}(\by)\) such that
+\[
+  \phi^{*}(\by) = \sum_{\bz} \prod_{\phi \in \bm{\phi}}\phi = \sum_{\bz} P(\by, \bz) = P(\by).
+\]
+Computing a conditional probability  \( P(\by_{1} \mid \by_{2})\) where \(\bm{Y}_{1}, \bY_{2} \subset \bY\), reduces to using the algorithm to compute \(P(\by_{1}, \by_{2})\) and then use it to compute \(P(\by_{2})\).
+
+\begin{remark}
+  This algorithm can be applied to Markov random fields, having to normalize the factors to compute the real distribution.
+\end{remark}
+
+
+\begin{exampleth}
+  Let \(A, B, C\) and \(D\) be the four variables of the Bayesian network (Figure~\ref{fig:ve_ex}). Suppose the goal is to compute \(P(d)\) for each \(d\), possible value of \(D\).  Given that the joint distribution factorizes as
+  \[
+    P(a,b,c,d) = P(a)P(b \mid a)P(c \mid b)P(d \mid c),
+  \]
+  the calculations would be
+  \[
+    P(d) = \sum_{a,b,c} P(a,b,c,d) = \sum_{c}P(d \mid c)\sum_{b}P(c \mid b)\sum_{a}P(a)P(b \mid a),
+  \]
+  where terms appear several times, for example, if the variables were binary, the term \(P(a=1)P(b=1 \mid a = 1)\) would appear twice, one for each value of \(C\). Which means that it would appear four times (two when \(d=0\) and two when \(d=1\)). Storing these terms during the calculations would decrease the total number of needed operations.
+
+  \begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+      node distance=1cm and 0.5cm,
+      mynode/.style={draw,circle,text width=0.5cm,align=center}
+      ]
+
+      \node[mynode] (a) {A};
+      \node[mynode, right=of a] (b) {B};
+      \node[mynode, right=of b] (c) {C};
+      \node[mynode, right=of c] (d) {D};
+
+      \path (a) edge[-latex] (b)
+      (b) edge[-latex] (c)
+      (c) edge[-latex] (d)
+      ;
+
+    \end{tikzpicture}
+    \caption{4-node Bayesian network for variable elimination introduction.}\label{fig:ve_ex}
+  \end{figure}
+
+
+  The procedure followed by the algorithm is to define variables \(\tau\) that one by one eliminate each variable form the above formula. Firstly, the variable \(A\) is eliminated, let \(\psi_{A,B}(a,b) = P(b\mid a)P(a)\) and \(\tau_{B}(b) = \sum_{a}\psi_{A,B}(a,b)\), then
+  \[
+    \tau_{B}(b) = \sum_{a}P(a)P(b \mid a).
+  \]
+  Given \(\tau_{B}(b)\),
+  \[
+    P(d) = \sum_{b,c} P(a,b,c,d) = \sum_{c}P(d \mid c)\sum_{b}P(c \mid b)\tau_{B}(b).
+  \]
+  Using the same reasoning with \(B\) and \(D\),
+  \[
+    \begin{aligned}
+      \psi_{B,C}(b,c) &= \sum_{b}\sum_{a}P(c\mid b)P(b\mid a)P(a) = \tau_{B}(b)P(c \mid b),\\
+      \tau_{C}(c) &= \sum_{b}\psi_{B,C}(b,c).
+    \end{aligned}
+  \]
+  Where \(P(d)\) is finally computed as
+  \[
+    P(d) = \sum_{c}\tau_{C}(c)P(d \mid c)
+  \]
+  for each value \(d\) of \(D\).
 \end{exampleth}

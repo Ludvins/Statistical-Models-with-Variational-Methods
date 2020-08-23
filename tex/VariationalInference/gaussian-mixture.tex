@@ -41,7 +41,7 @@ The following elements are being considered (using~\cite{bishop2006pattern} Chap
     \]
   \item The prior governing \(\bm{\mu}\) and \(\bm{\Lambda}\) is an independent Gaussian-Wishart distribution with hyper parameters \(m_{0}, \beta_{0}, W_{0}\) and \(\nu_{0}\):
     \[
-    P(\bm{\mu}, \bm{\Lambda}) = P(\bm{\mu} \mid \bm{\Lambda})P(\bm{\Lambda}) = \prod_{k=1}^{K}P(\mu_{k}\mid \Lambda_{k})P(\Lambda_{k})= \prod_{k=1}^{K}\mathcal{N}(m_{0}, {(\beta_{0}\Lambda_{k})}^{-1}) \mathcal{W}(W_{0}, \nu_{0})
+    P(\bm{\mu}, \bm{\Lambda}) = P(\bm{\mu} \mid \bm{\Lambda})P(\bm{\Lambda}) = \prod_{k=1}^{K}P(\mu_{k}\mid \Lambda_{k})P(\Lambda_{k})= \prod_{k=1}^{K}\mathcal{N}(m_{0}, {(\beta_{0}\Lambda_{k})}^{-1}) \mathcal{W}(W_{0}, \nu_{0}).
     \]
 \end{itemize}
 
@@ -50,9 +50,9 @@ The joint probability factorizes as
   P(\bm{x}, \bm{z}, \bm{\pi}, \bm{\mu}, \bm{\Lambda}) = P(\bm{x}\mid \bm{z}, \bm{\mu}, \bm{\Lambda})P(\bm{z}\mid \bm{\pi})P(\bm{\pi})P(\bm{\mu}\mid \bm{\Lambda})P(\bm{\Lambda}).
 \]
 
-The model can be represented with a Bayesian network as done in Chapter~\ref{ch:lvm_gm}. The needed steps to give the explicit CAVI update are now summarized following~\cite{bishop2006pattern} Chapter 10.2.
+The model can be represented with a Bayesian network as done in Chapter~\ref{ch:lvm_gm}. The needed steps to give the explicit CAVI update are now summarized following~\cite{bishop2006pattern}.
 
-\section{Variational Distribution and CAVI update}
+\section{Variational distribution and CAVI update}
 
 We consider a variational distribution which factorizes as
 \[
@@ -146,39 +146,18 @@ Lastly, the variational distribution \(Q(\mu_{k}, \Lambda_{k})\) does not factor
     &\quad + \frac{1}{2}N_{k} \log |\Lambda_{k}| + \text{const.}
     \end{aligned}
   \]
-  The above terms may be separated into those who depend on \(\mu_{k}\) and those who do not. Doing so, the variational distribution is written as
+  Using Appendix~\ref{ap:G-GW}, the above formula is similar the posterior distribution of a Gaussian likelihood and Gaussian-Wishart prior. Using the procedure used in the appendix, the posterior follows a Gaussian-Wishart distribution with parameters:
   \[
-  \log Q^{new}(\mu_{k}, \Lambda_{k}) = \log Q^{new}(\mu_{k} \mid \Lambda_{k}) + \log Q^{new}(\Lambda_{k}).
+    Q^{new}(\mu_{k}, \Lambda_{k}) \equiv  \mathcal{N}( m_{k}, (\beta_{k}\Lambda_{k})^{-1}) \mathcal{W}(W_{k}, \nu_{k}).
   \]
-  The first term is
-  \[
-      \log Q^{new}(\mu_{k}  \mid \Lambda_{k}) = \frac{1}{2}\mu_{k}^{T}\Big( \beta_{0} + \sum_{n=1}^{N}r_{n,k} \Big)\Lambda_{k}\mu_{k} + \mu_{k}^{T}\Lambda_{k}\Big( \beta_{0}m_{0} + \sum_{n=1}^{N}r_{n,k}x_{n} \Big) + \text{const.}
-  \]
-  Which implies that, naming
+  Where,
   \[
     \begin{aligned}
       \beta_{k} &= \beta_{0} + N_{k},\\
-      m_{k} &= \frac{1}{\beta_{k}}\Big(\beta_{0}m_{0} + \sum_{n=1}^{N}r_{n,k}x_{n}\Big),
-    \end{aligned}
-  \]
-  , the variational distribution follows a Gaussian distribution
-  \[
-    Q^{new}(\mu_{k} \mid \Lambda_{k}) \equiv \mathcal{N}\Big( m_{k}, \beta_{k}\Lambda_{k}\Big).
-  \]
-  Following a similar reasoning (that can be found in~\cite{Svensn2007PatternRA}), defining:
-  \[
-    \begin{aligned}
+      m_{k} &= \frac{1}{\beta_{k}}\Big(\beta_{0}m_{0} + \sum_{n=1}^{N}r_{n,k}x_{n}\Big),\\
       \bar{x}_{k} &= \frac{1}{N_{k}}\sum_{n=1}^{N}r_{n,k}x_{n},\\
       S_{k} &= \frac{1}{N_{k}}\sum_{n=1}^{N}r_{n,k}(x_{n}- \bar{x}_{k})(x_{n} - \bar{x}_{k})^{T},\\
       W_{k}^{-1} &= W_{0}^{-1} + N_{k}S_{k} + \frac{\beta_{0}N_{k}}{\beta_{0} + N_{k}}(\bar{x}_{k} - m_{0})(\bar{x}-m_{0})^{T},\\
-      \nu_{k} &= \nu_{0} + N_{k},
+      \nu_{k} &= \nu_{0} + N_{k}.
     \end{aligned}
-  \]
-  the other variational distribution follows a Wishart distribution of parameters,
-  \[
-    Q^{new}(\Lambda_{k}) \equiv \mathcal{W}(W_{k}, \nu_{k}).
-  \]
-  In conclusion, \(Q^{new}(\mu_{k}, \Lambda_{k})\) follows a Gaussian-Wishart distribution,
-  \[
-    Q^{new}(\mu_{k}, \Lambda_{k}) \equiv  \mathcal{N}( m_{k}, \beta_{k}\Lambda_{k}) \mathcal{W}(W_{k}, \nu_{k}).
   \]

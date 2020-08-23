@@ -37,20 +37,20 @@ Where a binary to decimal transformation between the states of \(A\) and \(B\) a
     ;
 
   \end{tikzpicture}
-    \caption{Bayesian parameter model for the relation between \(A,B,D\)}\label{fig:bayesian_example}
+    \caption{Bayesian parameter model for the relation between \(A,B\) and \(D\).}\label{fig:bayesian_example}
     &
       \renewcommand{\arraystretch}{1.3}
-      \begin{tabular}{|l|l|l|}
-    \hline
-    A & B & D \\ \hline
-    1 & 1 & 1 \\ \hline
-    1 & 0 & 0 \\ \hline
-    0 & 1 & 1 \\ \hline
-    0 & 1 & 0 \\ \hline
-    1 & 1 & 1 \\ \hline
-    0 & 0 & 0 \\ \hline
-    1 & 0 & 1 \\ \hline
-  \end{tabular}\captionof{table}{Set of observations, where 1 means true and 0 means false.}\label{tab:bn_ex}
+      \begin{tabular}{ccc}
+        \hline
+        A & B & D \\ \hline
+        \(1\) & \(1\) & \(1\) \\
+        \(1\) & \(0\) & \(0\) \\
+        \(0\) & \(1\) & \(1\) \\
+        \(0\) & \(1\) & \(0\) \\
+        \(1\) & \(1\) & \(1\) \\
+        \(0\) & \(0\) & \(0\) \\
+        \(1\) & \(0\) & \(1\) \\ \hline
+  \end{tabular}\captionof{table}{Set of observations, where \(1\) means true and \(0\) means false.}\label{tab:bn_ex}
 \end{tabular}
 \end{figure}
 
@@ -176,48 +176,37 @@ in the last case is
 
  Let \(\bx\) denote the given dataset as observations of a random variable \(X\), and \(\btheta\) the set of parameters modeling the experiment.
 
- \subsection{No parents}\label{subsec:no_parents}
+ \subsection{No parents}
 
  Consider a variable \(X \sim Categorical(\btheta)\) with
  \(Dom(X) = \{1, \dots, I\} \) and \(\btheta = (\theta_{1},\dots, \theta_{I})\) so that
  \[
    P(x) = \prod_{i = 1}^{I}\theta_{i}^{\mathbb{I}[x = i]} \text{
-   with  } \sum_{i=1}^{I}\theta_{i} = 1.
-\]
-So that the posterior is
-\[
-  P(\btheta \mid \bx) = \frac{1}{P(\bx)} P(\btheta) \prod_{n = 1}^{N}\prod_{i =1 }^{I}\theta_{i}^{\mathbb{I}[x_{n} = i]} =  \frac{1}{P(\bx)} P(\btheta) \prod_{i = 1}^{I} \theta_{i}^{\sum_{n} \mathbb{I}[x_{n}=i]}.
-\]
-Assuming a Dirichlet prior \(\btheta \sim Dirichlet(\bm{u})\) with \( \bm{u} = (u_{1}, \dots, u_{I})\)
-\[
-  P(\btheta) = \frac{1}{B(\bm{u})}\prod_{i =1}^{I}\theta_{i}^{u_{i}-1} \implies P(\btheta \mid \bx) = \frac{1}{B(\bm{u})P(\bx)}\prod_{i=1}^{I}\theta_{i}^{u_{i}-1 + \sum_{n}\mathbb{I}[x_{n} = i]}.
-\]
-
-Therefore, defining \(\bm{c} = ( \sum_{n=1}^{N}\mathbb{I}[x_{n} = i])_{i = 1,\dots,I}\), the posterior follows a Dirichlet distribution
-\[
-  \btheta \mid \bx \sim Dirichlet(\bm{u} + \bm{c}).
-\]
-It may not be easy to decompose \(B(\bm{u} + \bm{c})\) as \(B(\bm{u})P(\bx)\), but using that it ensures normalization of the Beta distribution we may use that
-\[
-  \int_{\theta} P(\btheta \mid \bx) = 1 \implies \int_{\btheta}\prod_{i=1}^{I}\theta_{i}^{u_{i}+c_{i}-1} = B(\bm{u} + \bm{c}) = B(\bm{u})P(\bx).
-\]
-
-\begin{remark}
-Summarizing the above information, we just proved that the Dirichlet distribution is the conjugate prior of the Categorical distribution.
-\end{remark}
-
-The predictive marginal is then given by
-\[
-  \begin{aligned}
-    P(X=i \mid \bx) &= \int_{\theta}P(X=i \mid \theta)P(\theta \mid \bx) =  \int_{\theta}\theta_{i}P(\theta \mid \bx)\\
-    &=  \int_{\theta_{i}}\theta_{i}P(\theta_{i} \mid \bx) = \E{}{\theta_{i} \mid \bx}.
-\end{aligned}
-\]
-Where we used that
-\[
-  \int_{\theta_{j \neq i}}\theta_{i} P(\theta \mid \bx) = \theta_{i}\prod_{k\neq j}P(\theta_{k} \mid \bx) \int_{\theta_{j}}P(\theta_{j}\mid \bx) = \theta_{i} \prod_{k \neq j}P(\theta_{k} \mid \bx).
-\]
-
+     with  } \sum_{i=1}^{I}\theta_{i} = 1.
+ \]
+ So that the posterior is
+ \[
+   P(\btheta \mid \bx) = \frac{1}{P(\bx)} P(\btheta) \prod_{n = 1}^{N}\prod_{i =1 }^{I}\theta_{i}^{\mathbb{I}[x_{n} = i]} =  \frac{1}{P(\bx)} P(\btheta) \prod_{i = 1}^{I} \theta_{i}^{\sum_{n} \mathbb{I}[x_{n}=i]}.
+ \]
+ Assuming a Dirichlet prior \(\btheta \sim Dirichlet(\bm{u})\) with \( \bm{u} = (u_{1}, \dots, u_{I})\) and using the fact that the Dirichlet distribution is the conjugate prior of the Categorical distribution (Appendix~\ref{ap:C-D}), the posterior follows a Dirichlet distribution
+ \[
+   \btheta \mid \bx \sim Dirichlet(\bm{u} + \bm{c}).
+ \]
+ Where
+ \[
+   \bm{c} = \Big( \sum_{n=1}^{N}\mathbb{I}[x_{n} = 1],\dots,  \sum_{n=1}^{N}\mathbb{I}[x_{n} = I]\Big).
+ \]
+ The predictive marginal is then given by
+ \[
+   \begin{aligned}
+     P(X=i \mid \bx) &= \int_{\theta}P(X=i \mid \theta)P(\theta \mid \bx) =  \int_{\theta}\theta_{i}P(\theta \mid \bx)\\
+     &=  \int_{\theta_{i}}\theta_{i}P(\theta_{i} \mid \bx) = \E{}{\theta_{i} \mid \bx}.
+   \end{aligned}
+ \]
+ Where we used that
+ \[
+   \int_{\theta_{j \neq i}}\theta_{i} P(\theta \mid \bx) = \theta_{i}\prod_{k\neq j}P(\theta_{k} \mid \bx) \int_{\theta_{j}}P(\theta_{j}\mid \bx) = \theta_{i} \prod_{k \neq j}P(\theta_{k} \mid \bx).
+ \]
 From Proposition~\ref{prop:dirichlet_marginal}, the uni-variate marginal of a Dirichlet distribution is a Beta distribution of parameters
 \[
   \theta_{i} \mid \bx \sim \text{Beta}(u_{i} + c_{i}, \sum_{j\neq i} u_{j} + c_{j}).

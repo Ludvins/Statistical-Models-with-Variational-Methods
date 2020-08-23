@@ -9,13 +9,13 @@ Given a set of observations \(\bx\) and parameters \(\btheta\) that model the ob
     Maximum likelihood estimation does not consider a probability distribution over the parameter, whereas Bayesian estimation does.
   \end{remark}
 
-\section{Maximum Likelihood and the Empirical Distribution}
+\section{Maximum likelihood and the empirical distribution}
 
-Consider a set of i.i.d random variables \(\bX = (X_{1},\dots, X_{N})\) and their observations \(\bx = (x_{1},\dots,x_{N})\), we are going to show the relation between the maximum likelihood and the Kullback-Leibler divergence of the empirical distribution and our model. The empirical distribution is defined as the distribution whose probability mass function \(Q\) is
+Consider a set of i.i.d random variables \(\bX = (X_{1},\dots, X_{N})\) and their observations \(\bx = (x_{1},\dots,x_{N})\), we are showing the relation between the maximum likelihood and the Kullback-Leibler divergence of the empirical and the underlying distribution. The empirical distribution is defined as the distribution whose probability mass function \(Q\) is
 \[
   Q(x) = \frac{1}{N}\sum_{n = 1}^N \mathbb{I}[x = x_n].
 \]
-Where \(X\) is i.i.d with the rest of variables we are considering.
+Where \(X\) is i.i.d with the rest of variables we are considering. That is, it establish the probability of an outcome as the proportional times it appears in the set ob observations.
 
 \begin{proposition}
  In case \(P(x \mid \btheta)\) is unconstrained, maximum likelihood distribution corresponds to the empirical distribution, i.e, \(P(x \mid \btheta^{ML}) = Q(x)\).

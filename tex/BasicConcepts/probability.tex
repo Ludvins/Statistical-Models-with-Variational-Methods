@@ -5,9 +5,9 @@ All our theory will be made under the assumption that there is a
 
 \begin{definition}
 Let \(\mathcal{P}(\Omega)\) be the power set of \(\Omega\). Then, \(\mathcal{F} \subset \mathcal{P}(\Omega)\) is called a
-\emph{\(\sigma\)-algebra} if it satisfies:
+\emph{\(\sigma\)-algebra} if it satisfies three conditions:
 \begin{itemize}
-\item \(\Omega \in \mathcal{F}\).
+\item It contains the full referential set, \(\Omega \in \mathcal{F}\).
 \item \(\mathcal{F}\) is closed under complementation.
 \item \(\mathcal{F}\) is closed under countable unions.
 \end{itemize}
@@ -18,16 +18,16 @@ The tuple \((\Omega, \mathcal{F})\) is called a \emph{measurable space}.
 \end{definition}
 
 \begin{definition}
-A \emph{probability} \(P\) over \((\Omega, \mathcal{F})\) is a mapping
-\(P: \mathcal{F} \to [0,1]\) which satisfies
+A \emph{probability} \(P\) over a measurable space \((\Omega, \mathcal{F})\) is a mapping
+\(P: \mathcal{F} \to [0,1]\) which satisfies:
 \begin{itemize}
 \item \(P(\alpha) \geq 0 \ \ \forall \alpha \in \mathcal{F}\).
 \item \(P(\Omega) = 1\).
-\item \(P\) is countably additive, that is, if \(\{\alpha_i\}_{i \in \mathbb{N}}
-  \subset \mathcal{F}\), is a countable collection of pairwise disjoint sets,
+\item \(P\) is countably additive, that is, if \(\{\alpha_n\}_{n \in \mathbb{N}}
+  \subset \mathcal{F}\) is a countable collection of pairwise disjoint sets,
   then
   \[
-  P\big(\bigcup_{i\in \mathbb{N}}\alpha_i\big) = \sum_{i\in \mathbb{N}}P(\alpha_i).
+  P\Big(\bigcup_{n\in \mathbb{N}}\alpha_n \Big) = \sum_{n \in \mathbb{N}}P(\alpha_n).
   \]
 \end{itemize}
 \end{definition}
@@ -38,7 +38,7 @@ The third condition implies that given a set of pairwise disjoint events,
 the probability of either one of them occurring is equal to the sum of the
 probabilities of each one.
 
-From these conditions follows
+These conditions imply the following two:
 \begin{itemize}
 \item \(P(\emptyset) = 0\).
 \item \(P(\alpha \cup \beta) = P(\alpha) + P(\beta) - P(\alpha \cap \beta)\).
@@ -84,22 +84,18 @@ is stronger now compared with the case where more people had the habit.
   Two events \(\alpha, \beta \in \mathcal{F}\) are said
   \emph{independent} if knowing one of them does not give any extra information
   about the other. Mathematically,
-
   \[
-    P(\alpha \cap \beta) = P(\alpha)P(\beta), \quad P(\alpha \mid \beta) = P(\alpha).
+    P(\alpha \cap \beta) = P(\alpha)P(\beta) \quad \text{and} \quad P(\alpha \mid \beta) = P(\alpha).
   \]
-
-  Let \(\gamma \in \mathcal{F}\), \(\alpha\) and \(\beta\) are said to be
-  \emph{conditionally independent} on \(\gamma\), \(\alpha \bigCI \beta \mid \gamma\)
-  if and only if
+  Let \(\alpha, \beta, \gamma \in \mathcal{F}\), \(\alpha\) and \(\beta\) are said to be
+  \emph{conditionally independent} on \(\gamma\), expressed as \(\alpha \bigCI \beta \mid \gamma\),  if and only if
   \[
     P(\alpha \cup \beta \mid \gamma) = P(\alpha \mid \gamma)P(\beta \mid \gamma).
   \]
-  Otherwise, they are said to be \emph{conditionally dependent} on \(\gamma\),  \(\alpha \bigCD \beta \mid \gamma\).
-
+  Otherwise, they are said to be \emph{conditionally dependent} on \(\gamma\), expressed as \(\alpha \bigCD \beta \mid \gamma\).
 \end{definition}
 
-The concept of \emph{random variables} and their properties are described below.
+\section*{Random variables}
 
 \begin{definition}
 A function \(f:\Omega_1 \to \Omega_2\) between two
@@ -111,15 +107,18 @@ measurable spaces \((\Omega_1, \mathcal{F}_1)\) and \((\Omega_2, \mathcal{F}_2)\
   space \((\Omega, \mathcal{F}, P)\) to a measurable space \((E,
   \mathcal{F}')\) verifying \(X(\omega)\in \mathcal{F}' \ \forall \omega \in \Omega\).
 
-The probability of \(X\) taking a value on a measurable set \(S \in E\) is
-written as
-\[
-P_X(S) = P(X \in S) = P(\{a \in \Omega \ \mid  \ X(a) \in S \}).
-\]
+  The probability of \(X\) taking a value on a measurable set \(S \in E\) is
+  written as
+  \[
+    P_X(S) = P(X \in S) = P(\{a \in \Omega \ \mid  \ X(a) \in S \}).
+  \]
+  Where the sub-index is usually omitted. A \emph{probability distribution} \(P_{X}\) of a random
+  variable \(X\) over the probability space \((\Omega, \mathcal{F}, P)\) is defined
+  as the push-forward measure of it, that is, \(P_X = P \circ X^{-1}\).
 \end{definition}
 
 Questions like ``How likely is that the value of \(X\) equals
-\(a\)?'' are equivalent to ask for the probability of the set \(\{\omega
+\(a\)?'' are equivalent to ask for the probability (measure) of the set \(\{\omega
 \in \Omega \ \mid  \ X(w) = a\}\).
 
 The following notation is going to be used: random variables will be
@@ -127,7 +126,7 @@ denoted with an upper case letter like \(X\) and a set of variables with a
 bold symbol like \(\bm{X}\). The meaning of \(P(state)\) will be clear without a reference to the variable.
 Otherwise \(P(X = state)\) will be used.
 Using a lower case letter like \(P(x)\) will denote the probability of the
-corresponding upper case variable \(X\) taking a specific value.
+corresponding upper case variable \(X\) taking a specific value \(x\).
 
 \begin{definition}
 The \emph{cumulative distribution function} of a real-valued random variable \(X\) is defined as
@@ -161,21 +160,19 @@ experiment where a coin is flipped and a random positive number is chose only if
 the result of the coin toss is heads, $-1$ otherwise.
 \end{definition}
 
-From now on, \(P(x)\) will denote \(f_X(x)\) when \(X\) is a continuous random
-variable. We define the \emph{probability distribution} \(P_{X}\) of a random
-variable \(X\) over the probability space \((\Omega, \mathcal{F}, P)\)
-as the pushforward measure of it, that is, \(P_X = PX^{-1}\).
+From now on, \(P(x)\) will denote \(f(x)\) when \(X\) is a continuous random
+variable.
 
 Integrate notation will be used in both continuous and discrete cases, where the last one can be interpreted as integration with respect to the \emph{counting measure} defined as
 \[
  \#(dx) = \sum_{n \in \I}\delta(x - n)dx,
 \]
-where \(\I\) is the set of values \(X\) can take, and \(\delta\) is the Dirac distribution. Given this measure, integration corresponds to summation as
+where \(\I\) is the set of values \(X\) can take, and \(\delta\) is the Dirac measure. Given this measure, integration corresponds to summation as
 \[
-  \int_{x} P(x) \#(dx) = \sum_{n \in \I}\int_{x} P(x) \delta(x-n) dx = \sum_{n \in I}P(n).
+  \int_{x} P(x) \#(dx) = \sum_{n \in \I}\int_{x} P(x) \delta(x-n) dx = \sum_{n \in \I}P(n).
 \]
 
-Where \(\int f(x)\delta(x - x_{0}) = f(x_{0})\) was used. Given this, from now on,  integration notation  will be used for both discrete and continuous variables given that the integrals will be respect to the counting measure when needed.
+Where \(\int_{x} f(x)\delta(x - x_{0}) = f(x_{0})\) is used. Given this, from now on, integration notation will be used for both discrete and continuous variables given that the integrals will be respect to the counting measure when needed.
 
 \begin{definition}
   The \emph{conditional probability} might be defined over
@@ -190,24 +187,22 @@ The \emph{Bayes' theorem} may be enunciated as
 \[
   P(x,y) = \frac{P(y\mid x)P(x)}{P(y)}
 \]
-Clearly an arbitrary number of variables can be considered in both cases.
+Clearly, an arbitrary number of variables can be considered in both cases.
 
 \begin{definition}
   The \emph{marginal distribution} of a subset of random variables is the
   probability distribution of the variables contained in that subset.
 \end{definition}
 
-Let \(X, Y\) be two random variables, it follows that
+Let \(X, Y\) be two random variables, the marginal distribution of \(X\) is:
 \[
   P(x) = \int_y P(x,y).
 \]
 
 
 \begin{definition}
-  Let \(\bm{X} = \{X_1, X_2,\dots,X_n\}\) be a set of random variables, the
-  \emph{joint probability distribution} for \(\bm{X}\) is function that gives the probability of each random variable \(X_i\)
-  falling in a particular range or discrete set of values for that variable. It is
-  called a \emph{multi-variate distribution}.
+  Let \(\bm{X} = (X_1, X_2,\dots,X_n)\) be a set of random variables, the
+  \emph{joint probability distribution} for \(\bm{X}\) is function that gives the probability of each random variable \(X_n\)  falling in a particular range or discrete set of values for that variable. It is called a \emph{multi-variate distribution}.
 
   When using only two random variables, then is called a \emph{bi-variate
     distribution}.
@@ -215,10 +210,10 @@ Let \(X, Y\) be two random variables, it follows that
   This distribution can be expressed either in terms of a joint cumulative distribution
   function
   \[
-F_{\bm{X}}(\bm{x}) = F_{X_1,\dots,X_n}(x_1,\dots,x_n) = P(X_1 \leq x_1, \dots,
-X_n \leq x_n) \footnote{Where \(\bm{x} = (x_1,\dots,x_n)\)},
-\]
-or using a probability density or mass function.
+    F_{\bm{X}}(\bm{x}) = F_{X_1,\dots,X_n}(x_1,\dots,x_n) = P(X_1 \leq x_1, \dots,
+    X_n \leq x_n) \footnote{Where \(\bm{x} = (x_1,\dots,x_n)\)},
+  \]
+  or using a probability density or mass function.
 \end{definition}
 
 \begin{definition}
@@ -242,7 +237,7 @@ conditionally independent, they are \emph{conditionally dependent} \(X \bigCD Y 
 \end{definition}
 
 Both independence definitions can be made over sets of variables \(\bm{X},
-\bm{Y}\) and \(\bm{Z}\) in a straight forward way.
+\bm{Y}\) and \(\bm{Z}\) in a straightforward way.
 
 
 \begin{definition}
@@ -251,22 +246,20 @@ Both independence definitions can be made over sets of variables \(\bm{X},
   \emph{independent and identically distributed (i.i.d)}
   if and only if they are independent, i.e,
   \[
-    F_{X_1,\dots,X_n}(x_1,\dots,x_n) = F_{X_1}(x_1)\dots F_{X_n}(x_n) \ \forall
-    x_1,\dots,x_n \in I,
+    F_{X_1,\dots,X_N}(x_1,\dots,x_n) = F_{X_1}(x_1)\dots F_{X_N}(x_N) \ \forall
+    x_1,\dots,x_N \in I,
   \]
   and are identically distributed
   \[
-    F_{X_1}(x_1) = F_{X_k}(x_k) \ \forall k \in \{2,\dots,n\} \text{ and } \forall x
+    F_{X_1}(x) = F_{X_n}(x) \ \forall n \in \{2,\dots,N\} \text{ and } \forall x
     \in I.
   \]
-
-
 \end{definition}
 
 
 \begin{definition}
   A \emph{multi-variate random variable} or \emph{random vector} is a column vector \(\bm{X} =
-  (X_1,\dots,X_n)^T\) whose components are random variables that can be defined
+  {(X_1,\dots,X_N)}^T\) whose components are random variables that can be defined
   over different probability spaces.
 
   Note that the same symbol \(\bm{X}\) is used for random vectors and sets of

@@ -5,51 +5,89 @@
     Distribution & Parameter set \(\btheta\) & Base measure \(h\) & Parameter function \(\bm{\eta}(\btheta)\) & Statistics \(\bm{T}(x)\) \\
     \hline
     Bernoulli & \(p\)  & \(1\)  & \(\log{\frac{p}{1 - p}}\) & \(x\) \\[5pt]
-    Binomial & \(p\)  & \(\binom{n}{x}\) & \(\log{\frac{p}{1 - p}}\) & \(x\)  \\[5pt]
+
+    Binomial & \(p\)  & \(\binom{n}{x}\) & \(\log{\frac{p}{1 - p}}\) & \(x\)  \\[20pt]
+
     Categorical & \(p_{1},\dots,p_{K}\) & \(1\) &
-                                                  \(\begin{bmatrix}
-                                                    \log p_{1}\\
-                                                    \vdots\\
-                                                    \log p_{K}
-                                                  \end{bmatrix}\)
-                 &
-                                                  \(\begin{bmatrix}
-                                                    [x=1]\\
-                                                    \vdots\\
-                                                    [x=k]
-                                                  \end{bmatrix}\)\\[30pt]
+    \(\begin{pmatrix}
+      \log p_{1}\\
+      \vdots\\
+      \log p_{K}
+    \end{pmatrix}\)
+    &
+    \(\begin{pmatrix}
+      [x=1]\\
+      \vdots\\
+      [x=k]
+    \end{pmatrix}\)\\[40pt]
+
     Gaussian & \(\mu, \sigma^{2}\) & \(\frac{1}{\sqrt{2\pi}}\) &
-                                     \(\begin{bmatrix}
-                                       \frac{\mu}{\sigma^2}\\
-                                       -\frac{1}{2\sigma^{2}}
-                                     \end{bmatrix}\)
-                 &
-                   \(\begin{bmatrix}
-                     x\\
-                     x^{2}
-                   \end{bmatrix}\) \\[30pt]
+    \(\begin{pmatrix}
+      \frac{\mu}{\sigma^2}\\
+      -\frac{1}{2\sigma^{2}}
+    \end{pmatrix}\)
+    &
+    \(\begin{pmatrix}
+      x\\
+      x^{2}
+    \end{pmatrix}\) \\[40pt]
+
+    \shortstack{Multivariate \\Gaussian} & \(\bmu, \bm{\Sigma}\) & \(\sqrt{2\pi}^{-k}\)\footnote{\(k\) is the dimensionality of the variable.} &
+    \(\begin{pmatrix}
+      \bm{\bSigma}^{-1}\bmu \\
+      -\frac{1}{2}\bm{\Sigma}^{-1}
+    \end{pmatrix}\)
+    &
+    \(\begin{pmatrix}
+      \bx\\
+      \bx \bx^{T}
+    \end{pmatrix}\) \\[40pt]
+
     Beta & \(\alpha, \beta\) & \(\frac{1}{x(1-x)}\)
-                                                               &
-                                                                 \(\begin{bmatrix}
-                                                                   \alpha \\
-                                                                   \beta
-                                                                 \end{bmatrix}\)
-                 &
-                   \(\begin{bmatrix}
-                     \log x \\
-                     \log (1-x)
-                   \end{bmatrix}\) \\[30pt]
+    &
+    \(\begin{pmatrix}
+      \alpha \\
+      \beta
+    \end{pmatrix}\)
+    &
+    \(\begin{pmatrix}
+      \log x \\
+      \log (1-x)
+    \end{pmatrix}\) \\[40pt]
+
     Dirichlet & \(\alpha_{1},\dots,\alpha_{K}\) & \(1\) &
-                                                  \(\begin{bmatrix}
-                                                    \alpha_{1} - 1\\
-                                                    \vdots\\
-                                                    \alpha_{K} - 1
-                                                  \end{bmatrix}\)
-                 &
-                                                  \(\begin{bmatrix}
-                                                    \log x_{1}\\
-                                                    \vdots\\
-                                                    \log x_{K}
-                                                  \end{bmatrix}\)\\
+    \(\begin{pmatrix}
+      \alpha_{1} - 1\\
+      \vdots\\
+      \alpha_{K} - 1
+    \end{pmatrix}\)
+    &
+    \(\begin{pmatrix}
+      \log x_{1}\\
+      \vdots\\
+      \log x_{K}
+    \end{pmatrix}\)\\[40pt]
+
+    Gamma & \(\alpha, \beta\) & \(1\) &
+    \(\begin{pmatrix}
+      -\beta \\
+      \alpha - 1
+    \end{pmatrix}\)
+    &
+    \(\begin{pmatrix}
+      x \\
+      \log x
+    \end{pmatrix}\)\\[40pt]
+
+    Wishart & \(\nu , \bm{V}\) & \(1\) &
+    \(\begin{pmatrix}
+      \frac{\nu-p-1}{2}\\
+      -\frac{1}{2}\bm{V}^{-1}
+    \end{pmatrix}\)\footnote{\(\bm{V}\) is \(p \times p\) dimensional.}
+    &
+    \(\begin{pmatrix}
+      \bx\\
+      \log |\bx|
+      \end{pmatrix}\)\\[10pt]
     \hline
   \end{longtable}

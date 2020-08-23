@@ -1,14 +1,14 @@
 
-In Bayesian inference, both parameters and latent variables are commonly clustered as ``hidden variables''. \emph{Variational Bayesian methods} or simply \emph{variational methods} are primarily used for two purposes:
+In Bayesian inference, both parameters are commonly clustered with \emph{latent or hidden variables}. \emph{Variational Bayesian methods} or simply \emph{variational methods} are primarily used for two purposes:
 
  \begin{enumerate}  \setlength{\itemsep}{1pt}
    \item Perform statistical inference over the unobserved variables by provide an analytical approximation to their posterior probability.
    \item Derive and compute a lower bound for the observed data marginal likelihood, that is, the marginal probability of the observed data data over the unobserved variables. This is commonly used to perform model selection, where a model with a higher marginal likelihood has a greater probability for being the model that generated the data.
  \end{enumerate}
 
- The considered elements of a variational Bayesian model are: a set of observed variables \(\bX = \{X_{1},\dots,X_{N}\}\) among with hidden variables \(\bZ = \{Z_{1},\dots,Z_{M}\}\). Their corresponding set of observations \(\bx = (x_{1},\dots, x_{N})\),  \(\bz = (z_{1}, \dots, z_{M})\), where the latter denotes a possible configuration for the hidden variables.
+ The considered elements of a variational Bayesian model are: a set of observed variables \(\bX = (X_{1},\dots,X_{N})\) among with hidden variables \(\bZ = (Z_{1},\dots,Z_{M})\) (which includes parameters). Their corresponding set of observations \(\bx = (x_{1},\dots, x_{N})\),  \(\bz = (z_{1}, \dots, z_{M})\), where the latter denotes a possible configuration for the hidden variables.
 
-The samples are governed by the joint distribution \(P(\bx, \bz)\). Inference consists of learning the posterior distribution of the hidden variables \(P(\bz \mid \bx)\), given the dataset \(\bx\).
+The samples are governed by the joint distribution \(P(\bx, \bz)\). The same way that \emph{Bayesian} inference tries to learn the posterior distribution of the parameters, inference with latent variables consists of learning the posterior distribution of those, \(P(\bz \mid \bx)\), given the dataset \(\bx\).
 
 In \emph{classical inference} the conditional is calculated as
 \[
@@ -16,7 +16,7 @@ In \emph{classical inference} the conditional is calculated as
 \]
 but for many models this integral is computationally hard to solve.
 
-As we have already reviewed using parameters, \emph{Bayesian inference} derives the posterior probability \(P(\bz \mid \bx)\) as a consequence of a \emph{prior probability} \(P(\bz)\) and a \emph{likelihood function} \(P(\bx \mid \bz)\). Other methods as \emph{Markov chain Monte Carlo (MCMC)} and \emph{variational Bayesian inference} try a different approach when solving the given inference problem: on one hand, \emph{variational inference}, is a machine learning method whose main goal is to approximate probability distributions (\cite{jordan1999introduction, wainwright}). On the other hand, \emph{MCMC} approximates the posterior distribution using a Markov chain. Let us briefly introduce the main idea behind this method, we need to introduce two concepts: \emph{Markov chain} and \emph{MCMC}.
+As we have already reviewed using parameters, \emph{Bayesian inference} derives the posterior probability \(P(\bz \mid \bx)\) as a consequence of a \emph{prior probability} \(P(\bz)\) and a \emph{likelihood function} \(P(\bx \mid \bz)\). Other methods as \emph{Markov chain Monte Carlo (MCMC)} and \emph{variational Bayesian inference} try a different approach when solving the given inference problem: on one hand, \emph{variational inference} uses machine learning methods whose main goal is to approximate probability distributions (\cite{jordan1999introduction, wainwright}). On the other hand, \emph{MCMC} approximates the posterior distribution using a Markov chain. Let us briefly introduce the main idea behind this method, we need to introduce two concepts: \emph{Markov chain} and \emph{MCMC}.
 
 A \emph{Markov Chain} is formally defined as a stochastic process, i.e, a family of random variables, that satisfies the \emph{Markov property} also known as the memoryless property: \textit{the conditional probability distribution of future states of the process (conditional on both present and past values) depends only on the present state}. To fully understand it, imagine a system with a number of possible states \(S_{1},\dots,S_{5}\) and the probabilities of going from one state to another stated in the following diagram.
 
@@ -52,7 +52,7 @@ Consider a sequence of random variables \(X_{t}\) that symbolize the current sta
 We need two concepts to define the process of MCMC:
 \begin{itemize}
   \item \textbf{Ergodic Markov chain}. A Markov chain where it exists a number \(N \in \mathbb{N}\) such that any state can be reached from any other state in any number of steps less or equal than \(N\).
-  \item \textbf{Stationary Distribution}. The probability distribution to which the process converges over time. 
+  \item \textbf{Stationary distribution}. The probability distribution to which the process converges over time.
 \end{itemize}
 
 In MCMC, an ergodic Markov chain over the latent variables \(\bZ\) is considered, whose stationary distribution is the posterior \(P(\bz \mid \bx)\), samples are taken from the chain to approximate the posterior with them.
@@ -76,7 +76,7 @@ Analyzing the Kullback-Leibler divergence, it may be decomposed in the following
   \end{aligned}
 \]
 
-Although the Kullback-Leibler divergence cannot be computed as long as \(P(\bz \mid \bx)\) is unknown, we can optimize an equivalent objective: we can use its positiveness to set the following lower bound to the evidence, defined as \emph{evidence lower bound} or \emph{ELBO}.
+Although the Kullback-Leibler divergence cannot be computed (\(P(\bz \mid \bx)\) is unknown), we can optimize an equivalent objective: we can use its positiveness to set the following lower bound to the evidence, defined as \emph{evidence lower bound} or \emph{ELBO}.
 \[
   \log{P(\bx)} \geq  - \underbrace{\E{Q(\bz)}{\log{Q(\bz)}}}_{Entropy} + \underbrace{\E{Q(\bz)}{\log{P(\bx, \bz)}}}_{Energy}  = \text{ELBO}(Q).\footnote{Energy and Entropy  terms come from a statistical physics terminology (\cite{barber})}
 \]

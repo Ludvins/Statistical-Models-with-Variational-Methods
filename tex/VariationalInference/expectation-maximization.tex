@@ -10,7 +10,7 @@ Using the same notation as in Chapter~\ref{ch:vi_intro}, EM's iterative procedur
 and the marginal likelihood \(P(\bx \mid \btheta)\) itself. Which means that aims for the value of \(\btheta\) to which the dataset better fits the model, i.e, the maximum likelihood parameter.
 
 
-The EM algorithm can be viewed as two alternating maximization steps, that is, as an example of \emph{coordinate ascent} (\cite{neal1998view}). Consider the above ELBO as a function of \(Q\) and \(\btheta\):
+The EM algorithm can be viewed as two alternating maximization steps, that is, as an example of \emph{coordinate ascent} (\cite{neal1998view}), an optimization algorithm that successively maximizes each coordinate to find a maxima. Consider the above ELBO as a function of \(Q\) and \(\btheta\):
 \[
   ELBO(Q, \btheta) = -\E{Q(\bz)}{\log{Q(\bz)}} + \E{Q(\bz)}{\log{P(\bx, \bz \mid \btheta)}}.
 \]
@@ -117,20 +117,20 @@ The procedure to optimize the parameter consists in two steps:
 
 \section{EM increases the marginal likelihood}
 
-It is clear that the EM algorithm does increase the lower bound in each iteration but also the marginal likelihood.
+Not only the EM algorithm does increase the lower bound in each iteration but also the marginal likelihood.
 
 \begin{proposition}
-  The log likelihood \(P(x \mid \btheta)\) is not decreased in each iteration of the EM algorithm, i.e, if \(\btheta^{old}\) and \(\btheta^{new}\) are two consecutive values of the parameter, EM verifies:
+  The log likelihood \(P(\bx \mid \btheta)\) is not decreased in each iteration of the EM algorithm, i.e, if \(\btheta^{old}\) and \(\btheta^{new}\) are two consecutive values of the parameter, EM verifies:
   \[
     \log{P(\bx \mid \btheta^{new})} - \log{P(\bx \mid \btheta^{old})} \geq 0.
   \]
 \end{proposition}
 \begin{proof}
-As a result of the E-step \(Q\) is set to
+As a result of the E-step \(Q\) is to set
 \[
-  Q(\bz) = P(\bz \mid \bx, \btheta^{old}).
+  Q(\bz) = P(\bz \mid \bx, \btheta^{old}),
 \]
-So the lower bound in terms of \(\btheta^{old}\) and \(\btheta^{new}\) is
+the lower bound in terms of \(\btheta^{old}\) and \(\btheta^{new}\) is
 \[
   ELBO(\btheta^{new} \mid \btheta^{old}) =  \underbrace{-\E{P(\bz \mid \bx, \btheta^{old})}{\log{P(\bz \mid \bx, \btheta^{old})}}}_{\text{Entropy}} + \underbrace{\E{P(\bz \mid \bx, \btheta^{old})}{\log{P(\bz,\bx \mid \btheta^{new})}}}_{\text{Energy}}.
 \]
@@ -149,25 +149,23 @@ So we can compute the difference between the log likelihood between two consecut
     &+  \KL{P(\bz \mid \bx, \btheta^{old})}{P(\bz \mid \bx, \btheta^{new})}.
   \end{aligned}
 \]
-Where we know the last term is always positive. About the difference of bounds, the M-step ensures the new parameter makes the lower bound higher or equal to the current one, so that difference is also positive.
+Where we know the last term is always positive. About the difference of bounds, the M-step ensures the new parameter makes the lower bound higher or equal to the current one, so that difference is also positive:
 \[
    \log{P(\bx \mid \btheta^{new})} - \log{P(\bx \mid \btheta^{old})} \geq 0.
  \]
 \end{proof}
 
 
-\section{Example: Binomial Mixture}
+\section{Example: binomial mixture}
 In this section we are using a coin-flipping experiment as an example to show limitations of classical maximum likelihood inference due to the presence of hidden variables. The EM algorithm is then used to surpass these limitations. The example consists in a \emph{mixture distribution} based on~\cite{do2008expectation}.
 
-The experiment consist of randomly choosing (with equal probability) one of a pair of coins \(A\) and \(B\) with unknown biases, \(\theta_{A}\)  and \(\theta_{B}\). Let \(1\) denote \textit{heads} and \(0\) denote \textit{tails}. The selected coin is tossed \(M\)  times, repeating this whole procedure \(N\)  times. In short, the experiment is governed by two parameters:
+The experiment consist of randomly choosing (with equal probability) one of a pair of coins \(A\) and \(B\) with unknown biases, \(\theta_{A}\)  and \(\theta_{B}\). Let \(1\) denote \textit{heads} and \(0\) denote \textit{tails}. The selected coin is tossed \(M\)  times, repeating this whole procedure \(N\)  times. The experiment is then governed by two parameters:
 \[
   P(A = 1) = \theta_{A} \quad \text{and} \quad P(B = 1) = \theta_{B}.
 \]
 If the coins were not chosen with equal probability but using an unknown parameter, it could be also learn by the algorithm.
 
-Maximum likelihood training attempts to infer the value of \(\bm{\theta} = (\theta_{A}, \theta_{B})\) that maximizes the likelihood.
-
-Given that the maximum likelihood distribution is the empirical distribution:
+Maximum likelihood training attempts to infer the value of \(\bm{\theta} = (\theta_{A}, \theta_{B})\) that maximizes the likelihood. Given that the maximum likelihood distribution is the empirical distribution, the optimal parameter values are:
 \[
   \theta_{A}^{ML} = \frac{\text{Heads of coin }A}{\text{Total flips of coin }A} \quad \text{and} \quad \theta_{B}^{ML} = \frac{\text{Heads of coin }B}{\text{Total flips of coin }B}.
 \]
@@ -175,7 +173,7 @@ Given that the maximum likelihood distribution is the empirical distribution:
 Consider now that the identity of the coin that is being flipped is unknown. Let \(X\) be the random variable modeling the number of heads in \(M\) flips and \(Z\) the coin being flipped. In this situation, using the empirical distribution is not possible as the identity of the coin is unknown. In this kind of situations, the EM algorithm performs maximum likelihood training while dealing with the hidden variable.
 
 
-The conditional \(x_{n} \mid z_{n}, \btheta\) follows a Bernoulli distribution:
+The conditional \(x_{n} \mid z_{n}, \btheta\) follows a Binomial distribution:
 \[
   x_{n} \mid z_{n}, \btheta \sim B(M, \theta_{z_{n}}) \implies P(x_{n} \mid z_{n}, \btheta) = \binom{M}{x_{n}}\theta_{z_{n}}^{x_{n}}{(1-\theta_{z_{n}})}^{M - x_{n}} \ \forall n =1,\dots,N,
 \]
@@ -183,14 +181,14 @@ and the probability of choosing a coin is \(P(z_{n}=A) = P(z_{n}=B)=0.5 \; \fora
 
 The lower bound is:
 \[
-  \sum_{n=1}^{N}\log{P(x_{n} \mid \bm{\theta})} \geq \sum_{n=1}^{N}-\E{Q(z_{n})}{\log{Q(z_{n})}} + \E{Q(z_{n})}{\log{P(z_{n}, x_{n} \mid \bm{\theta})}},
+  \sum_{n=1}^{N}\log{P(x_{n} \mid \bm{\theta})} \geq \sum_{n=1}^{N}-\E{Q(z_{n})}{\log{Q(z_{n})}} + \E{Q(z_{n})}{\log{P(z_{n}, x_{n} \mid \bm{\theta})}}.
 \]
 
-The \textbf{E-step} consists on setting (given a fixed \(\theta\), which is not considered a random variable),
+The \textbf{E-step} consists on setting (given a fixed \(\btheta\), which is not considered a random variable),
 \[
   \begin{aligned}
     Q(z_{n}) &= P(z_{n} \mid x_{n}, \bm{\theta}) = \frac{P(x_{n} \mid z_{n}, \bm{\theta})P(z_{n})}{P(x_{n})} \\
-    &= \frac{0.5\ \theta_{z_{n}}^{x_{n}}{(1-\theta_{z_{n}})}^{M - x_{n}}}{\int_{z_{n}}P(x_{n},z_{n}\mid \btheta)}\\
+    &= \frac{0.5 \times \theta_{z_{n}}^{x_{n}}{(1-\theta_{z_{n}})}^{M - x_{n}}}{\int_{z_{n}}P(x_{n},z_{n}\mid \btheta)}\\
     &= \frac{P(z_{n})\theta_{z_{n}}^{x_{n}}{(1-\theta_{z_{n}})}^{M - x_{n}}}{\int_{z_{n}, \btheta}P(x_{n}\mid z_{n}, \btheta)P(z_{n})}\\
     &= \frac{\theta_{z_{n}}^{x_{n}}{(1-\theta_{z_{n}})}^{M - x_{n}}}{  \theta_{A}^{x_{n}}{(1-\theta_{A})}^{M - x_{n}} + \theta_{B}^{x_{n}}{(1-\theta_{B})}^{M - x_{n}}} \quad \forall n=1,\dots,N.
   \end{aligned}
@@ -215,11 +213,15 @@ As \(\theta_{A}\) and \(\theta_{B}\) are separated in each term, the optimum can
 \[
   \sum_{n=1}^{N} Q(z_{n}=A) \Big(x_{n}\log{\theta_{A}} + (M - x_{n})\log{(1-\theta_{A})}\Big),
 \]
-deriving and setting to \(0\) we get the following maxima.
+deriving and setting to \(0\) we get the following maxima,
 \[
   \sum_{n=1}^{N}Q(z_{n}=A)\Big(\frac{x_{n}}{\theta_{A}} - \frac{M - x_{n}}{1- \theta_{A}}\Big) = 0 \iff \theta_{A} = \sum_{n=1}^{N}Q(z_{n}=A)\frac{x_{n}}{M}.
 \]
-The same argument is valid for \(\theta_{B}\).
+It is a maximum and not a minimum because
+\[
+  \log P(x_{n}\mid z_{n},(0,0)) = \log P(x_{n} \mid z_{n}, (1,1)) = \log 1 = 0,
+\]
+and the updates of \(A\) and \(B\) are independent. The same argument is valid for \(\theta_{B}\).
 
 \begin{figure}
   \centering
@@ -227,7 +229,7 @@ The same argument is valid for \(\theta_{B}\).
   \caption{EM algorithm step in Mixture~\cite{do2008expectation}}\label{fig:mixture}
 \end{figure}
 
-We are know using the figure~\ref{fig:mixture} to set the example in a numerical context. We are following the given data points in the diagram.
+We are now using the figure~\ref{fig:mixture} to set the example in a numerical context using the given data points in the diagram.
 \begin{enumerate}
   \item We are considering a prior \(\bm{\theta} = (0.6, 0.5)\), a set of \(N = 5\) samples and \(M = 10\) flips per sample.
   \item In the \textbf{E-step}, we calculate each \(Q(z_{n})\).
@@ -251,11 +253,11 @@ We are know using the figure~\ref{fig:mixture} to set the example in a numerical
 
 \section{Partial steps}
 
-Making a partial M-step consist on not using the optimal parameter for the energy term, but using one with just higher energy. Finding this values can be easier than finding the optimal one and convergence still follows as the only requirement to make the likelihood increase was to increase the lower bound.
+Making a partial \textbf{M-step} consist on not using the optimal parameter for the energy term, but using one with just higher energy. Finding this values can be easier than finding the optimal one and convergence still follows as the only requirement to make the likelihood increase was to increase the lower bound.
 
-On the other hand, when studying the increase on the likelihood, we supposed that the optimal E-step was being used. It cannot be guarantee that a partial step would increase the likelihood in this case, even though it does increase the lower bound.
+On the other hand, when studying the increase on the likelihood, we supposed that the optimal \textbf{E-step} was being used. It cannot be guarantee that a partial step would increase the likelihood in this case, even though it does increase the lower bound.
 
-Another important factor is, that the EM algorithm assumes that the energy term is possible to calculate, which may not be. As an approach to solve this situation, we can set a class of distributions \(\mathcal{Q}\), and minimize the Kullback-Leibler divergence between \(P(\bz \mid \bx, \theta)\) and a distribution \(Q \in \mathcal{Q}\), so we pick a distribution such that
+Another important factor is, that the EM algorithm assumes that the energy term is possible to calculate, which may not be. As an approach to solve this situation, we can set a class of distributions \(\mathcal{Q}\), where the term can be computed, and minimize the Kullback-Leibler divergence between \(P(\bz \mid \bx, \theta)\) and a distribution \(Q \in \mathcal{Q}\), so we pick a distribution such that
 \[
   Q = \argmin_{Q \in \mathcal{Q}} \KL{Q(\bz)}{P(\bz\mid \bx, \theta)}.
 \]

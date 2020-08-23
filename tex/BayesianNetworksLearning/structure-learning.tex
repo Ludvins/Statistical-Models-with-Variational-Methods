@@ -26,17 +26,20 @@ The Bayesian network structure is not always given and has to be learned from th
   \caption{PC Algorithm for skeleton learning}\label{alg:pc}
 \end{algorithm}
 
-\section{PC Algorithm}
+\section{PC algorithm}
 
 The \emph{PC algorithm} (\cite{spirtes2000causation} Chapter 5.4.2) learns the skeleton structure given a complete graph \(G=(V,E)\) (constructed from the considered set of variables) and orients its edges using variable independence in the empirical distribution.
 
 The skeleton learning part (Algorithm~\ref{alg:pc}) iterates over subsets of neighborhoods, from smaller to bigger ones. It chooses a linked pair of variables \((X,Y) \in E\) and
-a subset \(S_{XY} \subset ne(X)\), verifying \(Y \notin S_{XY}\). If \(X \bigCI Y \mid S\), then the link is removed and \(S_{XY}\) is stored.
+a subset \(S_{XY} \subset ne(X)\), verifying \(Y \notin S_{XY}\). If \(X \bigCI Y \mid S_{XY}\), then the link is removed and \(S_{XY}\) is stored.
 
-The main idea behind the algorithm is that a set of independencies is faithful to a graph if (using Proposition~\ref{prop:bn_neig_indep}):
-\[
-  (X,Y) \not \in E \iff \exists S \subset ne(X) \ : \ X \bigCI Y \mid S.
-\]
+The main idea behind this procedure is using the following theorem and the d-separation Theorem~\ref{th:d-separation}.
+\begin{theorem}[\cite{Le_2019} Theorem 1]
+  Let \(X\) and \(Y\) be two non-adjacent nodes in a Bayesian network, then, there exists \(\bZ\) a subset of \(ne(X)\backslash Y\) or \(ne(Y)\backslash X\) that d-separates them.
+\end{theorem}
+
+Where if \(X \bigCI Y \mid S_{XY}\), the d-separation theorem implies that \(S_{XY}\) d-separates \(X\) and \(Y\), which is a necessary condition to erase their link.
+
 This procedure results in the skeleton of the Bayesian Network, no more edges will be removed or added. The directed graph may be constructed following two rules:
 \begin{enumerate}
   \item For any undirected link \(X - Y - Z\), if \(Y \notin S_{XZ}\) then set
@@ -44,11 +47,12 @@ This procedure results in the skeleton of the Bayesian Network, no more edges wi
   \item The rest of links may oriented arbitrarily not
 creating cycles or colliders.
 \end{enumerate}
-The reasoning behind is the d-separation Theorem~\ref{th:d-separation},  if \(Y \notin S_{XZ}\) then \(X \bigCD Z \mid Y\) so \(Y\) must d-connect them, to achieve this, it must be set as a collider. On the other hand, if \(Y \in S_{XZ}\) and
-\(X \bigCI Z \mid S_{XZ}\) then \(S_{XZ}\) should d-separate them, that is,
-using any configuration that doesn't create a collider in \(S_{XZ}\).
+The reasoning behind is the d-separation Theorem~\ref{th:d-separation},  if \(Y \notin S_{XZ}\) then \(X \bigCD Z \mid Y\) (if \(Y\) did, it would be the d-separation set \(S_{XZ} = \{Y\}\) as they are checked from smaller to bigger ones) so \(Y\) must d-connect them, to achieve this, it must be set as a collider. This is because, using the d-connection definition, the only known undirected path is \(U = X - Y - Z\) and no non-collider on \(U\) must belong to \(\{Y\}\).
 
-\section{Independence Learning}
+
+On the other hand, if \(Y \in S_{XZ}\) and \(X \bigCI Z \mid S_{XZ}\) then \(S_{XZ}\) should d-separate them, that is, using any configuration that doesn't create a collider in \(S_{XZ}\).
+
+\section{Independence learning}
 
 The PC algorithms assumes there exists a procedure of testing conditional independence of variables, that is, given three variables \(X, Y\) and \( Z \),  measure \(X \bigCI Y \mid Z\). One approach is to measure the empirical \emph{conditional mutual information} of the variables.
 

@@ -52,10 +52,10 @@ The joint probability distribution is then
   \begin{tikzpicture}[
     node distance=1.5cm and 1.5cm,
     mynode/.style={draw,circle,text width=0.7cm,align=center},
-    param/.style={draw,text width=0.5cm,align=center}
+    param/.style={draw,text width=0.5cm,align=center,fill={rgb:black,1;white,6;blue,0.5} }
     ]
 
-    \node[mynode] (w) {\(W_{d,n}\)};
+    \node[mynode,fill={rgb:black,1;white,2} ] (w) {\(W_{d,n}\)};
     \node[mynode, left=of w] (z) {\(Z_{d,n}\) };
 
     \node[mynode, left=of z] (theta) {\(\theta_{d}\)};

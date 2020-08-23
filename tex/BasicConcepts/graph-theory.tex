@@ -47,7 +47,7 @@ directed path and \(B \not \to A\) (meaning there isn't a directed path from
 \(B\) to \(A\)), then \(A\) is called an \emph{ancestor} of \(B\) and \(B\) is called a \emph{descendant} of \(A\).
 \end{definition}
 
-For example, in the figure \ref{fig:graphs}, \(C\) is an ancestor of \(B\).
+For example, in the Figure~\ref{fig:graphs}, \(C\) is an ancestor of \(B\).
 
 \begin{definition}
 A \emph{directed acyclic graph (DAG)} is a directed graph such that no directed path between any two nodes revisits a vertex.
@@ -70,11 +70,10 @@ A \emph{directed acyclic graph (DAG)} is a directed graph such that no directed 
 (b) edge[-latex] (c);
 
 \end{tikzpicture}
-\captionof{figure}{Example of graph which isn't a DAG.}
-\label{fig:not_dag}
+\captionof{figure}{Example of graph which is not acyclic.}\label{fig:not_dag}
 \end{figure}
 
-As we can see in the figure \ref{fig:not_dag}, \(A \to B \to C \to A \to B\) is a
+As we can see in the Figure~\ref{fig:not_dag}, \(A \to B \to C \to A \to B\) is a
 path from \(A\) to \(B\) that revisits \(A\).
 
 Now where are going to define some relations between nodes in a DAG.
@@ -83,8 +82,7 @@ Now where are going to define some relations between nodes in a DAG.
 The \emph{parents} of a node \(A\) is the set of nodes \(B\) such that there is a
 directed edge from \(B\) to \(A\). The same applies for the \emph{children} of a node.
 
-The \emph{Markov blanket} of a node is composed by the node itself, its children, its parents and the parents
-of its children.
+The \emph{Markov blanket} of a node is composed by the node itself, its children, its parents and the parents of its children. The latter are usually called co-parents.
 \end{definition}
 
 
@@ -123,7 +121,7 @@ In a graph, the \emph{neighbors} of a node are those directly connected
 to it.
 \end{definition}
 
-We can use figure \ref{fig:relations} to reflect on these definitions. The parents
+We can use Figure~\ref{fig:relations} to reflect on these definitions. The parents
 of \(B\) are \(pa(B) = \{A,C\}\) and its children are \(ch(B) = \{E,D\}\). Taking this into account, its neighbors
 are \(ne(B) = \{A,C,E,D\}\) and its Markov blanket is \(\{A,B,C,D,E,F\}\).
 
@@ -136,7 +134,7 @@ are \(ne(B) = \{A,C,E,D\}\) and its Markov blanket is \(\{A,B,C,D,E,F\}\).
   \end{itemize}
   Notice, a vertex can be a collider for a path but not for others. A vertex is said to be a collider or a fork without any reference to the path when it is for any path that goes through it. This happens when the edge direction condition is satisfied for every neighbor.
 
-  For example in figure \ref{fig:relations}, \(D\) is a collider and \( C \) is
+  For example in Figure~\ref{fig:relations}, \(D\) is a collider and \( C \) is
   a fork.
 \end{definition}
 

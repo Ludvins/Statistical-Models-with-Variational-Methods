@@ -18,7 +18,7 @@ so \(\psi\) verifies
       \psi(\bm{\theta}) = \log \int_{x} h(x) \exp \Big( \sum_{i=1}^{S} \eta_{i}(\bm{\theta})T_{i}(x) \Big).
 \]
 
-Naming \(\bm{\eta}\) and \(\bm{T}\) the corresponding vector functions, the parameters can always be transformed as \(\bm{\theta}^{new} = \bm{\eta}(\bm{\theta})\), in which case we say the distribution into its \emph{canonical form} (notice \(\psi\) has changed but we are not differentiating it from the previous one since it is fully determined by the other functions):
+Naming \(\bm{\eta}\) and \(\bm{T}\) the corresponding vector functions, the parameters can always be transformed as \(\bm{\theta}^{new} = \bm{\eta}(\bm{\theta})\), in which case we say the distribution into its \emph{canonical form} (notice \(\psi\) has changed but we do not distinguish it from the previous one since it is fully determined by the other functions):
 \[
   P(x \mid \bm{\theta}) = h(x) e^{\bm{\theta}^{T}\bm{T}(x) - \psi(\bm{\theta})}.
 \]
@@ -44,7 +44,7 @@ the prior is called a \emph{conjugate prior} of the likelihood distribution. App
 \end{proposition}
 \begin{proof}
   \[
-    P(\btheta \mid \bx, \bm{\alpha}, \gamma)  \propto P(x \mid \btheta)P(\btheta \mid \bm{\alpha}, \gamma) \propto \exp \Big( \btheta^{T}[\alpha + \bm{T}(x)] - [\gamma + 1]\psi(\btheta) \Big).
+    P(\btheta \mid \bx, \bm{\alpha}, \gamma)  \propto P(x \mid \btheta)P(\btheta \mid \bm{\alpha}, \gamma) \propto \exp \Big( \btheta^{T}[\bm{\alpha} + \bm{T}(x)] - [\gamma + 1]\psi(\btheta) \Big).
   \]
 \end{proof}
 
@@ -54,7 +54,7 @@ the prior is called a \emph{conjugate prior} of the likelihood distribution. App
 One important case of exponential family are \emph{latent variable models} or \emph{LVMs}. In this models, the following assumptions are made:
 \begin{enumerate}\itemsep0.5em
   \item There set of i.i.d random variables \(\bX = (X_{1},\dots,X_{N})\) and a set of observations \(\bx = (x_{1}, \dots, x_{N})\).
-  \item There are both global and local latent variables. The global ones are denoted by \(\btheta\) whereas the locals are denoted by \(\bm{Z} = (Z_{1}, \dots, Z_{N})\). We refer to \emph{global hidden variables} when they affect the whole distribution and \emph{local hidden variables} when they affect only to a subset, in this case each \(Z_{n}\) affects only \(x_{n}\). Given this, the joint probability is
+  \item There are both global and local latent variables. The global ones are denoted by \(\btheta\) whereas the locals are denoted by \(\bm{Z} = (Z_{1}, \dots, Z_{N})\). We refer to \emph{global hidden variables} when they affect the whole distribution and \emph{local hidden variables} when they affect only to a subset, in this case each \(Z_{n}\) affects only \(X_{n}\). Given this, the joint probability is
     \[
     P(\bx, \btheta, \bz) = P(\btheta)\prod_{n=1}^{N}P(z_{n}, x_{n} \mid \btheta).
     \]
@@ -66,7 +66,7 @@ One important case of exponential family are \emph{latent variable models} or \e
 
 \begin{remark}
   These models are widely used to discover patterns in data sets (\cite{blei2014build}).
-  LVMs include popular models like \emph{Latent Dirichlet Allocation} models used to uncover the hidden topics in text corpora (\cite{blei2003latent}), mixture of Gaussian models to discover hidden clusters in data (\cite{bishop2006pattern}) and probabilistic principal component analysis for dimensionality reduction (\cite{tipping1999probabilistic}).
+  LVMs include popular models like \emph{Latent Dirichlet Allocation} models used to uncover the hidden topics in text corpora (\cite{blei2003latent}), mixture of Gaussian models to discover hidden clusters in data (\cite{bishop2006pattern}) and probabilistic principal component analysis for dimensionality reduction (\cite{tipping1999probabilistic}). These three models are reviewed throughout this document.
 \end{remark}
 
 One important case of LVMs and exponential family models are \emph{conditionally conjugate models}, where the following assumptions are made.
@@ -106,7 +106,7 @@ A step by step reasoning would be:
 
 \section{CAVI in conditionally conjugate models}~\label{sec:cavi_ccm}
 
-Set aside the conditionally conjugate models and consider the following situation where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family, using an exponential family distribution for the marginal \(P(z_{n} \mid \bm{z}_{\backslash n}, \bx)\):
+Consider the following situation where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family, using an exponential family distribution for the marginal \(P(z_{n} \mid \bm{z}_{\backslash n}, \bx)\):
 \[
   P(z_{n} \mid \bm{z}_{\backslash n}, \bx) = h(z_{n})\exp \Big( {\eta_{n}(\bm{z}_{\backslash n}, \bx)}^{T}T(z_{n}) - \psi(\bm{z}_{\backslash n}, \bx) \Big).
 \]

@@ -44,18 +44,21 @@
 \usepackage{amssymb}
 \usepackage{capt-of}
 \usepackage[colorlinks=true]{hyperref}
-\usepackage{tikz} % Diagramas conmutativos.
 \usepackage{pgfplots}
 \usepackage{dcolumn}
 \usepackage{booktabs}
-\usepackage{minted} % Código fuente.
 \usepackage{natbib}
 \usepackage{bm}
 \usepackage{centernot}
+
+% Tikz
+\usepackage{tikz}
 \usetikzlibrary{positioning}
 \usetikzlibrary{bayesnet}
 \usetikzlibrary{shapes.geometric}
 \usetikzlibrary{decorations.text}
+
+% License
 \usepackage[
     type={CC},
     modifier={by-nc-sa},
@@ -84,12 +87,9 @@ manychapters,pdfspacing]{classicthesis}
 \newcommand\mycommfont[1]{\footnotesize\ttfamily\textcolor{blue}{#1}}
 \SetCommentSty{mycommfont}
 
-% Todo notes
-\usepackage{todonotes}
-\let\marginpar\oldmarginpar
-
 % Profundidad de la tabla de contenidos.
-\setcounter{secnumdepth}{3}
+\setcounter{secnumdepth}{1}
+\setcounter{tocdepth}{1}
 
 % Usa el paquete minted para mostrar trozos de código.
 % Pueden seleccionarse el lenguaje apropiado y el estilo del código.
@@ -113,6 +113,7 @@ manychapters,pdfspacing]{classicthesis}
 \date{\today}
 \title{Statistical Models with Variational Methods}
 
+% Glossaries
 \usepackage[toc, nopostdot,  style=super, nonumberlist, section=chapter ]{glossaries}
 \newglossary{symbols}{sym}{sbl}{List of Abbreviations and Symbols}
 \makeglossaries
@@ -121,6 +122,7 @@ manychapters,pdfspacing]{classicthesis}
 % Portada
 \include{tex/titlepage}
 \usepackage{wallpaper}
+
 
 \begin{document}
 \ThisULCornerWallPaper{1}{tex/ugrA4.pdf}
@@ -132,18 +134,23 @@ The source code of this text and developed programs are available in the Github 
 
 \chapter*{Abstract}
 
-Some introduction about how important Variational methods are nowadays and what this project is about.
+\input{tex/abstract}
 
+\chapter*{Summary}
+\section*{Brief summary}
+\input{tex/summary}
+\section*{Resumen extendido en español}
+\input{tex/resumen_extendido}
 
 \tableofcontents
 
 \ctparttext{
   \color{black}
   \begin{center}
-    In this part he underlying concepts of probability and
-    graph theory that we will need. \emph{Probability distributions} and \emph{random variables} are defined as well as \emph{Bayes' theorem}.
+    In this part the underlying concepts of probability and
+    graph theory that will be needed are reviewed. \emph{Probability distributions} and \emph{random variables} are defined, and \emph{Bayes' theorem} is stated. The \emph{Kullback-Leibler divergence} is defined as it plays a central role in all the following theory.
 
-    Both discrete and continuous distributions are reviewed as they are used later on. In addition, graph theory principles are reviewed.
+    Any \emph{discrete and continuous distributions} used later on in the document is also reviewed.
   \end{center}
 }
 \part{Basic Concepts}
@@ -234,7 +241,10 @@ Some introduction about how important Variational methods are nowadays and what 
 \ctparttext{
   \color{black}
   \begin{center}
-    Some inference methods get optimized when applied among with a graphical model, in this part we focus in how methods we have already reviewed use the Bayesian network structure.
+    Some inference methods get optimized when applied among with a graphical model. In this part we focus in how methods we have already reviewed use the Bayesian network structure to get simplified and optimized.
+
+    The \emph{PC algorithm} is also reviewed as a procedure to generate a Bayesian network from a given dataset.
+
   \end{center}
 }
 \part{Bayesian Networks Parametric Learning}
@@ -248,14 +258,20 @@ Some introduction about how important Variational methods are nowadays and what 
 \chapter{Bayesian Training}
 \input{tex/BayesianNetworksLearning/bayesian}
 
-\chapter{Variational Inference in Bayesian Networks}
-\input{tex/BayesianNetworksLearning/variational-inference}
+\chapter{Expectation-maximization algorithm}
+\input{tex/BayesianNetworksLearning/expectation-maximization}
+
+\chapter{Variational message passing algorithm}\label{sec:vmp}
+\input{tex/BayesianNetworksLearning/variational-message-passing}
 
 
 
 \ctparttext{
   \color{black}
   \begin{center}
+    In this part, three common latent variable models are reviewed. These are \emph{Gaussian mixture}, \emph{latent Dirichlet allocation} and \emph{principal components analysis}.
+
+    In \emph{principal components analysis}, the extension of regular \emph{latent variable models} with non-linear functions in the form of \emph{neural networks} is reviewed.
   \end{center}
 }
 \part{Commonly studied Latent Variable Models}
@@ -277,12 +293,20 @@ Some introduction about how important Variational methods are nowadays and what 
 }
 \part{Case study}
 
-\chapter{InferPy usage}
-\input{tex/InferPy/introduction}
+\chapter{Used frameworks}
+\input{tex/CaseStudy/introduction}
+\section{InferPy}
+\input{tex/CaseStudy/inferpy}
+\section{BayesPy}
+\input{tex/CaseStudy/bayespy}
+\section{Scikit-Learn}
+\input{tex/CaseStudy/sklearn}
 
 \chapter{Dimensionality Reduction}
+\input{tex/CaseStudy/reduction}
 
 \chapter{Gaussian Mixture}
+\input{tex/CaseStudy/mixture}
 
 
 \ctparttext{
@@ -291,19 +315,20 @@ Some introduction about how important Variational methods are nowadays and what 
 
   \end{center}
 }
-\part{Annexes}
+\part*{\textsc{Annexes}}
 
 \appendix
-\chapter{Distributions in the exponential family (Work in Progress)}\label{ap:exp_fam}
+\chapter{Distributions in the exponential family}\label{ap:exp_fam}
 \input{tex/Appendixes/A}
 
-\chapter{Conjugate Distributions (Work in Progress)}\label{ap:conj_distr}
+\chapter{Conjugate distributions}\label{ap:conj_distr}
 \input{tex/Appendixes/B}
 
 
 \addtocontents{toc}{\vspace{1\baselineskip}}
 \clearpage
-\printglossary[title={Notation}]
+
+\printglossary[title={\textsc{notation}}]
 \glsaddallunused
 
 \clearpage
