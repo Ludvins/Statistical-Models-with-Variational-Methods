@@ -28,29 +28,36 @@ The Bayesian network structure is not always given and has to be learned from th
 
 \section{PC algorithm}
 
-The \emph{PC algorithm} (\cite{spirtes2000causation} Chapter 5.4.2) learns the skeleton structure given a complete graph \(G=(V,E)\) (constructed from the considered set of variables) and orients its edges using variable independence in the empirical distribution.
+The \emph{PC algorithm} (\cite{spirtes2000causation} Chapter 5.4.2) learns the skeleton structure given a complete graph \(G=(V,E)\) (constructed from the considered set of variables) and orients its edges using variable independence in the empirical distribution. The following theorem provides the motivation for the algorithm's procedure.
 
-The skeleton learning part (Algorithm~\ref{alg:pc}) iterates over subsets of neighborhoods, from smaller to bigger ones. It chooses a linked pair of variables \((X,Y) \in E\) and
-a subset \(S_{XY} \subset ne(X)\), verifying \(Y \notin S_{XY}\). If \(X \bigCI Y \mid S_{XY}\), then the link is removed and \(S_{XY}\) is stored.
+\begin{theorem}[\cite{spirtes2000causation} Theorem 3.4]
+  A distribution \(P\) is faithful to a directed acyclic graph \(G = (V,E)\)  if and only if
+  \begin{itemize}
+    \item two vertices \(X\) and \(Y\) are adjacent if and only if are dependent conditionally on every set of vertices that does not contain either of them, i.e,
+      \[
+      X \in ne(Y) \iff X \bigCD Y \mid S \quad \forall S \subset V - \{X,Y\},
+      \]
+      and
+    \item for any three vertices such that \(X \in ne(Y)\), \(Y \in ne(Z)\) and \(X \notin ne(Z)\),  \(X \to Y \leftarrow Z\) is in \(G\) if and only if \(X \bigCD Z \mid S\cup \{Y\} \ \forall S \subset V - \{X,Z\}\).
+  \end{itemize}
 
-The main idea behind this procedure is using the following theorem and the d-separation Theorem~\ref{th:d-separation}.
-\begin{theorem}[\cite{Le_2019} Theorem 1]
-  Let \(X\) and \(Y\) be two non-adjacent nodes in a Bayesian network, then, there exists \(\bZ\) a subset of \(ne(X)\backslash Y\) or \(ne(Y)\backslash X\) that d-separates them.
 \end{theorem}
 
-Where if \(X \bigCI Y \mid S_{XY}\), the d-separation theorem implies that \(S_{XY}\) d-separates \(X\) and \(Y\), which is a necessary condition to erase their link.
+The \emph{PC algorithm} is split in two parts, firstly, the skeleton structure is learned, that is, given the complete graph, as many edges as possible are removed. This part (Algorithm~\ref{alg:pc}) iterates over subsets of neighborhoods, from smaller to bigger ones. It chooses a linked pair of variables \((X,Y) \in E\) and
+a subset \(S_{XY} \subset ne(X)\), verifying \(Y \notin S_{XY}\). If \(X \bigCI Y \mid S_{XY}\), then the link is removed and \(S_{XY}\) is stored as their separation set.
 
-This procedure results in the skeleton of the Bayesian Network, no more edges will be removed or added. The directed graph may be constructed following two rules:
+The followed reasoning is: as \(X \bigCI Y \mid S_{XY}\) and \(S_{XY} \subset V - \{X,Y\}\), the first part of the theorem ensures that \(X \notin ne(Y)\).
+
+This procedure results in the skeleton of the Bayesian network, no more edges will be removed or added. The directed graph may be constructed following two rules:
 \begin{enumerate}
   \item For any undirected link \(X - Y - Z\), if \(Y \notin S_{XZ}\) then set
     \(X \to Y \leftarrow Z\) (we are creating a collider for that path).
   \item The rest of links may oriented arbitrarily not
 creating cycles or colliders.
 \end{enumerate}
-The reasoning behind is the d-separation Theorem~\ref{th:d-separation},  if \(Y \notin S_{XZ}\) then \(X \bigCD Z \mid Y\) (if \(Y\) did, it would be the d-separation set \(S_{XZ} = \{Y\}\) as they are checked from smaller to bigger ones) so \(Y\) must d-connect them, to achieve this, it must be set as a collider. This is because, using the d-connection definition, the only known undirected path is \(U = X - Y - Z\) and no non-collider on \(U\) must belong to \(\{Y\}\).
+The reasoning behind is the d-separation Theorem~\ref{th:d-separation}, if \(Y \notin S_{XZ}\) then \(X \bigCD Z \mid Y\). Otherwise (\(X \bigCI Z \mid Y\)) \(\{Y\}\) would be the d-separation set \(S_{XZ} = \{Y\}\) as they are checked from smaller to bigger ones, which we know is not the case. Therefore, using Theorem~\ref{th:d-separation}, \(Y\) must d-connect \(X\) and \(Y\), to achieve this, \(Y\)  must be set as a collider of the path. This is because, using the d-connection definition, the only known undirected path is \(U = X - Y - Z\) and no non-collider on \(U\) must belong to \(\{Y\}\).
 
-
-On the other hand, if \(Y \in S_{XZ}\) and \(X \bigCI Z \mid S_{XZ}\) then \(S_{XZ}\) should d-separate them, that is, using any configuration that doesn't create a collider in \(S_{XZ}\).
+On the other hand, if \(Y \in S_{XZ}\) and \(X \bigCI Z \mid S_{XZ}\) then \(S_{XZ}\) should d-separate them, that is, using any configuration that does not create a collider in \(S_{XZ}\).
 
 \section{Independence learning}
 
