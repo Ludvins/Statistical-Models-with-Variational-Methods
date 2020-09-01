@@ -66,7 +66,7 @@ This problem is usually solved by applying a variant of the \emph{stochastic gra
 \[
   \bm{W}_{t+1} = \bm{W}_{t} + \gamma \nabla f(\bm{W}_{t}).
 \]
-Where \(\gamma \in \mathbb{R}^{+}\) is a small value. This technique uses the fact that \(- \nabla f(\bm{W})\) points to the local minima in which neighborhood \(\bm{W}\) is. This iterative method guarantees to converge to a local minima, in case \(f\) is convex, gradient descent converges to the global minima.
+Where \(\gamma \in \mathbb{R}^{+}\) is a small value. This technique uses the fact that \(- \nabla f(\bm{W})\) points to the local minimum nearest to\(\bm{W}\). This iterative method guarantees convergence to this local minimum, and, in case \(f\) is convex, it converges to the global minimum.
 
 As the loss function is typically unknown, the gradient estimated using the given dataset. In comparison, \emph{stochastic gradient descent} computes an approximation of the gradient from a randomly selected subset of the data.
 
@@ -151,7 +151,7 @@ and the data-points are then generated as
 \]
 Where no noise is being considered this time.
 
-\section{Variational auto-encoder (Work in Progress)}
+\section{Variational auto-encoder}\label{sec:vae}
 
 \emph{Variational auto-encoders} or VAEs are a dimensionality reduction model, like PCA and NLPCA.\@ In contrast with this two, this auto-encoders contain two neural networks, one in the \(P\) model (decoder) and another one in the variational model \(Q\) (encoder).
 

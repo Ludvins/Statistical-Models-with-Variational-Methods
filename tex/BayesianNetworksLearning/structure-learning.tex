@@ -35,10 +35,10 @@ The \emph{PC algorithm} (\cite{spirtes2000causation} Chapter 5.4.2) learns the s
   \begin{itemize}
     \item two vertices \(X\) and \(Y\) are adjacent if and only if are dependent conditionally on every set of vertices that does not contain either of them, i.e,
       \[
-      X \in ne(Y) \iff X \bigCD Y \mid S \quad \forall S \subset V - \{X,Y\},
+      X \in ne(Y) \iff X \bigCD Y \mid S \quad \forall S \subset V \setminus \{X,Y\},
       \]
       and
-    \item for any three vertices such that \(X \in ne(Y)\), \(Y \in ne(Z)\) and \(X \notin ne(Z)\),  \(X \to Y \leftarrow Z\) is in \(G\) if and only if \(X \bigCD Z \mid S\cup \{Y\} \ \forall S \subset V - \{X,Z\}\).
+    \item for any three vertices such that \(X \in ne(Y)\), \(Y \in ne(Z)\) and \(X \notin ne(Z)\),  \(X \to Y \leftarrow Z\) is in \(G\) if and only if \(X \bigCD Z \mid S\cup \{Y\} \ \forall S \subset V \setminus \{X,Z\}\).
   \end{itemize}
 
 \end{theorem}
@@ -46,7 +46,7 @@ The \emph{PC algorithm} (\cite{spirtes2000causation} Chapter 5.4.2) learns the s
 The \emph{PC algorithm} is split in two parts, firstly, the skeleton structure is learned, that is, given the complete graph, as many edges as possible are removed. This part (Algorithm~\ref{alg:pc}) iterates over subsets of neighborhoods, from smaller to bigger ones. It chooses a linked pair of variables \((X,Y) \in E\) and
 a subset \(S_{XY} \subset ne(X)\), verifying \(Y \notin S_{XY}\). If \(X \bigCI Y \mid S_{XY}\), then the link is removed and \(S_{XY}\) is stored as their separation set.
 
-The followed reasoning is: as \(X \bigCI Y \mid S_{XY}\) and \(S_{XY} \subset V - \{X,Y\}\), the first part of the theorem ensures that \(X \notin ne(Y)\).
+The followed reasoning is: as \(X \bigCI Y \mid S_{XY}\) and \(S_{XY} \subset V \setminus \{X,Y\}\), the first part of the theorem ensures that \(X \notin ne(Y)\).
 
 This procedure results in the skeleton of the Bayesian network, no more edges will be removed or added. The directed graph may be constructed following two rules:
 \begin{enumerate}
@@ -80,14 +80,14 @@ Where \(MI(X;Y \mid Z) \geq 0\) and
 \[
 MI(X;Y \mid Z) = 0 \iff P_{X,Y \mid Z} = P_{X\mid Z} P_{Y \mid Z} \iff X\bigCI Y \mid Z.
 \]
-These values might be estimated using their empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\). Thus, a threshold must be established.
+These values might be estimated using their empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\). Thus, a threshold must be established, This is commonly done by using a statistical test, taking into consideration that the empirical mutual information follows a chi-squared distribution under independence (\cite{kullback1997information}).
 
-A Bayesian approach would consist on comparing the model likelihood under independence and dependence hypothesis:
+A Bayesian approach would consist on comparing the model likelihood under independence and dependence hypothesis, let \((\bx, \by, \bz) = \{(x_{n}, y_{n}, z_{n})\}_{n=1,\dots, N}\) be the known data of each variable:
 \[
-  P_{indep}(x,y,z \mid \btheta) = P(x\mid z, \btheta)P(y \mid z, \btheta)P(z \mid \btheta)P(\btheta),
+  P_{indep}(\bx,\by,\bz) = \int_{\btheta} P(\btheta) \prod_{n=1}^{N} P(x_{n}\mid z_{n}, \btheta)P(y_{n} \mid z_{n}, \btheta)P(z_{n} \mid \btheta),
 \]
 \[
-P_{dep}(x,y,z \mid \btheta) = P(x,y,z \mid \btheta)P(\btheta).
+P_{dep}(\bx, \by, \bz) = \int_{\btheta} P(\btheta) \prod_{n=1}^{N}P(x_{n}, y_{n}, z_{n} \mid \btheta).
 \]
 Which means checking which assumptions is most probable to have generated the data.
 
