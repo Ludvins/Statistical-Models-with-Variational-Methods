@@ -60,27 +60,22 @@ The non-linear PCA model is defined using a two-layer neural network, to achieve
   return h @ beta1 + alpha1
 \end{minted}
 
-This is done to show how \texttt{InferPy} allow networks can be modeled using variables. In the other hand, the variational auto-encoder model is defined using \texttt{Keras} integration with \texttt{InferPy}, so that both networks are defined as an \texttt{inf.layers.Sequential} object.
+This is done to show how \texttt{InferPy} allows networks to be modeled using variables. In the other hand, the variational auto-encoder model is defined using \texttt{Keras} integration with \texttt{InferPy}, so that both networks are defined as an \texttt{inf.layers.Sequential} object. In the case of the generative model, the hidden data is supposed to follow a standard Gaussian distribution \(\mathcal{N}(0,I)\) and the observed data is generated using the output of a 2-totally connected layers network. The medium dimension is set to \(100\).
+
+\begin{minted}{python}
+  inf.layers.Sequential(
+     [tf.keras.layers.Dense(100, activation=tf.nn.relu),
+     tf.keras.layers.Dense(observed_dim),]
+  )
+\end{minted}
+
+Only one activation function is used because the output works as the mean value of the observed data distribution. This network is called the ``decoder'' as it transforms the hidden representation into the observed one. The ``encoder'' network (modeled inside the variational distribution), uses a double dimension output, as described in Section~\ref{sec:vae}.
 
 \section{Results}
 
 \subsection{Mnist}
 
-Firstly, due to the size of the original database, only \(1000\) samples of digits \(1,4\) and \(7\) are used. These are loaded form \texttt{InferPy} directly:
-
-\begin{minted}{python}
-  mnist.load_data(num_instances=1000, digits=[1,4,7])
-\end{minted}
-
-Function \texttt{print\_class\_pie\_diagram} draws a class pie diagram of the given label set, in this case, their proportions are almost equal (Figure~\ref{fig:mnist_proportion}).
-
-\begin{figure}
-  \centering
-  \includegraphics[width = 0.5\textwidth]{tex/images/mnist_proportion.png}
-  \caption{Mnist class proportion between numbers \(1, 4\) and \(7\).}\label{fig:mnist_proportion}
-\end{figure}
-
-After the inference is done, a sample can be generated from the posterior of a latent variable \(Z\) using the input data:
+Samples can be generated from the posterior of a latent variable \(Z\) using the input data:
 \begin{minted}{python}
   sample = model.posterior("z", data={"x": X}).sample()
 \end{minted}
@@ -88,19 +83,22 @@ After the inference is done, a sample can be generated from the posterior of a l
 The function \texttt{print\_posterior} might be used to draw 2D projections of a posterior sample. Results from the 2D reduction are shown in Figure~\ref{fig:mnist_posterior_2D}. In each of the graphics in that figure, projections to each of the learned latent variables are shown, leaving the diagonals to show the density of data-points in the corresponding variable.
 
 
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width = 1\textwidth]{tex/images/mnist_2D.png}
-  \caption{PCA, NLPCA and VAE posterior samples and loss functions (from left to right) from Mnist 2D reduction.}\label{fig:mnist_posterior_2D}
-\end{figure}
-
-For example in the first image, shown also in Figure~\ref{fig:mnist_pca_2D}, one may see (top left graph) that the first variable (\(0\)) strongly separates samples corresponding to \(1\) from the other samples, whereas the second variable (bottom right graph) (\(1\)) does not make such distinction.
-
 \begin{figure}
   \centering
-  \includegraphics[width = 0.6\textwidth]{tex/images/mnist_pca_2D.png}
-  \caption{Projections to each of the two learned variables in Mnist. Diagonals show density over the corresponding diagonal.}\label{fig:mnist_pca_2D}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_pca_2D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_nlpca_2D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_vae_2D.pdf}}
+   \caption{PCA, NLPCA and VAE posterior samples (from left to right) from Mnist 2D reduction.}\label{fig:mnist_posterior_2D}
 \end{figure}
+\begin{figure}
+  \centering
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_pca_loss_2D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_nlpca_loss_2D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_vae_loss_2D.pdf}}
+   \caption{PCA, NLPCA and VAE loss function evolution (from left to right) from Mnist 2D reduction.}\label{fig:mnist_loss_2D}
+\end{figure}
+
+For example in the first image, shown Figure~\ref{fig:mnist_posterior_2D} (a), one may see that the first variable (\(0\)) strongly separates samples corresponding to \(1\) from the other samples, whereas the second variable (\(1\)) does not make such distinction.
 
 The generated representation of the NLPCA and VAE result in a similar ring form, where data samples seem separated between classes. One difference between both results is that the ring scale in the VAE case is bigger (\(200\) compared to \(5\)).
 
@@ -127,35 +125,27 @@ In order to test the quality of the reduction, the fact that a good reduction mu
 \end{figure}
 
 The three dimensional reduction results are shown in Figure~\ref{fig:mnist_posterior_3D}.
-
-\begin{figure}[ht]
+\begin{figure}
   \centering
-  \includegraphics[width = 0.9\textwidth]{tex/images/mnist_3D.png}
-  \caption{PCA, NLPCA and VAE posterior samples and loss functions from Mnist 3D reduction.}\label{fig:mnist_posterior_3D}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_pca_3D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_nlpca_3D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_vae_3D.pdf}}
+   \caption{PCA, NLPCA and VAE posterior samples (from left to right) from Mnist 2D reduction.}\label{fig:mnist_posterior_3D}
 \end{figure}
-
 
 \subsection{Breast Cancer Wisconsin}
 
 Firstly, as the given identifier (\(\texttt{id}\)) is a non-predictive variable, it must be dropped from the dataset. Due to the relatively small size to the database, all entries are used in this case.
 
-In this database the class proportion is not balanced at all, Figure~\ref{fig:breast_proportion} shows a dominance of benign entries over the malign ones. Either way, this should not affect the obtained results.
+The obtained results from the two-dimensional (Figure~\ref{fig:breast_posterior_2D}) and the three-dimensional (Figure~\ref{fig:breast_posterior_3D}) are quite similar, where the score table (Table~\ref{tab:breast}) shows very similar results in all cases. However, there are some details worth mentioning that make a difference with the obtained results in \texttt{Mnist}.
 
 \begin{figure}
   \centering
-  \includegraphics[width = 0.5\textwidth]{tex/images/breast_proportion.png}
-  \caption{Breast cancer Wisconsin proportion of malign and benign labels.}\label{fig:breast_proportion}
-\end{figure}
-
-In this case, the obtained results from the two-dimensional (Figure~\ref{fig:breast_posterior_2D}) and the three-dimensional (Figure~\ref{fig:breast_posterior_3D}) are quite similar. Where the score table (Table~\ref{tab:breast}) shows very similar results in all cases. However, there are some details worth mentioning that make a difference with the obtained results in \texttt{Mnist}.
-
-
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width = 0.9\textwidth]{tex/images/breast_2D.png}
-  \caption{PCA, NLPCA and VAE posterior samples and loss functions from Breast Cancer 2D reduction.}\label{fig:breast_posterior_2D}
-\end{figure}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/breast_pca_2D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/breast_nlpca_2D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/breast_vae_2D.pdf}}
+   \caption{PCA, NLPCA and VAE posterior samples (from left to right) from Breast Cancer 2D reduction.}\label{fig:breast_posterior_2D}
+ \end{figure}
 
 First of all, the results obtained from all models in this database show a highly sharp distribution on the benign entries and a more extended one on the malign one. Secondly, in both reductions, the probabilistic PCA model made a reduction where all the data-points resulted aligned, as a result, these two or three variables are highly correlated, which is not a desired outcome.
 
@@ -181,9 +171,10 @@ It is worth mentioning that the separability has being increased (from \(0.9226\
 
 There is no big difference between using a two or three dimension in this dataset.
 
-\begin{figure}[ht]
+\begin{figure}
   \centering
-  \includegraphics[width = 0.9\textwidth]{tex/images/breast_3D.png}
-  \caption{PCA, NLPCA and VAE posterior samples and loss functions from Breast Cancer 3D reduction.}\label{fig:breast_posterior_3D}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/breast_pca_3D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/breast_nlpca_3D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/breast_vae_3D.pdf}}
+   \caption{PCA, NLPCA and VAE posterior samples (from left to right) from Breast Cancer 3D reduction.}\label{fig:breast_posterior_3D}
 \end{figure}
-

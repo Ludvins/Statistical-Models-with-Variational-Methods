@@ -1,11 +1,11 @@
 
 Three different frameworks are used during this study, which are \texttt{InferPy}, \texttt{BayesPy} and \texttt{Scikit-Learn}. The first two are specifically designed to probabilistic modeling whereas the last one is a general machine learning library. For this reason, we are briefly describing the usage of the first two and only explaining the functions we are using on the last, but, before briefly describing their usage, the study's file structure and used database are described.
 
-Each study is made in a different file, available in both a \texttt{Jupyter Notebook (.ipynb)} and \texttt{Python script (.py)} using the name format \texttt{[model]\_[framework]\_[database]}. Apart from these, there are three main auxiliary files:
+Each study is made in a different file, available in both as a \texttt{Jupyter Notebook (.ipynb)} and \texttt{Python script (.py)} using the name format \texttt{[model]\_[framework]\_[database]}. Apart from these, there are three main auxiliary files:
 
 \begin{itemize}
   \item \texttt{packages}: This file contains a list of the installed packages. These packages might be installed using \texttt{pip install -r packages}.
-  \item \texttt{models.py}: In this \texttt{Python} file, all parametric and variational models from \texttt{InferPy} are defined. This includes PCA, NLPCA and VAE.
+  \item \texttt{models.py}: In this \texttt{Python} file, all parametric and variational models from \texttt{InferPy} are defined. This includes PCA, NLPCA, VAE and Gaussian mixture.
   \item \texttt{functions.py}: In this file, all auxiliary functions are defined. The aim of these functions is either to make graphic representations or summarize the inference results.
 \end{itemize}
 
@@ -17,12 +17,26 @@ Two different databases are used:
 
 \subsection{Mnist}
 
-\texttt{Mnist} database can be directly obtained through \texttt{InferPy.data}. It consists of a set of \(70.000\)  handwritten digits, codified as \(28\times 28\) binary matrices (Figure~\ref{fig:mnist_example} shows an example of digits within the database). Given this, the observed data belongs to \(\{0,1\}^{784}\). Each sample is labeled with its corresponding digit.
+\texttt{Mnist} database (\cite{lecun-mnisthandwrittendigit-2010}) can be directly obtained through one of the used frameworks, \texttt{InferPy.data}. It consists of a set of \(70.000\)  handwritten digits, codified as \(28\times 28\) matrices where each position is the gray-scale value of the digit, in \([0,255]\)  (Figure~\ref{fig:mnist_example} shows an example of digits within the database). Given this, the observed data belongs to \([0, 255]^{784}\). Each sample is labeled with its corresponding digit.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.35\textwidth]{tex/images/mnist.png}
     \caption{Mnist dataset example.}\label{fig:mnist_example}
+  \end{figure}
+
+Due to the size of the database, \(1000\) samples of digits \(1,4\) and \(7\) are used. These are loaded form \texttt{InferPy} directly:
+
+\begin{minted}{python}
+  mnist.load_data(num_instances=1000, digits=[1,4,7])
+\end{minted}
+
+Function \texttt{print\_class\_pie\_diagram} draws a class pie diagram of the given label set, in this case, their proportions are almost equal (Figure~\ref{fig:mnist_proportion}).
+
+\begin{figure}
+  \centering
+  \includegraphics[width = 0.5\textwidth]{tex/images/mnist_proportion.pdf}
+  \caption{Mnist class proportion between numbers \(1, 4\) and \(7\).}\label{fig:mnist_proportion}
 \end{figure}
 
 \subsection{Breast cancer Wisconsin}
@@ -41,3 +55,11 @@ Two different databases are used:
   \item Fractal dimension: a ratio comparing how detail in a fractal pattern changes with the scale of measurement.
 \end{itemize}
 All these features are coded with four significant digits.
+
+In this database the class proportion is not balanced at all, Figure~\ref{fig:breast_proportion} shows a dominance of benign entries over the malign ones. Either way, this should not affect the obtained results.
+
+\begin{figure}
+  \centering
+  \includegraphics[width = 0.5\textwidth]{tex/images/breast_proportion.pdf}
+  \caption{Breast cancer Wisconsin proportion of malign and benign labels.}\label{fig:breast_proportion}
+\end{figure}

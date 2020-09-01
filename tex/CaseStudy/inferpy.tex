@@ -76,11 +76,11 @@ When both models are defined and instantiated in a variable, we need to create a
     VI = inf.inference.VI(variational_model)
 \end{minted}
 
-By default, the inference is made using the machine learning technique \emph{gradient descent} which uses \(-\text{ELBO}\) as loss function (\href{https://github.com/PGM-Lab/InferPy/blob/master/inferpy/inference/variational/loss_functions/elbo.py}{source code}), notice that the ELBO takes values in \((-\infty, 0]\),  and uses \texttt{AdamOptimizer} (\cite{kingma2014adam}) from \texttt{TensorFlow}. An amount of \texttt{epochs} must be establish, which set the stop criteria to a of iterations to be done.
+By default, the inference is made using the machine learning technique \emph{gradient descent} which uses \(-\text{ELBO}\) as loss function (\href{https://github.com/PGM-Lab/InferPy/blob/master/inferpy/inference/variational/loss_functions/elbo.py}{source code}), notice that the ELBO takes values in \((-\infty, 1]\),  and uses \texttt{AdamOptimizer} (\cite{kingma2014adam}) from \texttt{TensorFlow}. A number of \texttt{epochs} must be establish, which set the stop criteria to a number of iterations to be done.
 
-Given a training dataset \texttt{X\_train}, the model is trained indicating which set of observations corresponds to each observed variable using the following syntax:
+Given a training dataset \texttt{X}, the model is trained indicating which set of observations corresponds to each observed variable using the following syntax:
 \begin{minted}{python}
-    model.fit({"x": X_train}, VI)
+    model.fit({"x": X}, VI)
 \end{minted}
 Once the model is trained, a variable posterior can be taken as
 \begin{minted}{python}

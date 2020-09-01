@@ -1,5 +1,5 @@
 
-\texttt{BayesPy} (\cite{BayesPy}) is a Bayesian inference \texttt{Python} package for modeling Bayesian networks and make inference. Currently, it only supports conjugate models in the exponential family as it only implements \emph{variational message passing algorithm} in contrast with \texttt{InferPy} that used \emph{gradient descent}.
+\texttt{BayesPy} (\cite{BayesPy}) is a Bayesian inference \texttt{Python} package for modeling Bayesian networks and make inference. Currently, it only supports conjugate models in the exponential family as it only implements \emph{variational message passing algorithm} in contrast with \texttt{InferPy} that uses \emph{gradient descent}.
 
 \subsection{Instalation}
 
@@ -23,7 +23,7 @@ creates 10 i.i.d variables \(X_{1},\dots,X_{10}\)  such that
 \[
   X_{n} \sim \mathcal{N}_{2}(0, I) \quad \forall n =1,\dots,10.
 \]
-Notice that the plate notation is done uwing a single parameter \texttt{plate}, incontrast with \texttt{InferPy} that used the syntax \texttt{with inf.datamodel()}.
+Notice that the plate notation is done using a single parameter \texttt{plates}, in contrast with \texttt{InferPy} that used the syntax \texttt{with inf.datamodel()}.
 
 When all nodes are created, the data must be observed using each node's \texttt{.observe()} method. Using the node's observations as argument.
 

@@ -1,0 +1,24 @@
+
+In this chapter, conclusions regarding the three frameworks are summarized.
+
+\section{InferPy}
+\texttt{InferPy} has shown to be highly limited by the presence of categorical variables in the models, this is a consequence of using \texttt{tensorflow-probability} inference engine to perform gradient descent, as these variables cannot be optimized using this method.
+
+On the other hand, \texttt{InferPy} presents high flexibility with model definition, allowing the user to build its own models with explicit relation between the variables. It is the only framework that permits \texttt{Keras} integration, what makes it easier to use models as non-linear PCA and variational auto-encoders.
+
+The framework does also provide a convenient way to inspect each variable posterior and generates samples from it.
+
+
+\section{BayesPy}
+
+\texttt{BayesPy} is the only of the three \texttt{frameworks} that performs variational message passing as it inference algorithm. This has made it impossible to test on larger databases, as it internally stores much of the information to optimize the procedure, leading to high memory requisites.
+
+On the other hand, presents the same flexibility as \texttt{InferPy} providing a more comfortable syntax as it does not request the variational model to be defined.
+
+\texttt{InferPy} does not provide a default function to access each component probability for a given point, and it must be retrieved from the variable posterior moments. The in-built print function for the Gaussian mixture model works perfectly on ``testing'' databases (constructed manually from a set of Gaussian distributions) but fails to represent all the components in \texttt{Breast Cancer} reduction.
+
+\section{Scikit-Learn}
+
+\texttt{Scikit-Learn's BayesianGaussianMixture} does correctly perform EM on the given model, providing the user a totally functional API from where one may get any posterior information. But, on the other hand, lacks the flexibility available on the other frameworks. It allows the user to choose between several model parameters but not make any substantial change to the model.
+
+As being part of a \texttt{machine learning framework}, it provides the necessary functions to use the model in a classification problem, such as \texttt{score()} and \texttt{predict()}.
