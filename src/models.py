@@ -18,7 +18,7 @@ def pca(k, d):
     - k: hidden space dimension.
     - d: observed space dimension.
 
-    The observed data is supossed to be generated as N(w^T z + w0, 1)
+    The observed data is supossed to be generated as N(w^T z + delta, 1)
     """
     # Variable which encloses the linear transformation between spaces.
     # W ~ N(0,1)
@@ -254,11 +254,19 @@ def Q_vae(k, l, d):
 
 @inf.probmodel
 def mixture(k, d):
+    """
+    Gaussian mixture model.
+    Arguments:
+    - k: number of components.
+    - d: observed space dimensionality.
+    """
 
+    # Pi models the categorical parameter ruling each component probability.
     pi = inf.Dirichlet(
         np.ones(k) / k, allow_nan_stats=False, validate_args=True, name="pi"
     )
 
+    # Lambda models each component precision using an inverse wishart distribution (inverse gamma multidimensional).
     Lambda = inf.InverseGamma(
         concentration=tf.ones([d, k]),
         scale=1,
@@ -267,6 +275,7 @@ def mixture(k, d):
         name="Lambda",
     )
 
+    # Mu models each component mean value, using a Gaussian distribution.
     mu = inf.Normal(
         loc=tf.zeros([d, k]),
         scale=1,
@@ -275,6 +284,7 @@ def mixture(k, d):
         name="mu",
     )
 
+    # As categorical distributions cannot be used, MixtureGaussian to model both the observed data and the categorical variable.
     with inf.datamodel():
         x = inf.MixtureGaussian(
             locs=mu,
@@ -288,19 +298,29 @@ def mixture(k, d):
 
 @inf.probmodel
 def Q_mixture(k, d):
+    """
+    Gaussian mixture variational model.
+    Arguments:
+    - k: number of components.
+    - d: observed space dimensionality.
+
+    """
+    # Dirichlet distribution for each component probability.
     qpi_param = inf.Parameter(tf.ones(k) / k, name="qpi_param")
     qpi = inf.Dirichlet(qpi_param, allow_nan_stats=False, validate_args=True, name="pi")
 
-    qsigma_w = inf.Parameter(tf.ones([d, k]), name="qsigma_w")
-    qsigma_v = inf.Parameter(tf.ones([d, k]), name="qsigma_v")
-    sigma = inf.InverseGamma(
-        concentration=tf.math.softplus(qsigma_w) + 0.1,
-        scale=tf.math.softplus(qsigma_v) + 0.1,
+    # InverseGamma parameters and distribution.
+    qLambda_w = inf.Parameter(tf.ones([d, k]), name="qLambda_w")
+    qLambda_v = inf.Parameter(tf.ones([d, k]), name="qLambda_v")
+    qLambda = inf.InverseGamma(
+        concentration=tf.math.softplus(qLambda_w) + 0.01,
+        scale=tf.math.softplus(qLambda_v) + 0.01,
         validate_args=True,
         allow_nan_stats=False,
-        name="sigma",
+        name="Lambda",
     )
 
+    # Gaussian parameters and distribution.
     qmu_m = inf.Parameter(tf.zeros([d, k]), name="qmu_m")
     qmu_b = tf.math.softplus(inf.Parameter(tf.ones([d, k]), name="qmu_b"))
     qmu = inf.Normal(qmu_m, qmu_b, allow_nan_stats=False, validate_args=True, name="mu")
