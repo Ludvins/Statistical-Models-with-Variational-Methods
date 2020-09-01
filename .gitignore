@@ -21,3 +21,4 @@ _minted-main
 *.gls
 *.sym
 dataset
+src/__pycache__

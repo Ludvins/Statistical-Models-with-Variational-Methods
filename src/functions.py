@@ -21,64 +21,17 @@ import tensorflow as tf
 from tensorflow_probability import edward2 as ed
 import inferpy as inf
 import sys
-from inferpy.data import mnisT
+from inferpy.data import mnist
 import bayespy.plot as bpplt
 
 
 def set_seed(SEED):
+    """
+    Set the same seed on NumPy, Random and TensorFlow.
+    """
     tf.random.set_random_seed(SEED)
     np.random.seed(SEED)
     random.seed(SEED)
-
-
-##########################################
-############ Print functions #############
-##########################################
-
-
-def print_loss_function(VI, name=None):
-    """
-    Prints the ELBO evolution of a given variational inference model.
-    Arguments:
-    - VI: VI trained object from InferPy package: https://inferpy.readthedocs.io/projects/develop/en/latest/_modules/inferpy/inference/variational/vi.html
-    """
-    L = VI.losses
-    plt.plot(range(len(L)), L)
-    plt.xlabel("Epochs")
-    plt.ylabel("-ELBO")
-    plt.title("ELBO evolution")
-    plt.grid(True)
-
-    if name != None:
-        plt.savefig(name)
-
-    plt.show()
-
-
-def print_class_pie_diagram(y, labels, name=None):
-    prop_class = y.value_counts(normalize=True)
-    figureObject, axesObject = plt.subplots()
-    axesObject.pie(prop_class * 100, labels=labels, autopct="%1.2f", startangle=180)
-    axesObject.axis("equal")
-    plt.title("Class distribution")
-
-    if name != None:
-        plt.savefig(name)
-
-    plt.show()
-
-
-def print_posterior(z, y, name=None):
-    """
-    Prints the model posterior in a 2D representation. The model is supposed to have the following variables:
-    - z: Hidden 2-dimensoinal variable to represent.
-    - x: Observed variable with dataset X.
-    """
-    df = pd.DataFrame(data=z)
-    df[y.name] = y
-    fig = sns.pairplot(df, hue=y.name, palette="Set2", diag_kind="kde", height=2.5)
-    if name != None:
-        fig.savefig(name)
 
 
 def test_separability(X, z, y):
@@ -96,21 +49,84 @@ def test_separability(X, z, y):
     print("SVM score in hidden space:", svm.score(z, y))
 
 
+##########################################
+############ Print functions #############
+##########################################
+
+
+def print_loss_function(
+    losses, xlabel="Epochs", ylabel="-ELBO", title="ELBO evolution", save_path=None
+):
+    """
+    Prints the evolution of the given array values. Given a variational inference object
+    from InferPy, using its looses array might print its ELBO evolution.
+    Arguments:
+    - L: Array of loss function values
+    - save_path: path to save the image.
+    """
+    plt.plot(range(len(losses)), losses)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.grid(True)
+
+    # Save figure
+    if save_path != None:
+        plt.savefig(save_path)
+
+    plt.show()
+
+
+def print_class_pie_diagram(y, labels, save_path=None):
+    """
+    Print y's proportion in a pie diagram.
+    Arguments:
+    - y: Set of labels.
+    - labels: Set of label names.
+    - save_path: path to save the image.
+    """
+    prop_class = y.value_counts(normalize=True)
+    figureObject, axesObject = plt.subplots()
+    axesObject.pie(prop_class * 100, labels=labels, autopct="%1.2f", startangle=180)
+    axesObject.axis("equal")
+    plt.title("Class distribution")
+
+    # Save figure
+    if save_path != None:
+        plt.savefig(save_path)
+
+    plt.show()
+
+
+def print_posterior(z, y, save_path=None):
+    """
+    Prints the model posterior in a 2D representation. The model is supposed to have the following variables:
+    - z: Hidden 2-dimensoinal variable to represent.
+    - x: Observed variable with dataset X.
+    - save_path: path to save the image.
+    """
+    # Create a temporal dataframe to plot using sns.
+    df = pd.DataFrame(data=z)
+    df[y.name] = y
+    fig = sns.pairplot(df, hue=y.name, palette="Set2", diag_kind="kde", height=2.5)
+
+    if save_path != None:
+        fig.savefig(save_path)
+
+
 def plot_mixture_distplot(
-    probabilities, labels, colors, component=0, n_components=1, name=None
+    probabilities, labels, colors, component=0, n_components=1, save_path=None
 ):
     """
     Prints a density function showing the posterior probability of each class belongingto each component.
     Arguments:
-    - model: Trained model, predict_proba(point) must return that point's probabilities to belong
-    to each component.
+    - probabilities: array-like containing each component probabilities.
     - labels: array-like with each class name.
     - colors: array-like with colors for each class.
     - component: indicates which component to use.
     - n_components: indicates the total ammount of components. If not 1, all of them are printed.
+    - save_path: path to save the image.
     """
-    # clear plt
-    plt.clf()
 
     # If more than 1 component needs to be plotted
     if n_components != 1:
@@ -139,6 +155,8 @@ def plot_mixture_distplot(
             )
     # Show legend
     plt.legend()
-    if name != None:
-        plt.savefig(name)
+
+    # Save file
+    if save_path != None:
+        plt.savefig(save_path)
     plt.show()
