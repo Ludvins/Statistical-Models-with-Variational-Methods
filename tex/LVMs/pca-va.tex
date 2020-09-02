@@ -155,7 +155,7 @@ Where no noise is being considered this time.
 
 \emph{Variational auto-encoders} or VAEs are a dimensionality reduction model, like PCA and NLPCA.\@ In contrast with this two, this auto-encoders contain two neural networks, one in the \(P\) model (decoder) and another one in the variational model \(Q\) (encoder).
 
-The \(P\) model has the same structure as the non-linear PCA.\@ On the other hand, the  distribution \(Q\) is defined with a reverse ANN, with input dimension \(D\) and output dimension \(K\).
+On one hand, the \(P\) model has the same structure as the non-linear PCA, and, on the other hand, the  distribution \(Q\) is defined with a reverse ANN, with input dimension \(D\) and output dimension \(K\).
 
 The neural networks can be defined to give an output of double the dimension, that is, the encoder would give a point in with \( 2K \) components, so the first \( K \) are used for the mean and the last \( K \) for the variance of the normal distribution.
 
@@ -170,7 +170,7 @@ In conclusion, the parametric model assumes the data is generated as:
     X \mid z \sim \mathcal{N}_{D}(f(z), I).
     \]
 \end{enumerate}
-On the other hand, the variational model supposes the hidden values are generated from the observed ones as:
+Conversely, the variational model supposes the hidden values are generated from the observed ones as:
 \begin{enumerate}
   \item Let \(x\) be a sample from a standard Gaussian distribution.
     \[

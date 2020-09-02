@@ -1,14 +1,12 @@
+In this document, the theoretical fundamentals of \emph{statistical inference}, more precisely, \emph{variational inference} are reviewed, making special emphasis on how the application of \emph{graphical models} affects inference.
 
-\emph{Variational inference} concepts, which are adapted from statistical physics, first appeared in~\cite{anderson1987mean}, in which the authors used them to fit a neural-network. More precisely, they used \emph{mean-field} methods to achieve it.
+\emph{Statistical inference} is the process of inferring the underlying properties of a dataset or population. Two main paradigms are discussed, \emph{Bayesian inference} and \emph{likelihoodist inference} which differ in that the former uses \emph{Bayes' theorem} during the inference task, assuming a \emph{prior distribution} over the model parameters.
 
-In the coming years, several studies were done on variational inference, such as~\cite{hinton1993keeping}, which used further mean-field methods in neural networks, and~\cite{jordan1999introduction} that generalized variational inference to many models.
+\emph{Variational Bayesian methods} are a class of techniques that among with \emph{Bayes' theorem}, transform the inference task in a optimization one. Which might then be approached through machine learning algorithms, such as \emph{gradient or coordinate descent}. Specific algorithms do also rise, as the case of \emph{expectation maximization}.
 
-Today, variational inference is more scalable and easy to derive, in some cases it is even automated. It has been applied to many different models and types of learning, such as document topic learning (\cite{blei2012probabilistic}).
+The combination of \emph{variational inference}, the \emph{exponential family} and \emph{graphical models} do highly simplify the optimization task, automatizing it in some models. \emph{Variational message passing} is an example of this.
 
-This document attempts to give an overview of some results in \emph{Bayesian variational inference} as well as to test some frameworks for probabilistic modeling. In these tests an effort to apply variational inference techniques to real databases is made.
+Some common models who are usually approached using variational inference are \emph{Gaussian mixtures}, \emph{latent Dirichlet allocation} and \emph{principal components analysis}.
 
-The theoretical part of this document, which is encompassed by chapters 1 to 23, describes the basic concepts of \emph{statistical inference}, from classical to \emph{variational}. After this, the \emph{exponential family} and \emph{graphical models} are reviewed together with their influence in variational inference, focusing on how the inference task is simplified by their usage.
 
-On the other hand, the last chapters, focus on the utilization of different frameworks to experiment different models, which involve \emph{Gaussian mixture} and dimensionality reduction via \emph{principal components analysis} and \emph{variational auto-encoders}.
-
-The main sources used for writing this documents were~\cite{barber},~\cite{bishop2006pattern},~\cite{koller_friedman},~\cite{masegosa2019probabilistic} and~\cite{blei2017variational}. Citations are made in each section within the text.
+\textbf{Keywords:} \emph{statistical inference, variational inference, exponential family, graphical models, expectation-maximization algorithm, variational Bayes, Gaussian mixture, variational auto-encoders}.

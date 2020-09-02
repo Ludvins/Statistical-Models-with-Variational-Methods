@@ -1,6 +1,6 @@
 
 \texttt{Scikit-Learn} (\cite{scikit-learn}) is an open source library focused on providing machine learning tools, which include model fitting, selection and evaluation. From this library, we are using the \texttt{BayesianGaussianMixture} class which provides variational estimation of a Gaussian mixture model using the EM algorithm.
-In the implementation of the algorithm, the variational distribution family is fixed as in Chapter~\ref{ch:gm}, for this reason, the \textbf{E-step}, which optimizes the variational distribution, only computes auxiliary values. Meanwhile, the \textbf{M-step} does optimize the parameters (hyper-parameters in this case), that is, the parameters of \(\bmu, \bLambda, \bz\) and \(\bpi\). This updates can be found in the class \href{https://github.com/scikit-learn/scikit-learn/blob/0fb307bf3/sklearn/mixture/_bayesian_mixture.py#L65}{source code}, and do equal the ones we computed for the CAVI algorithm in Chapter~\ref{ch:gm}.
+In the implementation of the algorithm, the variational distribution family is fixed as in Chapter~\ref{ch:gm}, for this reason, the \textbf{E-step}, which optimizes the variational distribution, only computes auxiliary values. Meanwhile, the \textbf{M-step} does optimize the parameters (hyper-parameters in this case), that is, the parameters of \(\bmu, \bLambda, \bz\) and \(\bpi\). This updates can be found in the class \href{https://github.com/scikit-learn/scikit-learn/blob/0fb307bf3/sklearn/mixture/_bayesian_mixture.py#L65}{source code}, and are equal to the ones we computed for the CAVI algorithm in Chapter~\ref{ch:gm}.
 
 As this package is not specifically designed to make Bayesian inference, no nodes need to be defined as the model is internally handled. This being said, \texttt{BayesianGaussianMixture} models all decisions via its parameters:
 \begin{itemize}
@@ -17,7 +17,7 @@ As this package is not specifically designed to make Bayesian inference, no node
   \item \texttt{covariance\_prior}: Prior matrix of the Wishart distribution equals. By default it is initialized to the empirical covariance matrix.
 \end{itemize}
 
-The inference task is simple as creating the Gaussian mixture object:
+The inference task is as simple as creating the Gaussian mixture object:
 \begin{minted}{python}
   gm = BayesianGaussianMixture()
 \end{minted}

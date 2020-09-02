@@ -194,7 +194,7 @@ The \textbf{E-step} consists on setting (given a fixed \(\btheta\), which is not
   \end{aligned}
 \]
 
-On the other hand, the \textbf{M-step} consists on setting
+Conversely, the \textbf{M-step} consists on setting
 \[
   \begin{aligned}
     \bm{\theta}^{new} &= \argmax_{\theta} \sum_{n=1}^{N}\E{Q(z_{n})}{\log P(x_{n}, z_{n} \mid \btheta)}\\
@@ -255,7 +255,7 @@ We are now using the figure~\ref{fig:mixture} to set the example in a numerical 
 
 Making a partial \textbf{M-step} consist on not using the optimal parameter for the energy term, but using one with just higher energy. Finding this values can be easier than finding the optimal one and convergence still follows as the only requirement to make the likelihood increase was to increase the lower bound.
 
-On the other hand, when studying the increase on the likelihood, we supposed that the optimal \textbf{E-step} was being used. It cannot be guarantee that a partial step would increase the likelihood in this case, even though it does increase the lower bound.
+When studying the increase on the likelihood, we supposed that the optimal \textbf{E-step} was being used. It cannot be guarantee that a partial step would increase the likelihood in this case, even though it does increase the lower bound.
 
 Another important factor is, that the EM algorithm assumes that the energy term is possible to calculate, which may not be. As an approach to solve this situation, we can set a class of distributions \(\mathcal{Q}\), where the term can be computed, and minimize the Kullback-Leibler divergence between \(P(\bz \mid \bx, \theta)\) and a distribution \(Q \in \mathcal{Q}\), so we pick a distribution such that
 \[

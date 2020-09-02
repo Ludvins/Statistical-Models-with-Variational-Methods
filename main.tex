@@ -133,14 +133,13 @@ manychapters,pdfspacing]{classicthesis}
 The source code of this text and developed programs are available in the Github repository \href{https://github.com/Ludvins/Statistical-Models-with-Variational-Methods}{Ludvins/Statistical-Models-with-Variational-Methods}
 
 \chapter*{Abstract}
-
 \input{tex/abstract}
 
-\chapter*{Summary}
-\section*{Brief summary}
-\input{tex/summary}
-\section*{Resumen extendido en español}
+\chapter*{Resumen extendido en español}
 \input{tex/resumen_extendido}
+
+\chapter*{Introduction}
+\input{tex/introduction}
 
 \tableofcontents
 
@@ -308,8 +307,13 @@ The source code of this text and developed programs are available in the Github 
 \chapter{Gaussian Mixture}
 \input{tex/CaseStudy/mixture}
 
-\chapter{Conclusions}
-\input{tex/CaseStudy/conclusions}
+\addtocontents{toc}{\vspace{1\baselineskip}}
+\clearpage
+
+\addcontentsline{toc}{chapter}{\textsc{Conclusions}}
+\chapter*{Conclusions}
+\input{tex/conclusions.tex}
+
 
 \ctparttext{
   \color{black}
@@ -317,7 +321,7 @@ The source code of this text and developed programs are available in the Github 
 
   \end{center}
 }
-\part*{\textsc{Annexes}}
+\part*{\textsc{Appendices}}
 
 \appendix
 \chapter{Distributions in the exponential family}\label{ap:exp_fam}

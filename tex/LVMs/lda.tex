@@ -102,7 +102,7 @@ and \(\bm{\gamma} = \{\gamma_{d,n}\}_{d=1,\dots,D \ n=1,\dots,N_{d}}\), we get
   (Z_{d,n} \mid w_{d,n}, \theta_{d}, \bm{\beta}) \sim Categorical(\bm{\gamma}).
 \]
 
-On the other hand, the complete conditional of the topic proportions \(\theta_{d}\) is only affected by the topic appearances, since \(z_{d,n}\) is an indicator vector, the \(k^{th}\) element of the parameter to this Dirichlet is the sum of the hyperparameter \(\alpha\) and the number of words assigned to topic \(k\) in document \(d\):
+The complete conditional of the topic proportions \(\theta_{d}\) is only affected by the topic appearances, since \(z_{d,n}\) is an indicator vector, the \(k^{th}\) element of the parameter to this Dirichlet is the summation of the hyper-parameter \(\alpha\) and the number of words assigned to topic \(k\) in document \(d\):
 \[
   \begin{aligned}
     P(\theta_{d} \mid \bm{z_{d}},\bm{w_{d}}, \bm{\beta}) &= \frac{P(\theta_{d}, \bm{z_{d}}, \bm{w_{d}}, \bm{\beta})}{\int_{\theta_{d}} P(\theta_{d}, \bm{z_{d}}, \bm{w_{d}}, \bm{\beta})} = \frac{ P(\theta_{d})\prod_{n=1}^{N_{d}}P(z_{d,n}\mid \theta_{d}) }{ \int_{\theta_{d}}  P(\theta_{d})\prod_{n=1}^{N_{d}}P(z_{d,n}\mid \theta_{d})  }\\

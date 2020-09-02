@@ -26,7 +26,7 @@ In this form, it is easier to see that \(\bm{T}\) is the sufficient statistic fo
 
 An important property of the exponential family is that they have \emph{conjugate priors}, this is said when the posterior distribution is in the same probability distribution family as
 the prior distribution, they are then called \emph{conjugate distributions}, and
-the prior is called a \emph{conjugate prior} of the likelihood distribution. Appendix~\ref{ap:conj_distr} shows examples of conjugate distributions and their conjugate priors.
+the prior is called a \emph{conjugate prior} of the likelihood distribution. Appendix~\ref{ap:conj_distr} shows examples of conjugate distributions and their conjugate priors. Models with conjugate priors are usually called \emph{conditionally conjugate models}.
 
 \begin{proposition}\label{prop:conj_prior}
   Let \(X\) be a random variable and \(\btheta\) a set of parameters. Suppose an exponential family likelihood:
@@ -69,7 +69,7 @@ One important case of exponential family are \emph{latent variable models} or \e
   LVMs include popular models like \emph{Latent Dirichlet Allocation} models used to uncover the hidden topics in text corpora (\cite{blei2003latent}), mixture of Gaussian models to discover hidden clusters in data (\cite{bishop2006pattern}) and probabilistic principal component analysis for dimensionality reduction (\cite{tipping1999probabilistic}). These three models are reviewed throughout this document.
 \end{remark}
 
-One important case of LVMs and exponential family models are \emph{conditionally conjugate models}, where the following assumptions are made.
+One important case of LVMs and exponential family models are \emph{conditionally conjugate models} with local and global variables (\cite{blei2017variational}), where the following assumptions are made.
 \begin{enumerate}[itemsep=2ex]
   \item The prior for the global latent variable \(P(\btheta)\) is in the exponential family with an hyper-parameter \(\alpha = [\alpha_{1}, \alpha_{2}]\), where \(\alpha_{1}\) is a vector and \(\alpha_{2}\) is a scalar, and statistics that concatenate the global latent variable \(\btheta\)  and its log normalizer from \(P(z_{n}, x_{n} \mid \btheta)\), \(\psi(\btheta)\)\footnote{The same symbol \(\psi\) is used for every normalizer function. The distinction must be made using their parameters. },
     \[
