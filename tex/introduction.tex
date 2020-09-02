@@ -1,0 +1,27 @@
+
+\emph{Variational inference} concepts, which are adapted from statistical physics, first appeared in~\cite{anderson1987mean}, in which the authors used them to fit a neural-network. More precisely, they used \emph{mean-field} methods to achieve it.
+
+In the coming years, several studies were done on variational inference, such as~\cite{hinton1993keeping}, who used further mean-field methods in neural networks, and~\cite{jordan1999introduction} that generalized variational inference to many models.
+
+Today, variational inference is more scalable and easy to derive, in some cases it is even automated. It has been applied to many different models and types of learning, such as document topic learning (\cite{blei2012probabilistic}).
+
+This document attempts to give an overview of some results in \emph{Bayesian variational inference} as well as to test some frameworks for probabilistic modeling. In these tests an effort to apply variational inference techniques to real databases is made.
+
+The theoretical part of this document, which is encompassed by chapters 1 to 23, describes the basic concepts of \emph{statistical inference}, from classical to \emph{variational}. After this, the \emph{exponential family} and \emph{graphical models} are reviewed together with their influence in variational inference, focusing on how the inference task is simplified by their usage.
+
+The last chapters, focus on the utilization of different frameworks to experiment different models, which involve \emph{Gaussian mixture} and dimensionality reduction via \emph{principal components analysis} and \emph{variational auto-encoders}.
+
+The main sources used for writing this documents were~\cite{barber},~\cite{bishop2006pattern},~\cite{koller_friedman},~\cite{masegosa2019probabilistic} and~\cite{blei2017variational}. Citations are made in each section within the text.
+
+\section*{Main goals ans results achieved}
+
+The main goals of this bachelor's thesis were:
+\begin{enumerate}
+  \item to study statistical graphical models and the use of variational methods to solve inference and estimation problems,
+  \item describe how these can be used to build statistical models and resolve computational learning problems and
+  \item install variational inference frameworks in order to test their features and limitations, and apply them to real practical problems.
+\end{enumerate}
+
+The first two were completely successful. For the latter, different generative models are reviewed, such as, Gaussian mixture, latent Dirichlet allocation and principal component analysis. Explicit computational resolutions are given for the first two, whereas generalizations of the third are build using neural networks.
+
+The third goal was practically successful. Three different frameworks were selected, \texttt{InferPy}, \texttt{BayesPy} and \texttt{Scikit-Learn}, based on their capabilities for modeling and making inference. Yet, some of the experiments could not be executed due to limitations of the proper frameworks.

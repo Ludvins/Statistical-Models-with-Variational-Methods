@@ -1,0 +1,35 @@
+
+
+In this document I have presented an overview of variational inference and statistical graphical models, explaining how the latter affects the former. Variational methods have increased the possibilities of defining models where parameter Bayesian estimation can be performed.
+
+In order to build a Bayesian network structure from a given set of observations, the concepts of D-separation and D-connection turned to be of great use in order to develop the PC algorithm, which, from a fully connected graph, uses these concepts to erase links between nodes. Later, links are directed using each node's empirical mutual information.
+
+The Bayesian network structure has shown to highly simplify variational methods, for example, in the case of the EM algorithm, the M-step is reduced to assigning each factor of the parametric distribution to the variational one, leading to a simpler procedure than computing the parameter that maximizes the ELBO, which might not be possible.
+
+Conversely, the usage of conditionally conjugate models in the exponential family, transforms the iterative procedure of the CAVI algorithm into a parameter optimization strategy, where each parameter is updated using its distribution parameter function's expectation.
+
+These two concepts, conditionally conjugate models in the exponential family and Bayesian networks, are combined in the variational message passing algorithm, which simplifies each CAVI iteration to a message procedure where each node retrieves messages from its Markov blanket in order to update its own hyper-parameters. This leads to a fully automatized algorithm to perform Bayesian inference with hidden variables.
+
+Each of the used frameworks have shown advantages and disadvantages over the others, not only they perform inference using different techniques but also are limited in different ways.
+
+\section*{InferPy}
+\texttt{InferPy} has shown to be highly limited by the presence of categorical variables in the models, this is a consequence of using \texttt{tensorflow-probability} inference engine to perform gradient descent, as these variables cannot be optimized using this method.
+
+Conversely, \texttt{InferPy} presents high flexibility with model definition, allowing the user to build its own models with explicit relation between the variables. It is the only framework that permits \texttt{Keras} integration, which enables to use models as non-linear principal components analysis and variational auto-encoders.
+
+This framework does also provide a convenient way to inspect each variable posterior and generates samples from it.
+
+
+\section*{BayesPy}
+
+\texttt{BayesPy} is the only of the three \texttt{frameworks} that performs variational message passing as it inference algorithm. This has made it impossible to test on larger databases, as it internally stores much of the information to optimize the procedure, leading to high memory requisites.
+
+This framework has the same flexibility as \texttt{InferPy} providing a more comfortable syntax as it does not request the variational model to be defined.
+
+\texttt{BayesPy} does not provide a default function to access each component probability for a given point, and it must be retrieved from the variable posterior moments. The in-built print function for the Gaussian mixture model works perfectly on ``testing'' databases (constructed manually from a set of Gaussian distributions) but fails to represent all the components in \texttt{Breast Cancer} reduction.
+
+\section*{Scikit-Learn}
+
+\texttt{Scikit-Learn's BayesianGaussianMixture} does correctly perform EM on the given model, providing the user a totally functional API from where one may get any posterior information. A negative aspect is the lack of flexibility available compared to the other frameworks. It does allows the user to choose between several model parameters but not make any substantial change to the model.
+
+As being part of a \texttt{machine learning framework}, it provides the necessary functions to use the model in a classification problem, such as \texttt{score()} and \texttt{predict()}.
