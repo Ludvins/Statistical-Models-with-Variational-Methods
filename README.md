@@ -20,7 +20,7 @@ The main sources used for writing this documents were
 - *Probabilistic Models with Deep Neural Networks (Andrés R. Masegosa, Rafael Cabañas, Helge Langseth, Thomas D. Nielsen and Antonio Salmerón)*.
 - *Variational inference: A review for statisticians (David M Blei, Alp Kucukelbir and Jon D McAuliffe)*.
 
-# Brief Summary
+# Abstract
 
 In this document, the theoretical fundamentals of **statistical inference**, more precisely, **variational inference** are reviewed, making special emphasis on how the application of **graphical models** affects inference.
 
