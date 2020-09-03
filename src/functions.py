@@ -112,6 +112,7 @@ def print_posterior(z, y, save_path=None):
 
     if save_path != None:
         fig.savefig(save_path)
+    plt.show()
 
 
 def plot_mixture_distplot(

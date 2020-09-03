@@ -310,11 +310,11 @@ def Q_mixture(k, d):
     qpi = inf.Dirichlet(qpi_param, allow_nan_stats=False, validate_args=True, name="pi")
 
     # InverseGamma parameters and distribution.
-    qLambda_w = inf.Parameter(tf.ones([d, k]), name="qLambda_w")
-    qLambda_v = inf.Parameter(tf.ones([d, k]), name="qLambda_v")
+    qLambda_w = tf.math.softplus(inf.Parameter(tf.ones([d, k]), name="qLambda_w"))
+    qLambda_v = tf.math.softplus(inf.Parameter(tf.ones([d, k]), name="qLambda_v"))
     qLambda = inf.InverseGamma(
-        concentration=tf.math.softplus(qLambda_w) + 0.01,
-        scale=tf.math.softplus(qLambda_v) + 0.01,
+        concentration=qLambda_w,
+        scale=qLambda_v,
         validate_args=True,
         allow_nan_stats=False,
         name="Lambda",
