@@ -78,15 +78,9 @@ The model is created with the same number of components as different classes (2)
 
 Variable moments are also accessible via each variable \texttt{u} parameter, given this, we may learn each data-point component belonging posterior, using \texttt{Z's} first moment.
 
-The obtained results show a model that does not learn the two classes, despite that, almost all data-points belong to one of the components with high probability. The exact posterior for \(\bpi\) is \([6.5/570\  563.5/570]\).  Figure~\ref{fig:proba_original_bayes} shows each class component belonging, one may see that not proper densities are shown due to the fact that all benign points belong to the second component with probability 1.
+The obtained results show a model that does not learn the two classes, despite that, almost all data-points belong to one of the components with high probability. The exact posterior for \(\bpi\) is \([6.5/570\  563.5/570]\). Furthermore, the component assignment variable posterior sets the benign class in the second component with probability \(1\), with a \(0\) variance between datapoints. Given this, no component belonging density function can be computed as we did with \texttt{Scikit-Learn}.
 
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.9\textwidth]{tex/images/proba_original_bayes.pdf}
-  \caption{Component belonging density in original data.}\label{fig:proba_original_bayes}
-\end{figure}
-
-We may reduce the space to a two-dimensional one, using a variational auto-encoder, leading to a more uniform result (Figure~\ref{fig:proba_reduced_bayes}). This is more similar to the ones obtained using \texttt{Scikit-Learn}.
+We may reduce the space to a two-dimensional one using a variational auto-encoder. In this case, the posterior for \(\bpi\) is \([0.61\ 0.39]\), which is similar to the real one (\([0.62\ 0.38]\)). This gives the intuition that the first component models the more common class (benign). This is confirmed using the component belonging densities (Figure~\ref{fig:proba_reduced_bayes}). These are similar to the ones obtained using \texttt{Scikit-Learn}.
  
 \begin{figure}[h!]
   \centering

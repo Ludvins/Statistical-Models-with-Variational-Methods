@@ -12,14 +12,14 @@ These two concepts, conditionally conjugate models in the exponential family and
 
 The combination of artificial neural networks with variational methods, allows to consider non-linear generative models, generalizing existing models such as principal component analysis to more complex ones such as variational auto-encoders, which have shown better results in the studied cases compared to the classical approach.
 
-Each of the used frameworks have shown advantages and disadvantages over the others, not only they perform inference using different techniques but also are limited in different ways.
+The success of variational inference has been boosted by the development of software tools, the so called probabilistic programming languages, that have automatized the construction and learning of complex probabilistic models. In this work, we have studied and used some of them, specifically, three different \texttt{Python} frameworks have been used. Each of these have shown advantages and disadvantages over the others, not only they perform inference using different techniques but also are limited in different ways.
 
 \section*{InferPy}
-\texttt{InferPy} has shown to be highly limited by the presence of categorical variables in the models, this is a consequence of using \texttt{tensorflow-probability} inference engine to perform gradient descent, as these variables cannot be optimized using this method.
+\texttt{InferPy} has shown to be highly limited by the presence of categorical variables in the models. This is a consequence of using \texttt{TensorFlow-probability} inference engine to perform gradient descent, as these variables cannot be optimized using this method.
 
-Conversely, \texttt{InferPy} presents high flexibility with model definition, allowing the user to build its own models with explicit relation between the variables. It is the only framework that permits \texttt{Keras} integration, which enables to use models as non-linear principal components analysis and variational auto-encoders.
+Conversely, \texttt{InferPy} presents high flexibility with model definition, allowing the user to build its own models with explicit relation between the variables. It is the only framework that allows \texttt{Keras} integration, which enables to use models as non-linear principal components analysis and variational auto-encoders.
 
-This framework does also provide a convenient way to inspect each variable posterior and generates samples from it.
+This framework does also provide a convenient way to inspect each variable posterior and generate samples from it.
 
 
 \section*{BayesPy}
