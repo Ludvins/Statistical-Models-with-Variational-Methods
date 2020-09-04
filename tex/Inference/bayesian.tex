@@ -7,6 +7,7 @@ Bayesian inference attempts to determine the \emph{posterior distribution} \(P(\
   P(\btheta \mid  \bx) = \frac{P(\bx  \mid  \btheta)P(\btheta)}{P(\bx)}.
 \]
 
+Compared to maximum likelihood inference, Bayesian inference does never consider as impossible an event that really is not so. For example, consider a fair coin, and a total of \(10\) tosses all of them resulting heads. Maximum likelihood training would set the possibility of tails to be \(0\), in contrast, unless a \(0\) prior is used or the evidence sets it as impossible (none of these happened in real problems), Bayesian inference will always set the possibility of getting tails to a strictly positive value. This argument is fundamental in favor of Bayesian inference. In this sense, using maximum likelihood inference with small samples can be dangerous.
 
 \section{Example: discrete prior}
 

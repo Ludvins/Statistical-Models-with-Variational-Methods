@@ -138,7 +138,7 @@ independent Bernoulli trials. A discrete binary random variable \(X\) follows a
 \emph{binomial distribution} of parameters \(n \in \mathbb{N}\) and \(p \in
 [0,1]\), denoted as \(X \sim B(n, p)\) if and only if
 \[
-  P(x = k) = \binom{n}{k}p^k{(1-p)}^{n-k}.
+  P(k) = \binom{n}{k}p^k{(1-p)}^{n-k}.
 \]
 That is, \(X\) models the probability of getting \(k\) times an \(1\) outcome in a Bernoulli trial with parameter \(p\) in \(n\) total trials.
 
@@ -146,7 +146,7 @@ That is, \(X\) models the probability of getting \(k\) times an \(1\) outcome in
 \subsection*{Multinomial distribution}
 The multinomial distribution is a generalization of the binomial distribution which describes the result of a sequence of independent trials in a categorical distribution. A discrete random variable \(X\) follows a \emph{multinomial distribution} of parameters \(n \in \mathbb{N}\), \(\bm{p} = (p_{1},\dots,p_{K})\) such that \(\sum p_{k} = 1\)  if and only if
 \[
-  P(\bx =(x_{1},\dots,x_{K})) =
+  P(x_{1},\dots,x_{K}) =
   \begin{cases}
     \frac{n!}{x_{1}!\dots x_{K}!}\prod_{k=1}^{K}p_{k}^{x_{k}} & \text{if } \sum_{k}{x_{k}} = n\\
     0 & \text{otherwise}

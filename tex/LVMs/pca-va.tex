@@ -33,9 +33,7 @@ Whereas the PCA reduction is usually computed using either the singular value de
   \caption{Probabilistic PCA model}\label{fig:ppca}
 \end{figure}
 
-
-
-We assume the priors are normally distributed:
+We assume the priors follow an standard Gaussian distribution:
 \[
   Z_{n} \sim \mathcal{N}_{K}(0, I) \quad \forall n =1,\dots,N \quad \text{ and } \quad \bm{W} \sim \mathcal{N}_{K\times D}(0, I).
 \]
@@ -45,7 +43,7 @@ The data points are considered to be generated via a projection to the higher di
 \]
 The probabilistic model extends the classical one in the way that the latter assumes the noise is infinitesimally small, i.e, \(\sigma^{2} \to 0\). The \emph{expectation-maximization algorithm} (Chapter~\ref{ch:vi_em}) is commonly used to solve this variational inference problem.
 
-There exists other approaches for the PCA model, for example, another variable \(\delta\) might be considered in order to produce non-centered points, that is,
+There are other approaches for the PCA model, for example, another variable \(\delta\) might be considered in order to produce non-centered points, that is,
 \[
   \delta \sim \mathcal{N}_{D}(0, I) \quad \text{and} \quad   X_{n} \mid z_{n}, \bm{w}, \delta \sim \mathcal{N}(\bm{w}^{T}z_{n} + \delta, \sigma^{2}I)\quad \forall n = 1,\dots, N.
 \]
@@ -66,9 +64,9 @@ This problem is usually solved by applying a variant of the \emph{stochastic gra
 \[
   \bm{W}_{t+1} = \bm{W}_{t} + \gamma \nabla f(\bm{W}_{t}).
 \]
-Where \(\gamma \in \mathbb{R}^{+}\) is a small value. This technique uses the fact that \(- \nabla f(\bm{W})\) points to the local minimum nearest to\(\bm{W}\). This iterative method guarantees convergence to this local minimum, and, in case \(f\) is convex, it converges to the global minimum.
+Where \(\gamma \in \mathbb{R}^{+}\) is a small value. This technique uses the fact that \(- \nabla f(\bm{W})\) points towards the local minimum nearest to \(\bm{W}\). This iterative method guarantees convergence to this local minimum, and, in case \(f\) is convex, it converges to the global minimum.
 
-As the loss function is typically unknown, the gradient estimated using the given dataset. In comparison, \emph{stochastic gradient descent} computes an approximation of the gradient from a randomly selected subset of the data.
+As the loss function is typically unknown, the gradient is estimated using the given dataset. In comparison, \emph{stochastic gradient descent} computes an approximation of the gradient from a randomly selected subset of the data.
 
 The algorithm for computing this gradient is known as \emph{back-propagation} (\cite{goodfellow2016deep}), which is based on a recursive application of the chain-rule of derivatives. This can be implemented using the computational graph on the network.
 
@@ -140,16 +138,15 @@ As in the case of the PCA, the prior of the latent variable follows a centered G
 
 Let \(D\) be the dimension of the data \(X\) and \(K\) the dimension of the hidden variable \(Z\). Let \(f\) a single hidden layer ANN with input dimension \(Z\) and output dimension \(D\). Where the output is the mean value of the normal distribution under \(X\).
 
-As we are considering a single hidden layer, let \(\bm{W}_{0}\) and \(\bm{W}_{1}\) be the matrices governing that ANN and \(r\) the activation function, the ANN \(f\) is
+As we are considering a single hidden layer, let \(\bm{W}_{0}\) and \(\bm{W}_{1}\) be the matrices governing that ANN and \(r\) the activation function,
 \[
-  f(z_{n}) = \bm{W_{1}}(r(\bm{W}_{0}(z_{n})))),
+  f(z_{n}) = \bm{W_{1}}(r(\bm{W}_{0}(z_{n}))),
 \]
-
 and the data-points are then generated as
 \[
   X_{n}\mid Z_{n} \sim \mathcal{N}_{D}(f(Z_{n}), I) \quad \forall n \in 1,\dots,N.
 \]
-Where no noise is being considered this time.
+Where no noise is being considered this time. Only one activation function is used as the output builds the mean value of the distribution.
 
 \section{Variational auto-encoder}\label{sec:vae}
 
@@ -157,7 +154,7 @@ Where no noise is being considered this time.
 
 On one hand, the \(P\) model has the same structure as the non-linear PCA, and, on the other hand, the  distribution \(Q\) is defined with a reverse ANN, with input dimension \(D\) and output dimension \(K\).
 
-The neural networks can be defined to give an output of double the dimension, that is, the encoder would give a point in with \( 2K \) components, so the first \( K \) are used for the mean and the last \( K \) for the variance of the normal distribution.
+The neural networks are defined to give an output of double the dimension, that is, the encoder would give a point in with \( 2K \) components, so the first \( K \) are used for the mean and the last \( K \) for the variance of the Gaussian distribution.
 
 In conclusion, the parametric model assumes the data is generated as:
 \begin{enumerate}
@@ -165,7 +162,7 @@ In conclusion, the parametric model assumes the data is generated as:
     \[
     Z \sim \mathcal{N}_{K}(0,I).
     \]
-  \item The data-point is generated from a Gaussian distribution with mean the image of the neural network on the previous sample. Let \(f\) denote the neural network:
+  \item The data-point is generated from a Gaussian distribution with mean the image of the neural network defined in the NLPCA model. Let \(f\) denote the neural network:
     \[
     X \mid z \sim \mathcal{N}_{D}(f(z), I).
     \]
@@ -186,7 +183,7 @@ Conversely, the variational model supposes the hidden values are generated from 
     \]
 \end{enumerate}
 
-Where, as the standard deviation must have a positive value, we use a \texttt{softplus} function to smoothly approximate a rectifier function (\(\text{ReLU}(x) = \max(x,0)\)), this function is defined as
+As the standard deviation must have a positive value, we use a \texttt{softplus} function to smoothly approximate a rectifier function (\(\text{ReLU}(x) = \max(x,0)\)), this function is defined as
 \[
   \text{\texttt{softplus}}(x) = \log(1 + e^{x}).
 \]

@@ -1,5 +1,5 @@
 
-\emph{Latent Dirichlet allocation} or \emph{LDA} is a conditionally conjugate model (figure~\ref{fig:lda}) in natural language processing that allows set of observations to be explained by unobserved groups that explain why some parts of the data are similar.
+\emph{Latent Dirichlet allocation} or \emph{LDA} is a conditionally conjugate model (figure~\ref{fig:lda}) in natural language processing that allow set of observations to be explained by unobserved groups that analyze why some parts of the data are similar.
 
 For example, observations may be words in a document, which is a mixture of a small number of topics and each word's presence is attributable to one of the document's topics. Learning corresponds to extract information as the set of topics, their associated word probabilities, the topic of each word, and the particular topic mixture of each document.
 
@@ -28,11 +28,11 @@ LDA model assumes that each document is generated with the following generative 
         \begin{enumerate}
           \item Draw  a topic,
             \[
-            P(z_{d,n} \mid \theta_{d}) = \prod_{k=1}^{K}\theta_{d,k}^{\mathbb{I}[z_{d,n}=k]} \implies  (Z_{d,n} \mid \theta_{d}) \sim \text{Categorical}(\theta_d).
+            P(z_{d,n} \mid \theta_{d}) = \prod_{k=1}^{K}\theta_{d,k}^{\mathbb{I}[z_{d,n}=k]} \implies  Z_{d,n} \mid \theta_{d} \sim \text{Categorical}(\theta_d).
             \]
           \item Draw a word form the topic
             \[
-            P(w_{d,n}\mid z_{d,n}, \bm{\beta}) = \prod_{v=1}^{V}\beta_{z_{d,n},v}^{\mathbb{I}[w_{d,n}=v]} \implies (W_{d,n} \mid Z_{d,n},\bm{\beta}) \sim \text{Categorical}(\beta_{Z_{d,n}})
+            P(w_{d,n}\mid z_{d,n}, \bm{\beta}) = \prod_{v=1}^{V}\beta_{z_{d,n},v}^{\mathbb{I}[w_{d,n}=v]} \implies W_{d,n} \mid Z_{d,n},\bm{\beta} \sim \text{Categorical}(\beta_{Z_{d,n}})
             \]
         \end{enumerate}
     \end{enumerate}
@@ -99,7 +99,7 @@ Naming
 
 and \(\bm{\gamma} = \{\gamma_{d,n}\}_{d=1,\dots,D \ n=1,\dots,N_{d}}\), we get
 \[
-  (Z_{d,n} \mid w_{d,n}, \theta_{d}, \bm{\beta}) \sim Categorical(\bm{\gamma}).
+  Z_{d,n} \mid w_{d,n}, \theta_{d}, \bm{\beta} \sim Categorical(\bm{\gamma}).
 \]
 
 The complete conditional of the topic proportions \(\theta_{d}\) is only affected by the topic appearances, since \(z_{d,n}\) is an indicator vector, the \(k^{th}\) element of the parameter to this Dirichlet is the summation of the hyper-parameter \(\alpha\) and the number of words assigned to topic \(k\) in document \(d\):
@@ -111,11 +111,11 @@ The complete conditional of the topic proportions \(\theta_{d}\) is only affecte
 \]
 The complete conditional depends only on the topic assignments
 \[
-  (\theta_{d} \mid z_{d}) \sim \text{Dirichlet}_{K}\Big(\alpha + \sum_{n=1}^{N_{d}} \mathbb{I}[z_{d,n}=1],\dots, \alpha + \sum_{n=1}^{N_{d}} \mathbb{I}[z_{d,n}=K]\Big).
+  \theta_{d} \mid z_{d} \sim \text{Dirichlet}_{K}\Big(\alpha + \sum_{n=1}^{N_{d}} \mathbb{I}[z_{d,n}=1],\dots, \alpha + \sum_{n=1}^{N_{d}} \mathbb{I}[z_{d,n}=K]\Big).
 \]
 In words, the probability of a topic in document \(d\) is updated with the number of times that topic appears in the document. The complete conditional of a topic depends on the words and topics assignments of the entire collection
 
 Using a similar reasoning, the words distribution in a topic \(k\), \(\beta_{k}\), is updated with the number of appearances in all documents of the given topic.
 \[
-  (\beta_{k} \mid \bm{w}, \bz) \sim \text{Dirichlet}_{V}\Big(\eta + \sum_{d=1}^{D}\sum_{n=1}^{N_{d}}\mathbb{I}[z_{d,n} = k]\mathbb{I}[w_{d,n} = 1], \dots, \eta + \sum_{d=1}^{D}\sum_{n=1}^{N_{d}}\mathbb{I}[z_{d,n} = k]\mathbb{I}[w_{d,n} = V]\Big).
+  \beta_{k} \mid \bm{w}, \bz \sim \text{Dirichlet}_{V}\Big(\eta + \sum_{d=1}^{D}\sum_{n=1}^{N_{d}}\mathbb{I}[z_{d,n} = k]\mathbb{I}[w_{d,n} = 1], \dots, \eta + \sum_{d=1}^{D}\sum_{n=1}^{N_{d}}\mathbb{I}[z_{d,n} = k]\mathbb{I}[w_{d,n} = V]\Big).
 \]
