@@ -125,8 +125,7 @@ Where the last equality is given by the expected value of a Beta distribution.
 For \(P(d \mid a ,b)\) the situation is more complex, the simplest approach
 is to specify a Beta prior for each of the components of \(\btheta_{D}\).
 Focus on \(\theta_{2}\), notice the parameters \(\alpha\)
-and \(\beta\) we used before now do depend on \(A\) and \(B\), these
-are called \emph{hyperparameters}.
+and \(\beta\) we used before now do depend on \(A\) and \(B\):
 \[
   \theta_{2} \sim Beta\Big(\alpha_{D}(1,0) + \#(D = 1, A = 1, B = 0), \ \beta_{D}(1,0) + \#(D = 0, A = 1, B = 0)\Big).
 \]
@@ -247,7 +246,7 @@ the posterior is then
 \]
 Naming \(\bm{v_{j}} = \bm{u_{j}} + \#(X = i, pa(X) = \bm{j})\) and using the same argument as we did in the \emph{no parents} case with the normalization constants, the posterior is
 \[
-  (\bm{\theta} \mid \bx) \sim \prod_{j}\text{Dirichlet}(\bm{v_{j}}).
+  \bm{\theta} \mid \bx \sim \prod_{j}\text{Dirichlet}(\bm{v_{j}}).
 \]
 Denoting \(v_{i,j}\) the components of \(\bm{v_{j}}\), the marginal is
 \[

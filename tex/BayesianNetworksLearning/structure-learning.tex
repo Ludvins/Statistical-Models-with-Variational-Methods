@@ -55,7 +55,7 @@ This procedure results in the skeleton of the Bayesian network, no more edges wi
   \item The rest of links may oriented arbitrarily not
 creating cycles or colliders.
 \end{enumerate}
-The reasoning behind is the d-separation Theorem~\ref{th:d-separation}, if \(Y \notin S_{XZ}\) then \(X \bigCD Z \mid Y\). Otherwise (\(X \bigCI Z \mid Y\)) \(\{Y\}\) would be the d-separation set \(S_{XZ} = \{Y\}\) as they are checked from smaller to bigger ones, which we know is not the case. Therefore, using Theorem~\ref{th:d-separation}, \(Y\) must d-connect \(X\) and \(Y\), to achieve this, \(Y\)  must be set as a collider of the path. This is because, using the d-connection definition, the only known undirected path is \(U = X - Y - Z\) and no non-collider on \(U\) must belong to \(\{Y\}\).
+The reasoning behind is the d-separation Theorem~\ref{th:d-separation}, if \(Y \notin S_{XZ}\) then \(X \bigCD Z \mid Y\). Otherwise, they would be independent \(X \bigCI Z \mid Y\) and \(\{Y\}\) would be the d-separation set \(S_{XZ} = \{Y\}\) as they are checked from smaller to bigger ones. But \(Y \notin S_{XZ}\), therefore, using Theorem~\ref{th:d-separation}, \(Y\) must d-connect \(X\) and \(Y\), to achieve this, \(Y\)  must be set as a collider of the path. This is because, using the d-connection definition, the only known undirected path is \(U = X - Y - Z\) and no non-collider on \(U\) must belong to \(\{Y\}\).
 
 Conversely, if \(Y \in S_{XZ}\) and \(X \bigCI Z \mid S_{XZ}\) then \(S_{XZ}\) should d-separate them, that is, using any configuration that does not create a collider in \(S_{XZ}\).
 
@@ -80,7 +80,7 @@ Where \(MI(X;Y \mid Z) \geq 0\) and
 \[
 MI(X;Y \mid Z) = 0 \iff P_{X,Y \mid Z} = P_{X\mid Z} P_{Y \mid Z} \iff X\bigCI Y \mid Z.
 \]
-These values might be estimated using their empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\). Thus, a threshold must be established, This is commonly done by using a statistical test, taking into consideration that the empirical mutual information follows a chi-squared distribution under independence (\cite{kullback1997information}).
+These values might be estimated using their empirical distributions, however, this \emph{empirical} mutual information will be typically greater than \(0\) even when \(X\bigCI Y \mid Z\). Thus, a threshold must be established. This is commonly done by using a statistical test, taking into consideration that the empirical mutual information follows a chi-squared distribution under independence (\cite{kullback1997information}).
 
 A Bayesian approach would consist on comparing the model likelihood under independence and dependence hypothesis, let \((\bx, \by, \bz) = \{(x_{n}, y_{n}, z_{n})\}_{n=1,\dots, N}\) be the known data of each variable:
 \[

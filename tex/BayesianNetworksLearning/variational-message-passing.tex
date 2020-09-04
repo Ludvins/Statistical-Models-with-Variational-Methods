@@ -5,7 +5,7 @@ VMP automatically applies variational inference to a wide class of Bayesian netw
 
 The full set of variables is \( \bX = (X_1\dots,X_N) \), where both visible and hidden variables \( \bm{Z} = (Z_1,\dots,Z_J) \subset \bX\) are being considered with a variational distribution \( Q \) in the mean-field family
 \[
-   Q(\bZ) = \prod_{j=1}^J Q(z_j).
+   Q(\bz) = \prod_{j=1}^J Q(z_j).
 \]
 The optimized factor for a fixed term \(Q(z)\) is (as shown in the CAVI update~\ref{eq:cavi_update}) given by
 \begin{equation}\label{eq:vmp_update}
@@ -176,9 +176,8 @@ The messages between each node are therefore defined as the following (the full 
 \end{itemize}
 Notice that if a node \(X\) is observed, then
 \[
- \bm{T}_X(x) = \E{Q}{\bm{T}_X(x)}
+ \bm{T}_X(x) = \E{Q}{\bm{T}_X(x)}.
 \]
-and there is no need to compute the expectation.
 
 When a node \( Z \) has received all messages from its parents and children, we can compute the updated parameter \(\bm{\eta}^{new}_Z \) as
 \[

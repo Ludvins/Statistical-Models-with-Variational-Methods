@@ -1,7 +1,7 @@
 
 The \emph{expectation maximization (EM)} algorithm (\cite{dempster1977maximum,mclachlan2007algorithm, bishop2006pattern}) is a partially non-Bayesian, likelihoodist iterative method to find maximum likelihood estimates of parameters in statistical models where the model depends on latent variables.
 
-The algorithm consists of a two step iteration where the first optimizes the variational distribution element \(Q\)  and the second optimizes the set of parameters \(\btheta\). A fully Bayesian version would consider a probability distribution over the parameter, where the distinction between the two steps disappears. In that case, as many steps as latent variables (including the parameters) are needed per iteration, where each variable is optimized at a time. For \emph{graphical models} this is easy to compute as each variable's new variational distribution depends only on its \emph{Markov blanket}, so local \emph{message passing} can be used for efficient inference (Chapter~\ref{sec:vmp}).
+The algorithm consists of a two step iterative procedure where the first optimizes the variational distribution element \(Q\)  and the second optimizes the set of parameters \(\btheta\). A fully Bayesian version would consider a probability distribution over the parameter, where the distinction between the two steps disappears. In that case, as many steps as latent variables (including the parameters) are needed per iteration, where each variable is optimized at a time. For \emph{graphical models} this is easy to compute as each variable's new variational distribution depends only on its \emph{Markov blanket}, so local \emph{message passing} can be used for efficient inference (Chapter~\ref{sec:vmp}).
 
 Using the same notation as in Chapter~\ref{ch:vi_intro}, EM's iterative procedure increases the ELBO for the parametric marginal \(\log P(\bx \mid \btheta)\),
 \[
@@ -48,7 +48,7 @@ Then, the EM algorithm consists on:
   \caption{Expectation Maximization Algorithm}\label{alg:em}
 \end{algorithm}
 
-In the specific situation where \(\bx\) consists on \(N\) observations of the same variable \(X\) and each observation of \(X\) is related with a single hidden variable \(Z\), for example, the case of a mixture distribution, the following considerations might be taken:
+In the specific situation where \(\bx\) consists on \(N\) observations of the same variable \(X\) and each observation of \(X\) is related with a single hidden variable \(Z\), for example, the case of a mixture distribution (a type of model we will review later in this document), the following considerations might be taken:
 \begin{itemize}\setlength{\itemsep}{0.2cm}
   \item Observations are treated as observations of i.i.d variables \(X_{1},\dots, X_{N}\) and \(Z_{1},\dots,Z_{N}\).
   \item The variational distribution \(Q\) now factorizes over the hidden variables as it is known that they are independent from each other:
@@ -72,19 +72,19 @@ In the specific situation where \(\bx\) consists on \(N\) observations of the sa
 
 The procedure to optimize the parameter consists in two steps:
 \begin{itemize}\setlength{\itemsep}{0.2cm}
-  \item \textbf{E-step}. For fixed \(\theta\), find the distributions that maximize the above bound, i.e, choose \(Q^{new}(z_{n}) = P(z_{n} \mid x_{n} , \theta) \ \forall n = 1,\dots,N\).
-  \item \textbf{M-step}. For a fixed distribution \(Q\), find the parameter \(\theta\) that maximizes the bound:
+  \item \textbf{E-step}. For fixed \(\btheta\), find the distributions that maximize the above bound, i.e, choose \(Q^{new}(z_{n}) = P(z_{n} \mid x_{n} , \btheta) \ \forall n = 1,\dots,N\).
+  \item \textbf{M-step}. For a fixed distribution \(Q\), find the parameter \(\btheta\) that maximizes the bound:
     \[
-    \theta^{new} = \argmax_{\theta}\sum_{n=1}^{N}\E{Q(\bz)}{\log{P(z_{n}, x_{n} \mid \theta)}}.
+    \theta^{new} = \argmax_{\btheta}\sum_{n=1}^{N}\E{Q(\bz)}{\log{P(z_{n}, x_{n} \mid \btheta)}}.
     \]
 \end{itemize}
 
 \begin{exampleth}
-  Consider a single variable \(X\) with \(Dom(X) = \mathbb{R}\) and a single hidden variable \(Z\) with \(dom(Z) = \{1,2\}\). Let the conditional probability be:
+  Consider a single variable \(X\) with \(Dom(X) = \mathbb{R}\) and a single hidden variable \(Z\) with \(dom(Z) = \{1,2\}\). Let the conditional probability be
   \[
     P(x \mid z, \theta) = \frac{1}{\sqrt{\pi}}e^{{-(x - \theta z)}^{2}},
   \]
-  and \(P(Z = 1) = P(Z = 2) = 0.5\). Suppose an observation \(x = 2.75\) we want to optimize the parameter \(\theta\) in the marginal
+  and \(P(Z = 1) = P(Z = 2) = 0.5\). Suppose an unique observation \(x = 2.75\). We want to optimize the parameter \(\theta\) in the marginal
   \[
     P(X = 2.75 \mid \theta) = \sum_{z \in \{1,2\}} P(X = 2.75 \mid z, \theta) P(z) = \frac{1}{2\sqrt{\pi}}\big( e^{{-(2.75 - \theta)}^{2}} + e^{{-(2.75 - 2\theta)}^{2}} \big).
   \]
@@ -116,8 +116,6 @@ The procedure to optimize the parameter consists in two steps:
 
 
 \section{EM increases the marginal likelihood}
-
-Not only the EM algorithm does increase the lower bound in each iteration but also the marginal likelihood.
 
 \begin{proposition}
   The log likelihood \(P(\bx \mid \btheta)\) is not decreased in each iteration of the EM algorithm, i.e, if \(\btheta^{old}\) and \(\btheta^{new}\) are two consecutive values of the parameter, EM verifies:
@@ -179,7 +177,7 @@ The conditional \(x_{n} \mid z_{n}, \btheta\) follows a Binomial distribution:
 \]
 and the probability of choosing a coin is \(P(z_{n}=A) = P(z_{n}=B)=0.5 \; \forall n =1,\dots,N\).
 
-The lower bound is:
+The lower bound takes the form:
 \[
   \sum_{n=1}^{N}\log{P(x_{n} \mid \bm{\theta})} \geq \sum_{n=1}^{N}-\E{Q(z_{n})}{\log{Q(z_{n})}} + \E{Q(z_{n})}{\log{P(z_{n}, x_{n} \mid \bm{\theta})}}.
 \]
@@ -217,12 +215,11 @@ deriving and setting to \(0\) we get the following maximum,
 \[
   \sum_{n=1}^{N}Q(z_{n}=A)\Big(\frac{x_{n}}{\theta_{A}} - \frac{M - x_{n}}{1- \theta_{A}}\Big) = 0 \iff \theta_{A} = \sum_{n=1}^{N}Q(z_{n}=A)\frac{x_{n}}{M}.
 \]
-It is a maximum and not a minimum because
+Which is a maximum because the second derivative is
 \[
-  \log P(x_{n}\mid z_{n},(0,0)) = \log P(x_{n} \mid z_{n}, (1,1)) = \log 1 = 0,
-\]
-and the updates of \(A\) and \(B\) are independent. The same argument is valid for \(\theta_{B}\).
-
+   \sum_{n=1}^{N}Q(z_{n}=A)\Big(\frac{-x_{n}}{\theta_{A}^{2}} - \frac{M - x_{n}}{(1- \theta_{A})^{2}}\Big)
+ \]
+ and \(-x_{n}, M-x_{n} \leq 0 \ \forall n = 1,\dots, N\).
 \begin{figure}
   \centering
   \includegraphics[width=0.7\textwidth]{tex/images/mixture}
@@ -255,7 +252,7 @@ We are now using the figure~\ref{fig:mixture} to set the example in a numerical 
 
 Making a partial \textbf{M-step} consist on not using the optimal parameter for the energy term, but using one with just higher energy. Finding this values can be easier than finding the optimal one and convergence still follows as the only requirement to make the likelihood increase was to increase the lower bound.
 
-When studying the increase on the likelihood, we supposed that the optimal \textbf{E-step} was being used. It cannot be guarantee that a partial step would increase the likelihood in this case, even though it does increase the lower bound.
+When studying the increase on the likelihood, we supposed that the optimal \textbf{E-step} was being used. It cannot be guarantee that a partial E-step would increase the likelihood in this case, even though it may increase the lower bound.
 
 Another important factor is, that the EM algorithm assumes that the energy term is possible to calculate, which may not be. As an approach to solve this situation, we can set a class of distributions \(\mathcal{Q}\), where the term can be computed, and minimize the Kullback-Leibler divergence between \(P(\bz \mid \bx, \theta)\) and a distribution \(Q \in \mathcal{Q}\), so we pick a distribution such that
 \[

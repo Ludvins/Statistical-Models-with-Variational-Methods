@@ -1,15 +1,15 @@
 
 El campo de la \emph{inferencia variacional} se encuentra en la intersección entre la \emph{inferencia estadística}, la \emph{teoría de grafos} y el \emph{aprendizaje automático}. El trabajo se divide en un estudio \textbf{teórico} de la materia (partes 1 a 6), y una aplicación \textbf{práctica} de los modelos y técnicas estudiados (parte 7).
 
-La parte teórica describe los conceptos y técnicas utilizadas en la inferencia variacional, apoyándose en un razonamiento matemático de los mismos. En concreto:
+La parte \textbf{teórica} describe los conceptos y técnicas utilizadas en la inferencia variacional, apoyándose en un razonamiento matemático de los mismos. En concreto:
 
 \textbf{Parte 1:} En esta parte se describen los conceptos básicos de la teoría de la probabilidad (capítulo 1), entre los cuales se encuentran los conceptos de \emph{variable aleatoria}, \emph{distribución de probabilidad} e \emph{independencia}. También se definen aquellas distribuciones de probabilidad, discretas y continuas, que se vayan a utilizar a lo largo del documento (capítulo 2), resaltando aquellas propiedades que vayan a ser de utilidad.
 
 Se introduce la definición de la \emph{divergencia de Kullback-Leibler} que juega un papel central en este documento. Finalmente, el tercer capítulo introduce la teoría de grafos, dirigidos y no dirigidos, junto con aquellas propiedades necesarias en \emph{modelos gráficos}.
 
-\textbf{Parte 2:} En esta parte se discute el concepto de \emph{inferencia estadística}, destacando las principales diferencias entre dos enfoques distintos: el de \emph{estimación de máxima verosimilitud} (capítulo 5), que busca encontrar aquellos valores de los parámetros que maximizan la probabilidad de los datos se generen a partir de estos, y la \emph{inferencia Bayesiana} (capítulo 6) que se basa en la utilización del teorema de Bayes y una distribución de probabilidad a ``priori'' sobre dichos parámetros.
+\textbf{Parte 2:} En esta parte se discute el concepto de \emph{inferencia estadística}, destacando las principales diferencias entre dos enfoques distintos: el de \emph{estimación de máxima verosimilitud} (capítulo 5), que busca encontrar aquellos valores de los parámetros que maximizan la probabilidad de que los datos se generen a partir de estos, y la \emph{inferencia Bayesiana} (capítulo 6) que se basa en la utilización del teorema de Bayes y una distribución de probabilidad a ``priori'' sobre dichos parámetros.
 
-En el primer enfoque llegamos a la conclusión de que la distribución de máxima verosimilitud coincide con la distribución empírica cuando no consideramos restricciones. Además, vemos que la estimación de máxima verosimilitud es un caso concreto de una técnica de inferencia Bayesiana, \emph{máximo a posteriori}, la cual busca aquellos valores de los parámetros que mejor se ajustan a los datos.
+En el primer enfoque llegamos a la conclusión de que la distribución de máxima verosimilitud coincide con la distribución empírica cuando no consideramos restricciones. Además, el hecho de no considerar distribuciones a ``priori'', puede llevar a resultados erróneos cuando se utilizan muestras pequeñas. Por otro lado, vemos que la estimación de máxima verosimilitud es un caso concreto de una técnica de inferencia Bayesiana, \emph{máximo a posteriori}, la cual busca aquellos valores de los parámetros que mejor se ajustan a los datos.
 
 Como último, en el capítulo 7 se describen las tres formas de modelar \emph{datos perdidos}, a saber, \emph{completamente aleatorio}, \emph{aleatorio} y \emph{no aleatorio}, expresando matemáticamente como afecta cada uno de ellos a la inferencia.
 
@@ -31,19 +31,19 @@ Como ya dijimos antes, la distribución de probabilidad sin restricciones que ma
 
 Se exponen las ventajas que provee las estructura de red Bayesiana a la tarea de inferencia, haciendo especial énfasis en cómo se ve alterado el algoritmo \emph{EM} (capítulo 19), donde uno de sus pasos se ve completamente alterado y simplificado gracias a la red.
 
-En el capítulo 20, se introduce el algoritmo de \emph{paso de mensajes variacional}, como aplicación del algoritmo \emph{CAVI} a un modelo probabilístico ligado a una red Bayesiana, donde cada factor se encuentra en la familia exponencial. De esta forma, un procedimiento de paso de mensajes entre los nodos permite simplificar y automatizar la inferencia.
+En el capítulo 20, se introduce el algoritmo de \emph{paso de mensajes variacional}, una aplicación del algoritmo \emph{CAVI} a un modelo probabilístico ligado a una red Bayesiana donde cada factor se encuentra en la familia exponencial. De esta forma, un procedimiento de paso de mensajes entre los nodos permite simplificar y automatizar la inferencia.
 
 \textbf{Parte 6:} En esta parte se revisa el modelo gráfico correspondiente a la \emph{mixtura de Gaussianas} (capítulo 21) y se estudian 2 modelos gráficos conocidos, \emph{asignación latente de Dirichlet} (capítulo 22) y \emph{análisis de componentes principales probabilístico} (capítulo 23).
 
-En el primer modelo, que estudia la ocurrencia de palabras y temas en un conjunto de documentos, se establece el modelo generativo de los datos y el modelo variacional, estudiando las actualizaciones de parámetros que el algoritmo \emph{CAVI} lleva a cabo en cada iteración.
+Respecto a el primer modelo, que estudia la ocurrencia de palabras y temas en un conjunto de documentos, se establece el modelo generativo de los datos y el modelo variacional, estudiando las actualizaciones de parámetros que el algoritmo \emph{CAVI} lleva a cabo en cada iteración.
 
-El segundo modelo, basado en una reducción de dimensionalidad, extiende el \emph{análisis de componentes principales} clásico, donde se estudia una transformación lineal entre el espacio observado y el espacio donde se supone la reducción, a un ámbito probabilístico. Normalmente, el problema clásico se resuelve calculando la descomposición de valores propios de la matriz de covarianza de los datos. Por otro lado, el modelo probabilístico se resuelve mediante el algoritmo EM.
+El segundo modelo, basado en una reducción de dimensionalidad, extiende el \emph{análisis de componentes principales} clásico, donde se estudia una transformación lineal entre el espacio observado y el espacio donde se supone la reducción, a un ámbito probabilístico. Normalmente, el problema clásico se resuelve calculando la descomposición de valores propios de la matriz de covarianza de los datos. Por otro lado, el modelo probabilístico se resuelve comúnmente mediante el algoritmo EM.
 
 El modelo probabilístico se extiende al caso no lineal mediante el uso de redes artificiales neuronales en lugar de aplicaciones lineales entre los espacios.
 
 Finalmente se puede considerar que el modelo variacional presenta otra red neuronal, que transforma los datos del espacio observado al oculto, dando lugar al modelo conocido como \emph{codificadores automáticos variacionales}, formado por dos redes neuronales, un \emph{codificador} y un \emph{decodificador}.
 
-Por otro lado, la parte práctica estudia la aplicación de las técnicas estudiadas a algunos modelos vistos, concretamente aquellos relacionados con la reducción de dimensionalidad y la mixtura de Gaussianas. Esto se desarrolla en la parte 7:
+Por otro lado, la parte \textbf{práctica} estudia la aplicación de las técnicas estudiadas a algunos modelos vistos, concretamente aquellos relacionados con la reducción de dimensionalidad y la mixtura de Gaussianas.
 
 \textbf{Parte 7:} El objetivo de esta parte es probar las limitaciones y funcionalidades de tres \textit{frameworks} de \texttt{Python}, a saber \texttt{InferPy}, \texttt{BayesPy} y \texttt{Scikit-Learn} al usarlos en conjuntos de datos reales. El primero de estos se caracteriza por permitir la integración de modelos con redes neuronales artificiales, lo cual permite modelar análisis de componentes principales no lineal y codificadores automáticos variacionales de forma sencilla. Por otro lado, \texttt{BayesPy} se caracteriza por la utilización de \emph{paso de mensajes variacional} como método de inferencia. Por último, \texttt{Scikit-Learn} es una librería de \emph{machine learning} de propósito general, donde la clase \emph{BayesianGaussianMixture} permite aprender modelos de mixtura de Gaussianas y utilizar el algoritmo EM para realizar inferencia.
 

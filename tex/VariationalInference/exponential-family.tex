@@ -106,7 +106,7 @@ A step by step reasoning would be:
 
 \section{CAVI in conditionally conjugate models}~\label{sec:cavi_ccm}
 
-Consider the following situation where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family, using an exponential family distribution for the marginal \(P(z_{n} \mid \bm{z}_{\backslash n}, \bx)\):
+Set aside conditionally conjugate models and consider the following situation where we fit a distribution \(Q(\bm{z}) = \prod_{n=1}^{N} Q_{n}(z_{n})\) in the mean-field family, using an exponential family distribution for the marginal \(P(z_{n} \mid \bm{z}_{\backslash n}, \bx)\):
 \[
   P(z_{n} \mid \bm{z}_{\backslash n}, \bx) = h(z_{n})\exp \Big( {\eta_{n}(\bm{z}_{\backslash n}, \bx)}^{T}T(z_{n}) - \psi(\bm{z}_{\backslash n}, \bx) \Big).
 \]
@@ -167,7 +167,7 @@ The calculations are the following:
    ELBO(Q(\btheta, \bz)) &= \E{Q(\btheta, \bz)}{\log{P(\btheta, \bz, \bx)}} - \E{Q(\btheta, \bz)}{\log{Q(\btheta, \bz)}}\\
   &= \E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\log P(\btheta, \bz, \bx)}}- \E{Q(\btheta, \bz)}{\log{Q(\btheta, \bz)}}\\
   &= \E{Q(\btheta \mid \lambda)}{\log P(\btheta)} + \E{Q(\bz \mid \bm{\gamma})}{\E{Q(\btheta \mid \lambda)}{\sum_{n=1}^{N} \log P(z_{n}, x_{n} \mid \btheta)}}\\
-  &- \E{Q(\btheta, \bz)}{\log{Q(\btheta, \bz)}}
+  &\quad - \E{Q(\btheta, \bz)}{\log{Q(\btheta, \bz)}}
   \end{aligned}
 \]
 The first term is

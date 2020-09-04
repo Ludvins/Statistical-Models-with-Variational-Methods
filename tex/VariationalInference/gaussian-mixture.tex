@@ -9,16 +9,16 @@ A \emph{Gaussian mixture model} is a latent variable model where the data is ass
   \centering
   \begin{tikzpicture}
     \begin{axis}[every axis plot post/.append style={
-        mark=none,domain=-2:5,samples=50,smooth}, % All plots: from -2:2, 50 samples, smooth, no marks
-      axis x line*=bottom, % no box around the plot, only x and y axis
-      axis y line*=left, % the * suppresses the arrow tips
-      enlargelimits=upper] % extend the axes a bit to the right and top
+        mark=none,domain=-2:5,samples=50,smooth},
+      axis x line*=bottom,
+      axis y line*=left,
+      enlargelimits=upper]
       \addplot {gauss(0,0.5)};
       \addplot {gauss(2,0.75)};
       \addplot {gauss(3, 0.4)};
     \end{axis}
   \end{tikzpicture}
-  \caption{One-dimensional Gaussian mixture with three clusters. Those are \(\mathcal{N}(0, 0.5)\), \(\mathcal{N}(2, 0.75)\) and \(\mathcal{N}(3, 0.4)\).}
+  \caption{One-dimensional Gaussian mixture with three clusters or components. Those are \(\mathcal{N}(0, 0.5)\), \(\mathcal{N}(2, 0.75)\) and \(\mathcal{N}(3, 0.4)\).}
 \end{figure}
 
 

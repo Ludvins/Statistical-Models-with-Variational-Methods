@@ -1,8 +1,8 @@
-As both hidden variables and Bayesian networks are used, the following notation from~\cite{barber} is used: \(\bX = (\bm{V}, \bm{H}) = (X_{1}, \dots , X_{M})\) is the set of variables partitioned in visible and hidden. Let \(\{\bv^{1}, \dots, \bv^{N}\}\) be the set of observations of the visible variables. For each data-point \(\bx^{n} = (\bv^{n}, \bh^{n})\) decomposes into visible and hidden parts.
+The expectation-maximization algorithm is highly simplified by the use of Bayesian network structure in models with the following elements: as both hidden variables and Bayesian networks are used, the following notation from~\cite{barber} is used: \(\bX = (\bm{V}, \bm{H}) = (X_{1}, \dots , X_{M})\) is the set of variables partitioned in visible and hidden. Let \(\{\bv^{1}, \dots, \bv^{N}\}\) be the set of observations of the visible variables. For each data-point \(\bx^{n} = (\bv^{n}, \bh^{n})\) decomposes into visible and hidden parts.
 
 Remember the ELBO is:
 \[
-  \text{ELBO}(Q) = \underbrace{\sum_{n=1}^{N}\E{Q(\bh^{n})}{\log{Q(\bh^{n})}}}_{Entropy} + \underbrace{\sum_{n=1}^{N}\E{Q(\bh^{n})}{\log{P(\bv^{n}, \bh^{n} \mid \btheta)}}}_{Energy}.
+  \text{ELBO}(Q) = \underbrace{- \sum_{n=1}^{N}\E{Q(\bh^{n})}{\log{Q(\bh^{n})}}}_{Entropy} + \underbrace{\sum_{n=1}^{N}\E{Q(\bh^{n})}{\log{P(\bv^{n}, \bh^{n} \mid \btheta)}}}_{Energy}.
 \]
 Where the steps of the EM algorithm are:
 \begin{itemize}
@@ -11,9 +11,9 @@ Where the steps of the EM algorithm are:
 \end{itemize}
 
 \begin{algorithm}[t]
-  \SetAlgoLined\KwData{A dataset \(\bx\), a distribution \(P(\bx, \bz \mid \btheta)\) that factorizes in a Bayesian network.}
-  \KwResult{The maximum likelihood estimates for \(P(x_{m}\mid pa(x_{m})), m=m,\dots,M\), }
-  Initialize \( P(x_{m}\mid pa(x_{i})), m=1,\dots,M \)\;
+  \SetAlgoLined\KwData{A dataset \(\{\bv^{1},\dots, \bv^{N}\}\), a distribution \(P(\bx \mid \btheta) = P(\bv, \bh \mid \btheta)\) that factorizes in a Bayesian network.}
+  \KwResult{The maximum likelihood estimates for \(P(x_{m}\mid pa(x_{m})), m=1,\dots,M\), }
+  Initialize \( P(x_{m}\mid pa(x_{m})), m=1,\dots,M \)\;
   \(t \leftarrow 0\)\;
   \While{Convergence stop criteria}{
     \For{\(n=1\) to \(N\)  }{
@@ -55,10 +55,10 @@ as
     &= \frac{1}{N}\sum_{n = 1}^{N}\E{Q_{old}(\bh^n)} {\log{P(\bx^{n} \mid \btheta)}},
   \end{aligned}
 \]
-In the other hand, using the Bayesian network structure and Proposition~\ref{prop:expectation_over_marginal}:
+On the other hand, using the Bayesian network structure and Proposition~\ref{prop:expectation_over_marginal}:
 \[
   \begin{aligned}
-    \E{Q(x)}{\log{P(\bx \mid \btheta)}} &= \sum_{m = 1}^{M}\E{Q(\bx)}{\log{P(x_{m} \mid pa(x_{m}), \btheta)}}\\
+    \E{Q(\bx)}{\log{P(\bx \mid \btheta)}} &= \sum_{m = 1}^{M}\E{Q(\bx)}{\log{P(x_{m} \mid pa(x_{m}), \btheta)}}\\
     &= \sum_{m = 1}^{M}\E{Q(x_{m}, pa(x_{m}))}{\log{P(x_{m} \mid pa(x_{m}, \btheta))}}\\
     &= \sum_{m = 1}^{M}\E{Q(pa(x_{m}))}{ \E{Q(x_{m}\mid pa(x_{m}))}{ \log{P(x_{m} \mid pa(x_{m}), \btheta)}}}.
 \end{aligned}

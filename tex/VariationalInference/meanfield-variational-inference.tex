@@ -83,7 +83,7 @@ Maximizing the ELBO is equivalent to minimize the given Kullback-Leibler diverge
 
 Notice that the proportionality restriction is enough to fully determine the distribution as its integral is normalized. Equivalently, the distribution is proportional to
 \begin{equation}\label{eq:cavi_update}
-    Q_{m}^{new}(z_{m}) \propto \exp{\E{Q_{\backslash m}}{\log{P(z_{m}, \bm{z}_{\backslash m}, \bx)}}}.
+    Q_{m}^{new}(z_{m}) \propto \exp{\E{Q_{\backslash m}}{\log{P(z_{m}, \bm{z}_{\backslash m}, \bx)}}} = \exp{\E{Q_{\backslash m}}{\log{P(\bz, \bx)}}}.
 \end{equation}
 
 As the ELBO is generally a non-convex function and the CAVI algorithm converges to a local optimum, the initialization values of the algorithm play an important role on its performance. The convergence criteria is usually a threshold for the ELBO or a fixed amount of iterations.

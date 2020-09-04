@@ -40,12 +40,12 @@ it may end up being a fully-connected ``cascade''\footnote{This term comes from 
  \]
 
 Bayesian Networks are good for encoding \emph{conditional independence} over the
-variables, but are not for encoding dependence. For example, with the following
+variables, but are not for encoding dependence. For example, the following
 network
 \[
 P(x,y) = P(y\mid x)P(x).
 \]
-represented as \(x \to y\) in a DAG, it may appear to encode dependence between both variables but the conditional \(P(y\mid x)\) could happen to equal \(P(y)\), giving \(P(x,y) = P(x)P(y)\).
+represented as \(x \to y\) in a DAG, may appear to encode dependence between both variables but the conditional \(P(y\mid x)\) could happen to equal \(P(y)\), giving \(P(x,y) = P(x)P(y)\).
 
 How could we check if two variables are conditionally independent given a
 Bayesian network? For example in Figure~\ref{fig:relations}, \(X_1 \bigCI
@@ -67,8 +67,7 @@ X_2 \mid X_4\) as
 
 \section{D-separation and D-connection}
 
-Now we are going to define two central concepts to determine conditional
-independence in any Bayesian network, these are \emph{d-connection} and \emph{d-separation}.
+There are two central concepts that determine conditional independence in any Bayesian network, these are \emph{d-connection} and \emph{d-separation}.
 
 \begin{definition}
   Let \(G\) be a DAG where \(\bm{X}, \bm{Y} \text{ and } \bm{Z}\)
@@ -122,11 +121,10 @@ on \(\bm{Z}\) in all probability distributions that \(G\) may represent.
 \end{theorem}
 
 The Bayes Ball algorithm (\cite{bayes_ball}) provides a linear time complexity
-algorithm that computes conditional independent using this theorem.
-
+algorithm that computes conditional independence using this theorem.
 
 In cases where the Bayesian networks contains i.i.d nodes that are
-essentially the same but repeated a number of times, the \emph{plate notation} is commonly used to represent this nodes in a compacted manner (Figure~\ref{fig:plate_notation}).
+essentially the same but repeated a number of times, the \emph{plate notation} is commonly used to represent this nodes in a compacted format (Figure~\ref{fig:plate_notation}).
 
 \begin{figure}[t]
 \centering
@@ -257,13 +255,14 @@ One may notice that, the numerator \(P(\bx, \by)\) can be used to compute the de
 The inference problem in graphical models turns to be \(\mathcal{NP}-\)hard, which, assuming the Exponential Time Hypothesis (\cite{impagliazzo1999complexity}), means that the worst case requires exponential time. Much worse is the fact that \emph{approximate inference} is still \(\mathcal{NP}-\)hard (\cite{koller_friedman} Section 9.1).
 
 \begin{algorithm}[t]
-  \SetAlgoLined\KwData{Set of factors \(\bm{\phi}\) in which the joint distribution factorizes, set of variables to be eliminates \(\bX\) and an ordering on \(\bX=(X_{1},\dots,X_{N})\) such that the set is ordered \(X_{i} < X_{j} \iff i < j\).}
+  \SetAlgoLined\KwData{Set of factors \(\bm{\phi}\) in which the joint distribution factorizes, set of variables to be eliminated \(\bX\) and an ordering on \(\bX=(X_{1},\dots,X_{N})\) such that the set is ordered \(X_{i} < X_{j} \iff i < j\).}
   \KwResult{A factor \(\psi^{*}\) with the variables eliminated.}
   \For{\(n = 1,\dots,N\) \tcp*{Eliminate variable \(X_{n}\) }}{
-    Let \(\bm{\phi} '\) be the set of factors that do depend on \(X_{n}\)\;
+    Let \(\bm{\phi} '\) be the set of factors in \(\bm{\phi}\) that do depend on \(X_{n}\)\;
+    Define \(\bm{\phi}'' = \bm{\phi} - \bm{\phi}'\)\;
     \(\psi = \prod_{\phi \in \bm{\phi}'} \phi\)\tcp*{Define the product of factors \(\phi\)}
     \(\tau = \sum_{X_{n}} \phi\)\tcp*{Define the sum-product factor \(\tau\)}
-    \(\bm{\phi} = \bm{\phi}' \cup \tau\)\tcp*{Append the new factor}
+    \(\bm{\phi} = \bm{\phi}'' \cup \tau\)\tcp*{Append the new factor}
   }
   \(\phi^{*} = \prod_{\phi \in \bm{\phi}} \phi\)\;
   \KwRet{\(\phi^{*}\)}\;
