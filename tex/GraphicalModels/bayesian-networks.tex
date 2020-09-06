@@ -2,7 +2,7 @@
 Given a set of variables \(\bX = (X_{1},\dots,X_{N})\), \emph{Bayesian networks} might be defined either as a probability distribution of a certain form or a DAG whose nodes represent these variables and links an independence constraint. Both ideas are present in the following definition.
 
 \begin{definition}
-  A \emph{belief network or Bayesian network} is a pair \((G,P)\) formed by a DAG \(G\) and  joint probability distribution \(P\) such that, there is a correspondence between variables and nodes such as:
+  A \emph{belief network or Bayesian network} is a pair \((G,P)\) formed by a DAG \(G\) and  joint probability distribution \(P\) such that there is a correspondence between variables and nodes verifying:
   \[
     P(x_{1},\dots,x_{N}) = \prod_{n=1}^{N}P(x_{n}\mid pa(x_{n})).
   \]

@@ -9,9 +9,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-import random
 
 sns.set()
+import random
 import warnings
 from sklearn.svm import SVC
 
@@ -42,9 +42,12 @@ def test_separability(X, z, y):
     - z: Hidden space dataset.
     - y: Labels.
     """
+    # Declare SVM
     svm = SVC()
+    # Fit over original data
     svm.fit(X, y)
     print("SVM score in observed space:", svm.score(X, y))
+    # Fit over reduced data
     svm.fit(z, y)
     print("SVM score in hidden space:", svm.score(z, y))
 
@@ -64,7 +67,10 @@ def print_loss_function(
     - L: Array of loss function values
     - save_path: path to save the image.
     """
+    # Set plotting range to fit the data
     plt.plot(range(len(losses)), losses)
+
+    # Set axis labels and title
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -85,8 +91,11 @@ def print_class_pie_diagram(y, labels, save_path=None):
     - labels: Set of label names.
     - save_path: path to save the image.
     """
+    # Count class proportion
     prop_class = y.value_counts(normalize=True)
+    # Create plotting object
     figureObject, axesObject = plt.subplots()
+    # Plot pie with class percentage
     axesObject.pie(prop_class * 100, labels=labels, autopct="%1.2f", startangle=180)
     axesObject.axis("equal")
     plt.title("Class distribution")

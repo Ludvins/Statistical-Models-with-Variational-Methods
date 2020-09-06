@@ -255,10 +255,11 @@ def Q_vae(k, l, d):
 @inf.probmodel
 def mixture(k, d):
     """
-    Gaussian mixture model.
+    Gaussian mixture model. Validation arguments are used to check the model learning.
     Arguments:
     - k: number of components.
     - d: observed space dimensionality.
+
     """
 
     # Pi models the categorical parameter ruling each component probability.
@@ -299,7 +300,7 @@ def mixture(k, d):
 @inf.probmodel
 def Q_mixture(k, d):
     """
-    Gaussian mixture variational model.
+    Gaussian mixture variational model. Validation arguments are used to check the model learning.
     Arguments:
     - k: number of components.
     - d: observed space dimensionality.

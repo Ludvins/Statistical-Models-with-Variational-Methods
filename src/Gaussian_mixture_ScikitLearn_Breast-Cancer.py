@@ -7,7 +7,7 @@
 
 # The mixture is componed by the same number of components as classes has the dataset.
 # An optimal outcome would be that each class is modeled by one component.
-# In order to test this, we are using each datapoint posterior probability to belong
+# In order to test this, we are using each datapoint posterior probability of belonging
 # to each component to compute a density function over each class and component.
 
 
