@@ -107,7 +107,6 @@ In the 3 cases the loss function (-ELBO) does decrease strongly during the first
 
 In order to test the quality of the reduction, the fact that a good reduction must preserve class separability is used. To test this, the function \texttt{test\_separability} trains a \texttt{Support Vector Machine} from \texttt{Scikit-learn} over both the observed and the reduced space, displaying the score obtained in each one of these. Table~\ref{tab:mnist} shows the obtained results.
 
-
 \begin{figure}
   \centering
   \begin{tabular}{ccc}
@@ -121,16 +120,16 @@ In order to test the quality of the reduction, the fact that a good reduction mu
     Original data & 0.998 \\
     \hline
   \end{tabular}
-  \caption{SVM score.}\label{tab:mnist}
+  \caption{SVM score with Mnist database.}\label{tab:mnist}
 \end{figure}
 
 The three dimensional reduction results are shown in Figure~\ref{fig:mnist_posterior_3D}.
-\begin{figure}
+\begin{figure}[h]
   \centering
   \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_pca_3D.pdf}}
   \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_nlpca_3D.pdf}}
   \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/mnist_vae_3D.pdf}}
-   \caption{PCA, NLPCA and VAE posterior samples (from left to right) from Mnist 2D reduction.}\label{fig:mnist_posterior_3D}
+   \caption{PCA, NLPCA and VAE posterior samples (from left to right) from Mnist 3D reduction.}\label{fig:mnist_posterior_3D}
 \end{figure}
 
 \subsection{Breast Cancer Wisconsin}
@@ -149,7 +148,16 @@ The obtained results from the two-dimensional (Figure~\ref{fig:breast_posterior_
 
 First of all, the results obtained from all models in this database show a highly sharp distribution on the benign entries and a more extended one on the malign one. Secondly, in both reductions, the probabilistic PCA model made a reduction where all the data-points resulted aligned, as a result, these two or three variables are highly correlated, which is not a desired outcome.
 
-In this database, the obtained loss functions present greater oscillations compared to \texttt{Mnist}, which means that the learning task has encountered more local minimum compared to the other database.
+In this database, the obtained loss functions (Figure~\ref{fig:breast_loss_2D}) present greater oscillations compared to \texttt{Mnist}, which means that the learning task has encountered more local minimum compared to the other database.
+
+\begin{figure}
+  \centering
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/breast_pca_loss_2D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/breast_nlpca_loss_2D.pdf}}
+  \subfloat[]{\includegraphics[width=0.3\textwidth]{tex/images/breast_vae_loss_2D.pdf}}
+   \caption{PCA, NLPCA and VAE loss function evolution (from left to right) from Breast Cancer 2D reduction.}\label{fig:breast_loss_2D}
+\end{figure}
+
 
 \begin{figure}
   \centering
@@ -164,7 +172,7 @@ In this database, the obtained loss functions present greater oscillations compa
     Original data & 0.9226 \\
     \hline
   \end{tabular}
-  \caption{SVM score.}\label{tab:breast}
+  \caption{SVM score with Breast Cancer database.}\label{tab:breast}
 \end{figure}
 
 It is worth mentioning that the separability has being increased (from \(0.9226\) to \(0.9349\)) after reducing to a two-dimensional space using a variational auto-encoder. This ensures that the given reduction does preserve the properties of the database.

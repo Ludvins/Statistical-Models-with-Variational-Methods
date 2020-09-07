@@ -2,13 +2,13 @@
 # coding: utf-8
 
 # The aim of this script is to test the usage of PCA, NLPCA and VAE in
-# `Mnist` database, using`InferPy`.
+# `Mnist` database using`InferPy`.
 
 # All three models are used over two and three dimensional reductions,
-# showing all possible 2D projections of the data and the loss function
-# (-ELBO) in the two-dimensional reduction.
+# showing all possible 2D projections of the data and the evolution of the loss function
+# (-ELBO) in the two-dimensional ones.
 
-# After each reduction, the new set separability is tested using a support
+# After each reduction, the separability of the reduction is tested using a support
 # vector machine, this is made to compare whether the reducted space preserves
 # class separability.
 

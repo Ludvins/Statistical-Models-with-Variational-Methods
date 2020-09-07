@@ -1,10 +1,10 @@
 
-Three different frameworks are used during this study, which are \texttt{InferPy}, \texttt{BayesPy} and \texttt{Scikit-Learn}. The first two are specifically designed to probabilistic modeling whereas the last one is a general machine learning library. For this reason, we are briefly describing the usage of the first two and only explaining the functions we are using on the last, but, before describing their usage, the study's file structure and used database are described.
+Three different frameworks are used during this study, which are \texttt{InferPy}, \texttt{BayesPy} and \texttt{Scikit-Learn}. The first two are specifically designed to probabilistic modeling whereas the last one is a general purpose machine learning library. For this reason, we are briefly describing the usage of the first two and only explaining the functions we are using on the last, but, before describing their usage, the study's file structure and used database are described.
 
 Each study is made in a different file, available in both as a \texttt{Jupyter Notebook (.ipynb)} and \texttt{Python script (.py)} using the name format \texttt{[model]\_[framework]\_[database]}. Apart from these, there are three main auxiliary files:
 
 \begin{itemize}
-  \item \texttt{packages}: This file contains a list of the installed packages. These packages might be installed using \texttt{pip install -r packages}.
+  \item \texttt{requirements.txt}: This file contains a list of the installed packages. These packages might be installed using \texttt{pip install -r requirements.txt}.
   \item \texttt{models.py}: In this \texttt{Python} file, all parametric and variational models from \texttt{InferPy} are defined. This includes PCA, NLPCA, VAE and Gaussian mixture.
   \item \texttt{functions.py}: In this file, all auxiliary functions are defined. The aim of these functions is either to make graphic representations or summarize the inference results.
 \end{itemize}

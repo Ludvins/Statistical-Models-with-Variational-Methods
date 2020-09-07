@@ -95,7 +95,7 @@ As a result, the variational update of a variable (Equation~\ref{eq:vmp_update})
    \bm{\eta}^{new}_Z =  \E{Q}{\bm{\eta}_Z{(pa_Z)}^T} + \sum_{X \in ch(Z)} \E{Q}{ \bm{\eta}_{X, Z}{(x, cp_{z,x})}^T}.
  \end{equation}
 
- These terms, can be seen as ``messages'' from \(Z\)'s parents and children. These messages are mixed, meaning that all parent nodes send their message together via \(\bm{\eta}_{Z}(pa_{Z})\), and the same happens with \(cp_{Z,X}\). A desired outcome would be to separate these into different messages, one from each node, in order to automatize the procedure. To do so, these messages can be written in terms of each node's sufficient statistic. The reasoning is:
+ These terms, can be seen as ``messages'' from \(Z\)'s parents and children. It is possible to re-parameterize this expectations in terms of the expectations of the natural statistic of each variable. The reasoning is:
  \begin{enumerate}
    \item From Equation~\ref{eq:vmp_conj}, it can be seen that \( \log P(x \mid pa_{x}) = \log P(x \mid z , cp_{z,x}) \) is linear in \( \bm{T}_X(x) \) and \( \bm{T}_Z(z) \), and, by the same reasoning, linear in any sufficient statistic of any parent of \( X \).
    \item This means that the variational update given in Equation~\ref{eq:vmp_update_open} is a multi-linear\footnote{A function is multi-linear on a set of variables if it varies linearly with respect to each one.} function of the expectations of the natural statistics \(\E{Q}{\bm{T}}\) of each node in \(Z\)'s Markov blanket.
@@ -106,14 +106,13 @@ As a result, the variational update of a variable (Equation~\ref{eq:vmp_update})
      is multi-linear on the expectations of the sufficient statistics of any node in \(Z\)'s Markov blanket.
    \item Given that \(\bm{T}_{Z}(z)\) does not depend on any other node, \(\bm{\eta}^{new}_{Z}\) must be multi-linear in all those expectations of statistic functions. Given Equation~\ref{eq:vmp_param_update}, the expectations of \( \bm{\eta}_Z \) and \( \bm{\eta}_{X, Z} \) are multi-linear on the expectations of the sufficient statistics of those nodes they are related to.
  \end{enumerate}
-To summarize, these parameter function can be reparameterized as
+To summarize, these parameter function can be re-parameterized as
 \[
   \begin{aligned}
     \bar{\bm{\eta}}_Z \Bigg(\Big\{ \E{Q}{\bm{T}_{x}(x)} \Big\}_{x \in pa_Z} \Bigg) &= \E{Q}{\bm{\eta}_Z(pa_Z)},\\
     \bar{\bm{\eta}}_{X,Z} \Bigg(  \E{Q}{\bm{T}_{X}(x)}, \Big\{ \E{Q}{\bm{T}_{Y}(y)} \Big\}_{Y \in cp_{Z,X}}\Bigg) &= \E{Q}{\bm{\eta}_{X, Z}(x, cp_{z,x})}.\\
   \end{aligned}
 \]
-Where the ``messages'' are now separated, meaning that any node can ``send'' their information independently.
 
 \begin{exampleth}
     The log conditional in the previous example \(\log P(x \mid \mu, \tau)\) is multi-linear in

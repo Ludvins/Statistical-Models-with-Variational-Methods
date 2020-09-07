@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# The aim of this script is to test BayesPy potential on modelling Gaussian mixtures.
+# The aim of this script is to test BayesPy's potential on modelling Gaussian mixtures.
 # Two attepts are done, the first on the proper Breast Cancer Wisconsin dataset,
 # and the second on a two-dimensional reduction using a variational auto-encoder.
 
-# The mixture is componed by the same number of components as classes has the dataset.
+# The mixture is componed by as many components as classes the dataset has.
 # An optimal outcome would be that each class is modeled by one component.
 # In order to test this, we are using each datapoint posterior probability of belonging
 # to each component to compute a density function over each class and component.

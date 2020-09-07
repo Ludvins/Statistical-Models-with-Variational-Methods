@@ -1,11 +1,11 @@
 
 In this section, the obtained results from a Gaussian mixture training are reviewed. Two out of three frameworks are successfully tested in this model.
 
-In both frameworks \texttt{Breast Cancer} database is used with the main goal of learning a Gaussian mixture model, the original database and the one obtained via a dimensionality reduction. The latter is done using a variational auto-encoder with \texttt{InferPy}, showing that frameworks can be used together.
+In both frameworks \texttt{Breast Cancer} database is used with the main goal of learning a Gaussian mixture model, on both the original database and the one obtained via a dimensionality reduction. The latter is done using a variational auto-encoder with \texttt{InferPy}, showing that frameworks can be used together.
 
 \section{InferPy}
 
-Firstly, the Gaussian mixture cannot be directly modeled using \texttt{InferPy} due to the fact that \texttt{TensorFlow} \texttt{-Probability} name categorical variables as \texttt{NOT\_REPARAMETERIZED}, which, citing its documentation means that ``samples from the distribution are not fully reparameterized, and straight-through gradients are either partially unsupported or are not supported at all''. Unsuccessful attempts have being made using \texttt{MixtureGaussian} distribution available in \texttt{InferPy}, which encapsulates the mixture without needed explicit categorical variables. In this attempts, parameters that must remain positive reach negatives values even using a \texttt{softplus} filter, which makes inference not possible.
+Firstly, the Gaussian mixture cannot be directly modeled using \texttt{InferPy} due to the fact that \texttt{TensorFlow}\texttt{-Probability} name categorical variables as \texttt{NOT\_REPARAMETERIZED}, which, citing its documentation means that ``samples from the distribution are not fully reparameterized, and straight-through gradients are either partially unsupported or are not supported at all''. Unsuccessful attempts have being made using \texttt{MixtureGaussian} distribution available in \texttt{InferPy}, which encapsulates the mixture without needed explicit categorical variables. In this attempts, parameters that must remain positive reach negatives values even using a \texttt{softplus} filter, which makes inference not possible.
 
 Adding a constant term to those parameters, such as, \(0.1\) in an attempt to keep them positive resulted in no learning errors but also no real results, where even the component weight parameter remained nearby its prior value on Breast Cancer database (where it should tend to \([0.63,\ 0.37]\)).
 
@@ -76,11 +76,11 @@ Due to the high number of attributes (784) in \texttt{Mnist} database, \texttt{B
 
 The model is created with the same number of components as different classes (2) in an attempt to learn one Gaussian distribution for each class. After the inference task, \texttt{BayesPy} provides a way to inspect each variable posterior by simply printing the desired variable.
 
-Variable moments are also accessible via each variable \texttt{u} parameter, given this, we may learn each data-point component belonging posterior, using \texttt{Z's} first moment.
+Variable moments are also accessible via each variable \texttt{u} parameter, given this, we may learn each data-point component belonging posterior, as we did using \texttt{predict\_proba} with \texttt{Scikit-Learn}, using \texttt{Z's} first moment.
 
 The obtained results show a model that does not learn the two classes, despite that, almost all data-points belong to one of the components with high probability. The exact posterior for \(\bpi\) is \([6.5/570\  563.5/570]\). Furthermore, the component assignment variable posterior sets the benign class in the second component with probability \(1\), with a \(0\) variance between datapoints. Given this, no component belonging density function can be computed as we did with \texttt{Scikit-Learn}.
 
-We may reduce the space to a two-dimensional one using a variational auto-encoder. In this case, the posterior for \(\bpi\) is \([0.61\ 0.39]\), which is similar to the real one (\([0.62\ 0.38]\)). This gives the intuition that the first component models the more common class (benign). This is confirmed using the component belonging densities (Figure~\ref{fig:proba_reduced_bayes}). These are similar to the ones obtained using \texttt{Scikit-Learn}.
+We may reduce the space to a two-dimensional one using the same variational auto-encoder we used before. In this case, the posterior for \(\bpi\) is \([0.61\ 0.39]\), which is similar to the real one (\([0.62\ 0.38]\)). This gives the intuition that the first component models the more common class (benign). This is confirmed using the component belonging densities (Figure~\ref{fig:proba_reduced_bayes}). These are similar to the ones obtained using \texttt{Scikit-Learn}.
  
 \begin{figure}[h!]
   \centering

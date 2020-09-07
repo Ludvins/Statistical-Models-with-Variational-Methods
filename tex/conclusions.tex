@@ -2,17 +2,17 @@
 
 In this document I have presented an overview of variational inference and statistical graphical models, explaining how the latter affects the former. Variational methods have increased the possibilities of defining models where parameter Bayesian estimation can be performed.
 
-In order to build a Bayesian network structure from a given set of observations, the concepts of D-separation and D-connection turned to be of great use in order to develop the PC algorithm, which, from a fully connected graph, uses these concepts to erase links between nodes. Later, links are directed using each node's empirical mutual information.
+In order to build a Bayesian network structure from a given set of observations, the concepts of D-separation and D-connection turned out to be of great use in order to develop the PC algorithm, which, from a fully connected graph, uses these concepts to erase links between nodes. Later, links are directed using each node's empirical mutual information.
 
-The Bayesian network structure has shown to highly simplify variational methods, for example, in the case of the EM algorithm, the M-step is reduced to assigning each factor of the parametric distribution to the variational one, leading to a simpler procedure than computing the parameter that maximizes the ELBO, which might not be possible.
+The Bayesian network structure has shown to highly simplify variational methods, for example, in the case of the EM algorithm, the M-step is reduced in some models to assigning each factor of the parametric distribution to the variational one, leading to a simpler procedure than computing the parameter that maximizes the ELBO, which might not be possible.
 
-Conversely, the usage of conditionally conjugate models in the exponential family, transforms the iterative procedure of the CAVI algorithm into a parameter optimization strategy, where each parameter is updated using its distribution parameter function's expectation.
+Conversely, the usage of conditionally conjugate models in the exponential family, transforms the iterative procedure of the CAVI algorithm into a parameter optimization strategy, where the parameter of a local hidden variable is updated using the expectation of its distribution parameter function.
 
 These two concepts, conditionally conjugate models in the exponential family and Bayesian networks, are combined in the variational message passing algorithm, which simplifies each CAVI iteration to a message procedure where each node retrieves messages from its Markov blanket in order to update its own hyper-parameters. This leads to a fully automatized algorithm to perform Bayesian inference with hidden variables.
 
 The combination of artificial neural networks with variational methods, allows to consider non-linear generative models, generalizing existing models such as principal component analysis to more complex ones such as variational auto-encoders, which have shown better results in the studied cases compared to the classical approach.
 
-The success of variational inference has been boosted by the development of software tools, the so called probabilistic programming languages, that have automatized the construction and learning of complex probabilistic models. In this work, we have studied and used some of them, specifically, three different \texttt{Python} frameworks have been used. Each of these have shown advantages and disadvantages over the others, not only they perform inference using different techniques but also are limited in different ways.
+The success of variational inference has been boosted by the development of software tools, the so called probabilistic programming languages, that have automatized the construction and learning of complex probabilistic models. In this work, we have studied and used some of them, specifically, three different \texttt{Python} frameworks have been used. Each of these have shown advantages and disadvantages over the others, not only do they perform inference using different techniques but also are limited in different ways.
 
 Several topics were not addressed in this document. The application of variational methods to Markov random fields is a plausible path for a future study. The implementation and testing of latent Dirichlet allocation models with the studied frameworks as well as to try and implement the capabilities that are missing from each of them.
 
@@ -26,7 +26,7 @@ This framework does also provide a convenient way to inspect each variable poste
 
 \section*{BayesPy}
 
-\texttt{BayesPy} is the only of the three \texttt{frameworks} that performs variational message passing as it inference algorithm. This has made it impossible to test on larger databases, as it internally stores much of the information to optimize the procedure, leading to high memory requisites.
+\texttt{BayesPy} is the only one of the three \texttt{frameworks} that performs variational message passing as its inference algorithm. This has made it impossible to test on larger databases, as it internally stores much of the information to optimize the procedure, leading to high memory requisites.
 
 This framework has the same flexibility as \texttt{InferPy} providing a more comfortable syntax as it does not request the variational model to be defined.
 
@@ -34,6 +34,6 @@ This framework has the same flexibility as \texttt{InferPy} providing a more com
 
 \section*{Scikit-Learn}
 
-\texttt{Scikit-Learn's BayesianGaussianMixture} does correctly perform EM on the given model, providing the user a totally functional API from where one may get any posterior information. A negative aspect is the lack of flexibility available compared to the other frameworks. It does allows the user to choose between several model parameters but not make any substantial change to the model.
+\texttt{Scikit-Learn's BayesianGaussianMixture} does correctly perform EM on the given model, providing the user with a totally functional API from where one may get any posterior information. A negative aspect is the lack of flexibility available compared to the other frameworks. It does allows the user to choose between several model parameters but not to make any substantial change to the model.
 
-As being part of a \texttt{machine learning framework}, it provides the necessary functions to use the model in a classification problem, such as \texttt{score()} and \texttt{predict()}.
+As being part of a machine learning framework, it provides the necessary functions to use the model in a classification problem, such as \texttt{score()} and \texttt{predict()}.
