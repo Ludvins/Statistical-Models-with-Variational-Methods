@@ -1,0 +1,158 @@
+\documentclass{beamer}
+\usetheme{metropolis}
+\usepackage{bm}
+\usepackage{xcolor}
+\colorlet{shadecolor}{blue!15}
+\usepackage{framed}
+\usepackage{amsthm}
+\usepackage[utf8]{inputenc}
+
+\newcommand{\bx}{\bm{x}}
+\newcommand{\bX}{\bm{X}}
+\newcommand{\by}{\bm{y}}
+\newcommand{\bY}{\bm{Y}}
+\newcommand{\bw}{\bm{w}}
+\newcommand{\bW}{\bm{W}}
+\newcommand{\bz}{\bm{z}}
+\newcommand{\bZ}{\bm{Z}}
+\newcommand{\bv}{\bm{v}}
+\newcommand{\bh}{\bm{h}}
+\newcommand{\bSigma}{\bm{\Sigma}}
+\newcommand{\bpi}{\bm{\pi}}
+\newcommand{\bLambda}{\bm{\Lambda}}
+\newcommand{\btheta}{\bm{\theta}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\bV}{\bm{V}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\I}{\mathcal{I}}
+
+\newcommand\ddfrac[2]{\frac{\displaystyle #1}{\displaystyle #2}}
+
+\newcommand\E[2]{\mathbb{E}_{#1}\Big[#2\Big]}
+\newcommand\KL[2]{KL\Big(#1 \bigm| #2\Big)}
+\newcommand{\bigCI}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
+\newcommand{\bigCD}{\centernot{\bigCI}}
+
+\newtheorem*{prop}{Proposition}
+\newenvironment{proposition}
+  {\begin{shaded}\begin{prop}}
+  {\end{prop}\end{shaded}}
+
+
+
+
+\title{Statistical models with variational methods}
+\date{\today}
+\author{Luis Antonio Ortega Andrés}
+\institute{Here we go again...}
+\begin{document}
+  \maketitle
+  \section{First Section}
+
+  \begin{frame}{Notation}
+    \begin{itemize}
+      \item \(X\) denotes a generic observed random variable.
+      \item \(Z\) denotes a generic hidden random variable.
+      \item \(P(x)\) denotes \(X\)'s mass function of density function evaluated on \(x\).
+      \item Bold symbols as \(\bm{X}\) refer to sets of variables or multidimensional variables.
+      \item \(Q\) symbolizes a variational distribution.
+      \item \(\bx = (x_{1},\dots,x_{N})\) symbolizes a set of observations and \(\btheta\) a set of parameters.
+    \end{itemize}
+  \end{frame}
+
+  \begin{frame}{Kullback-Leibler divergence}
+    Let \(P\) and \(Q\) be two probability distributions over the same probability space \( \Omega \), the \emph{Kullback-Leibler divergence}
+    \(\KL{Q}{P}\) measures the ``difference'' between both distributions as
+    \[
+      \KL{Q}{P} = \E{Q}{\log Q(x) - \log P(x)}.
+    \]
+    \begin{shaded}
+      The Kullback-Leibler divergence is always non-negative.
+    \end{shaded}
+  \end{frame}
+
+  \begin{frame}{Statistical Inference}
+    The process of deducing properties of an underlying distribution.
+
+    \begin{itemize}
+      \item \textbf{Likelihoodist}: performs parameter estimation maximizing the \emph{likelihood function} \(P(\bx \mid \btheta)\).
+      \item \textbf{Bayesian}: derives a \emph{posterior distribution} using Bayes' theorem
+        \[
+        \underbrace{P(\btheta \mid \bx)}_{posterior} = \frac{\overbrace{P(\bx \mid \btheta)}^{likelihood}\overbrace{P(\btheta)}^{prior}}{P(\bx)}.
+        \]
+    \end{itemize}
+  \end{frame}
+
+
+  \begin{frame}{Maximum likelihood estimation}
+    Attempts to compute the value of the parameter to which the data is most probable to be generated with, that is,
+    \[
+      \btheta^{ML} = \argmax_{\btheta} P(\bx \mid \btheta).
+    \]
+    This value minimizes the Kullback-Leibler divergence between the distribution \(P\) and the empirical distribution \(Q\):
+    \[
+      \btheta^{ML} = \argmin_{\btheta} \KL{Q}{P}\quad \text{where}\quad Q(x) = \frac{1}{N}\sum_{n=1}^{N}\mathbb{I}[x = x_{n}].
+    \]
+  \end{frame}
+
+  \begin{frame}{Variational inference}
+    Solves the inference problem by creating an equivalent optimization problem:
+
+    \begin{shaded}
+      Given a fixed family of distributions \(\mathcal{Q}\) over the set of latent variables \(\bZ\), find
+      \[
+        Q^{opt} = \argmin_{Q \in \mathcal{Q}} \KL{Q(\bz)}{P(\bz \mid \bx)}.
+      \]
+    \end{shaded}
+
+    This problem is then approached through machine learning techniques, such as \emph{gradient or coordinate descent}.
+  \end{frame}
+
+  \begin{frame}{Evidence Lower Bound}
+    Using the positiveness of the Kullback-Leibler divergence, the evidence lower bound (ELBO) is established.
+    \[
+      \KL{Q(\bz)}{P(\bz \mid \bx)} \geq 0
+    \]
+    \[
+      \Updownarrow
+    \]
+    \[
+      \log P(\bx) \geq \underbrace{- \E{Q(\bz)}{\log Q(\bz)}}_{Entropy} + \underbrace{\E{Q(\bz)}{\log P(\bx, \bz)}}_{Energy}.
+    \]
+  \end{frame}
+
+  \begin{frame}{Algorithms}
+    Two main algorithms arise to study models with latent variables using this lower bound:
+    \begin{itemize}
+      \item \textbf{Expectation-Maximization}: likelihoodist iterative method to estimate model parameters.
+      \item \textbf{Coordinate Ascent Variational Inference}: Bayesian coordinate ascent approach.
+    \end{itemize}
+  \end{frame}
+
+  \begin{frame}{Expectation-Maximization algorithm}
+    Attempts to maximize the ELBO given a parametric model.
+    \[
+      ELBO(Q, \btheta) = \underbrace{- \E{Q(\bz)}{\log Q(\bz)}}_{Entropy} + \underbrace{\E{Q(\bz)}{\log P(\bx, \bz \mid \btheta)}}_{Energy}.
+    \]
+    Two alternating maximization steps:
+    \begin{itemize}
+      \item \textbf{E-step}: Given a fixed parameter \(\btheta\),
+        \[
+        Q^{new}(\bz) = \argmax_{Q} ELBO(Q, \btheta) = P(\bz \mid \bx, \btheta).
+        \]
+      \item \textbf{M-step}: Given a fixed distribution \(Q\),
+        \[
+        \btheta^{new} = \argmax_{\btheta} ELBO(Q, \btheta) = \argmax_{\btheta} \E{Q(\bz)}{\log P(\bx, \bz \mid \btheta)}.
+        \]
+    \end{itemize}
+  \end{frame}
+
+  \begin{frame}{Coordinate ascent variational inference algorithm}
+    hola
+  \end{frame}
+\end{document}
