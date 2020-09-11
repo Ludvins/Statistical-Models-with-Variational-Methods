@@ -22,3 +22,7 @@ _minted-main
 *.sym
 dataset
 src/__pycache__
+*.snm
+*.nav
+*.pyg
+_minted-slideshow
