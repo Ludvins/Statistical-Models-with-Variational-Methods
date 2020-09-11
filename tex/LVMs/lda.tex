@@ -14,7 +14,7 @@ The considered elements are (using~\cite{hoffman2013stochastic} and \cite{blei20
 
 LDA model assumes that each document is generated with the following generative process:
 \begin{enumerate}
-  \item Draw topics from a Dirichlet distribution, for each \(k=1,\dots,K\):
+  \item Draw words proportion for each topic from a Dirichlet distribution, for each \(k=1,\dots,K\):
     \[
     P(\beta_{k}) = \frac{1}{B(\eta)} \prod_{v=1}^{V}\beta_{k,v}^{\eta - 1} \implies \beta_{k} \sim \text{Symmetric-Dirichlet}_{V}(\eta)
     \]
