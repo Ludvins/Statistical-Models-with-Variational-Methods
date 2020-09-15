@@ -26,3 +26,5 @@ src/__pycache__
 *.nav
 *.pyg
 _minted-slideshow
+*.org
+*.vrb
