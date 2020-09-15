@@ -78,8 +78,7 @@
          \quad Familia exponencial\\
          \vspace*{0.2cm}
          Redes Bayesianas\\
-         % \quad D-separación y D-conexión\\
-         \quad Algoritmo EM\\
+         \quad Definición\\
          \quad Algoritmo paso de mensajes\\
        \end{column}
        \begin{column}{0.5\textwidth}
@@ -101,9 +100,9 @@
 
     Las variables ocultas pueden ser parámetros bajo un modelo Bayesiano.
 
-    La utilización de estructuras de red Bayesiana y la familia exponencial simplifican notablemente la tarea de inferencia.
+    % La utilización de estructuras de red Bayesiana y la familia exponencial simplifican notablemente la tarea de inferencia.
 
-    Modelos concretos como la mixtura de Gaussianas, localización latente de Dirichlet y análisis de componentes principales pueden ser estudiados mediante la utilización de lenguajes de programación especializados.
+    Modelos concretos como la mixtura de Gaussianas, asignación latente de Dirichlet y análisis de componentes principales pueden ser estudiados mediante la utilización de lenguajes de programación especializados.
   \end{frame}
 
     \begin{frame}{Divergencia Kullback-Leibler}
@@ -256,7 +255,7 @@
 
   \begin{frame}{Familia exponencial}
     \begin{shaded}
-      Una variable aleatoria \(X\) sigue una distribución en la \emph{familia exponencial} con parámetros \(\btheta\) si y solo si existen \(\bm{T}, \bm{\eta}\) y \(\psi\) tales que
+      Una variable aleatoria \(X\) sigue una distribución en la \emph{familia exponencial} con parámetros \(\btheta\) si y solo si existen \(h, \bm{T}, \bm{\eta}\) y \(\psi\) tales que
       \[
         P(x \mid \btheta) = h(x) \exp \Big( \bm{\eta}(\btheta)^{T}\bm{T}(x) - \psi(\btheta)\Big).
       \]
@@ -264,18 +263,12 @@
     \begin{itemize}
       \item \(\bm{T}\) es el estadístico natural de \(X\). \emph{Teorema de Fisher-Neyman}.
       \item \(\bm{\eta}\) se denomina la función paramétrica de la distribución.
+      \item \(h\) se denomina medida base.
       \item \(\psi\) asegura normalización logarítmica
         \[
         \psi(\btheta) = \log \int_{x} h(x)\exp \Big( \bm{\eta}(\btheta)^{T}\bm{T}(x) \Big).
         \]
     \end{itemize}
-  \end{frame}
-
-  \begin{frame}{Distribuciones conjugadas}
-    Si la distribución a \emph{posteriori} y la distribución a \emph{priori} pertenecen a la misma familia, se denominan \emph{conjugadas} y la distribución a priori se dice \emph{distribución a priori conjugada} de la verosimilitud.
-    \[
-      \underbrace{P(\btheta \mid \bx)}_{posteriori} = \frac{\overbrace{P(\bx \mid \btheta)}^{verosimilitud}\overbrace{P(\btheta)}^{priori}}{P(\bx)}.
-    \]
   \end{frame}
 
   \begin{frame}{Modelos condicionalmente conjugados}
@@ -297,30 +290,23 @@
         P(x_{1},\dots,x_{N}) = \prod_{n=1}^{N}P(x_{n}\mid pa(x_{n})).
       \]
     \end{shaded}
-    \begin{columns}
-      \begin{column}{0.5\textwidth}
-        \centering
-        \begin{tikzpicture}[
-          node distance=1cm and 1cm,
-          mynode/.style={draw,circle,text width=0.4cm,align=center}
-          ]
+    \centering
+    \begin{tikzpicture}[
+      node distance=1cm and 1cm,
+      mynode/.style={draw,circle,text width=0.4cm,align=center}
+      ]
 
-          \node[mynode] (1) {\(X_1\)};
-          \node[mynode,right=of 1] (2) {\(X_2\)};
-          \node[mynode,right=of 2] (3) {\(X_3\)};
+      \node[mynode] (1) {\(X_1\)};
+      \node[mynode,right=of 1] (2) {\(X_2\)};
+      \node[mynode,right=of 2] (3) {\(X_3\)};
 
-          \path (3) edge[-latex][bend right] (1)
-          (3) edge[-latex] (2)
-          ;
-        \end{tikzpicture}
-        \[
-          P(x_{1}, x_{2}, x_{3}) = P(x_{1} \mid x_{3})P(x_{2}\mid x_{3})P(x_{3}).
-        \]
-      \end{column}
-      \begin{column}{0.5\textwidth}
-        La inferencia se puede realizar de forma eficiente mediante los conocidos algoritmos de propagación en problemas con un gran número de variables.
-      \end{column}
-    \end{columns}
+      \path (3) edge[-latex][bend right] (1)
+      (3) edge[-latex] (2)
+      ;
+    \end{tikzpicture}
+    \[
+      P(x_{1}, x_{2}, x_{3}) = P(x_{1} \mid x_{3})P(x_{2}\mid x_{3})P(x_{3}).
+    \]
   \end{frame}
 
   \begin{frame}{Algoritmo de paso de mensajes}
@@ -388,8 +374,8 @@
       (31) edge[-latex] (61)
       (41) edge[-latex] (61)
       ;
-      \path [bend left] (11) edge[-latex, orange] (31);
-      \path [bend left] (21) edge[-latex, orange] (31);
+      \path [ bend left] (11) edge[-latex, orange] (31);
+      \path [ bend left] (21) edge[-latex, orange] (31);
 
       \path (12) edge[-latex] (32)
       (22) edge[-latex] (32)
@@ -418,7 +404,17 @@
   \begin{frame}{Mixtura de Gaussianas}
     \begin{columns}
       \begin{column}{0.5\textwidth}
-        La probabilidad de un punto se define como la suma de las probabilidades de pertenecer a cada Gaussiana por la probabilidad de dicho punto en ella.
+        Mixtura de Gaussianas \(\mathcal{N}(0, 0.5)\), \(\mathcal{N}(2, 0.75)\) y \(\mathcal{N}(3, 0.4)\).
+
+        Dados unos pesos \(0.2, 0.3\) y \(0.5\), la probabilidad de un punto sería
+        \[
+          \begin{aligned}
+            P(x) &= 0.2\times \mathcal{N}(0, 0.5)(x)\\
+            &+ 0.3\times \mathcal{N}(2, 0.75)(x)\\
+            &+ 0.5\times \mathcal{N}(3, 0.4)(x).
+            \end{aligned}
+        \]
+
       \end{column}
       \begin{column}{0.6\textwidth}
     \begin{tikzpicture}
@@ -663,6 +659,7 @@
 
       \begin{itemize}
         \item La utilización de modelos gráficos como redes Bayesianas y modelos conjugados en la familia exponencial simplifican la inferencia con variables ocultas hasta su automatización.
+        \item La integración de redes neuronales, permite aplicar inferencia a modelos fuera de los modelos conjugados.
         \item Cada software utilizado presenta ventajas e inconvenientes sobre los demás, haciendo que su elección dependa de la tarea que se desee realizar.
       \end{itemize}
     \end{frame}
